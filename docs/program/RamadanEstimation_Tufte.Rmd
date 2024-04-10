@@ -29,7 +29,7 @@ header-includes:
 bibliography: c:/seiro/settings/Tex/seiro.bib
 link-citations: yes
 #### c:\seiro\languages\R\R-4.2.1\bin\x64\Rscript.exe -e "path <- 'c:/data/Ramadan/program/'; rmarkdown::render('c:/data/Ramadan/program/RamadanEstimation_Tufte.Rmd')"
-# path0 <- "c:/data/Ramadan/"; setwd(path <- paste0(path0, "submit2024/")); pathprogram <- paste0(path, "program/"); rmarkdown::render(paste0(pathprogram, "RamadanEstimation_Tufte.Rmd"))
+# path0 <- "c:/data/Ramadan/"; setwd(path <- paste0(path0, "submit2024/docs/")); pathprogram <- paste0(path, "program/"); rmarkdown::render(paste0(pathprogram, "RamadanEstimation_Tufte.Rmd"))
 #### rmarkdown::render(paste0(path, "program/RamadanEstimation_Tufte.Rmd"), output_format = "pdf_document")
 #### Below are git bash commands.  ####
 #### To publish on github, make sure your html is under root/docs folder.
@@ -114,7 +114,7 @@ library(rprojroot)
 #### Need to set project root
 setwd("c:/data/Ramadan/")
 getwd()
-here::i_am("Submit2024/program/RamadanEstimation_Tufte.Rmd")
+here::i_am("Submit2024/docs/program/RamadanEstimation_Tufte.Rmd")
 getwd()
 find_root_file("Workshop2024Mar26/code/EstimationCode/R", 
   "data_simulated_20230426.csv", criterion = has_file(".git/index"))
