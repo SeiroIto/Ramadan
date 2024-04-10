@@ -1,0 +1,70 @@
+\section{Preparing regressors}
+
+
+<<echo = F>>=
+# ii0 is a set of variables that will not be required for any of estimation steps below.
+# Note: Some variables are not used in estimation but needed to show the clusters.
+ii0 <- paste("^nonm|only|abs|isag|ocag|ownag|hd.*[gmiltxy]$|educa", 
+    "pce|dist|vill|der$|^latrine$|^k.*trine$|water$|older|pc4|pov|gps",
+    "sp.edulevel$|sp.e.*y$|sp.age$|sp.d|pc.*ag|^sex$", 
+    "scha|hd.any|hd.bmi|hd.age|^first|^cm|hdsex|1000",
+    "prodtha|areatha|yi.*na.yr2$", 
+    "memship|spatt|floode|dummyAa|DummyEd", sep = "|")
+#z1 <- z1[, -grep(ii0, colnames(z1)), with = F]
+#cat("dimension of yzw:", dim(yzw), " ==> dimension of z:", dim(z1), "\n")
+#  covariate selection
+  #  familytype = nuclear, extended
+  #  cohort demeaned = F, T
+  #  regressors: 7 variants (by excluding from full regressor matrix)
+  #    1: (indiv, yield, weather, program, hd, wealth, hygiene, sp, area) are excluded
+  #    2: (         yield, weather, program, hd, wealth, hygiene, sp, area) are excluded
+  #    3: (                  weather, program, hd, wealth, hygiene, sp, area) are excluded
+  #    4: (                               program, hd, wealth, hygiene, sp, area) are excluded
+  #    5: (                                                   wealth, hygiene, sp, area) are excluded
+  #    6: (                                                                            sp, area) are excluded
+  #    7: (                                                                             NONE ) are excluded.
+  #  for each familytype i, demeaninng j, regressor k
+  #  regression: 2 {Main, Placebo} * 2 {zE, zS} * 2 {sd=0,1} * 3 {agHH, isource, occup} * 7
+  #  = 294 variations for each age cutoff {10, 11, 12}
+  # ii: m, p
+  # jj: zE, zS
+  # j: only nuclear (sd == 1) or include extended (sd == 0)
+  # m: agHH def
+  # s: age cutoff
+  # k: specification
+# flood = 1 if  districtSherpur == 0 & districtTangail == 0 & districtChandpur == 0
+# (district/thana=sherpur/sherpur sadar, tangail/modhupur, chandpur/haziganj)
+# or, flood = 1 if district/thana  barishal/aailjhar,  coxbazar/chokoria, narail/kalia, 
+# nilphamari/nilphamary sadar, nowgaon/mohadebpur.
+source(paste0(pathprogram0, "RegressorPieces.R"))
+main.reorder.JHR = c("^.Inter|^age$|age2|yield|^(any)?prog|rain|^high|^low|Std|",
+    "^agHH$|^agHH.yr\\d$|^hdagHH.yr\\d$|",
+    "^sex.yr\\d$|^...ed.*y.yr\\d$|hd.?sex.yr\\d$|Sib[FM].yr\\d|^pcland.y|^pcnlasset.y|water.y|latrine.y|",
+    "^sex.*H.*\\d$|hd.ed.*H.*\\d$|sp.ed.*H.*\\d$|hd.?sex.*H.*\\d$|Sib.*H.*\\d|^pcland.*H.*\\d$|^pcnlasset..*H.*\\d$|water.*H.*\\d$|latrine.*H.*\\d$")
+main.reorder.JHR <- paste0(main.reorder.JHR, collapse = "")
+mix.reorder <- function(x, y=main.reorder.JHR) 
+  paste0(c(y[1], x, y[3], y[4]), collapse = "")
+ClusteringMethod <- c("LiangZeger", "satterthwaite", "wildclusterboot")
+genderitems <- c("boys", "girls", "boys+girls")
+library(ggplot2)
+ThisTheme <- theme(
+   axis.text.x = element_text(size = 12, angle = 0, vjust = 1, hjust = .5), 
+   axis.text.y = element_text(size = 12), 
+   axis.title = element_text(size = 10), 
+   strip.text.x = element_text(color = "blue", size = 8, 
+     margin = margin(0, 1.25, 0, 1.25, "cm")), 
+   strip.text.y = element_text(color = "blue", size = 8, 
+     margin = margin(1.5, 0, 1.5, 0, "cm")),
+   panel.spacing.x = unit(c(.1), units = "cm"),
+   panel.spacing.y = unit(.1, units = "cm"), 
+   legend.position = "none")
+ThisThemeEnd <- ThisTheme + theme(legend.position="bottom")
+library(qs)
+Enr.Base <- qread(paste0(pathsaveThisVer, "EnrBaseForTabGeneric.qs"))
+Enrchg.Base <- qread(paste0(pathsaveThisVer, "EnrchgBaseForTabGeneric.qs"))
+source(paste0(pathprogram0, "TabGeneric.R"))
+@
+
+\Sexpr{knit_child(paste0(pathprogram0, "ListOfRegressors.rnw"))}
+
+

@@ -1,0 +1,258 @@
+Regressors for main. \gobblepars
+<<Regressors for main, echo = F, results = 'hide'>>=
+# source(paste0(pathprogram0, "RegressorPieces.R"))
+regressorsM.old <- 
+  c("^\\(Interce", indivagesib2, paste(yield, weather.variables1, sep = "|"), 
+  hd2, hygiene2, sp2)
+# zEp.2002: UDOldSibF is all 0, UDOldSibM is all 0 but 2 obs, so drop them (and interactions).
+regressorsM <- 
+  # add X1.yr2 and X1.agHH.yr2, then X2.yr2 and X2.agHH.yr2
+  #July 16 c("^\\(Interce", indivagesib2, paste(yield, weather.variables1, sep = "|"), 
+  # July 29 c("^\\(Interce", indivage2, paste(yield, weather.variables1, "^prog", sep = "|"), 
+  #July 29  hygiene2, paste(hdeduonly2, sp2, sib2, sep = "|"), area2)
+  c("^\\(Interce", indivage2, 
+  # Aug 1 paste(hdeduonly2, sp2, sep = "|"), 
+  # corr of hd.edulevel.primary.yr2 and hd.edulevel.primary.agHH.yr2 are .80
+  # corr of sp.edulevel.primary.yr2 and sp.edulevel.primary.agHH.yr2 are .84
+  # Drop these triple interactions 
+    paste(hdedunoagHH2, spedunoagHH2, sep = "|"),
+    paste(yield, weather.variables1, "^prog", sep = "|"), 
+    hygiene2, sib2, area2)
+    #paste(sib2, area2, sep = "|"))
+  #hd2, hygiene2, area2)
+regressorsM.new <- 
+  # add X.yr2, then X.agHH.yr2
+  c("^\\(Interce", indivagesibyr2, paste(yield, weather.variables1, sep = "|"), 
+  paste(hdyr2, hygieneyr2, sep = "|"), 
+  paste(indivagesib2, hd2, hygiene2, sep = "|"), area2)
+ShowCovariates <- function(x, y) {
+paste(unlist(
+  lapply(
+    lapply(2:length(x), function(i) paste0("(", paste(grepout(x[i], y), collapse = ", "), ")"))
+    , function(z) c(z, "+"))
+  ), collapse = " ")
+}
+#ShowCovariates(regressorsM, colnames(zEm.1999))
+#grepout(paste(regressorsM, collapse = "|"), colnames(zEm.1999))
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsM, colnames(zEm.1999))}}}\\ 
+Regressors for placebo testing. \gobblepars 
+<<Regressors for placebo testing, echo = F>>=
+# zEp.2002: UDOldSibF is all 0, UDOldSibM is all 0 but 2 obs, so drop them (and interactions).
+regressorsM2002 <- c("^\\(Interce", indivagesib3, paste(yield, weather.variables1, sep = "|"),
+#  hd3, hygiene3, area3)
+  paste(hd3, sp3, sep = "|"), hygiene3, area3)
+regressorsM2002 <-   c("^\\(Interce", indivage3, 
+  paste(hdedunoagHH3, spedunoagHH3, sep = "|"),
+  paste(yield, weather.variables1, "^prog", sep = "|"), 
+  hygiene3, sib3, area3)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsM2002, colnames(zEp.1999))}}}\\ 
+
+Regressors for 1999 data age wise main estimation. \gobblepars
+<<Regressors for 1999 data age wise main estimation, echo = F>>=
+regressorsA1999 <- c("^\\(Interce", 
+  paste(indivnoagesib2, agewise2, sep = "|"),
+  yieldweather, 
+  hd2, hygiene2, #sp2, 
+  area2)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsA1999, colnames(zEp.1999))}}}\\ 
+Regressors for age wise placebo tests. \gobblepars 
+<<Regressors for age wise placebo tests, echo = F>>=
+regressorsA2002 <- c("^\\(Interce", 
+  paste(indivnoagesib3, agewise3, sep = "|"),
+  yieldweather, 
+  hd3, hygiene3, #sp3, 
+  area3)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsA2002, colnames(zEp.1999))}}}\\ 
+
+Regressors for DID. \gobblepars
+<<Regressors for main DID, echo = F, results = 'hide'>>=
+regressorsD <- 
+  c("^\\(Interce", indivageD, 
+  paste(yield, weather.variables1, sep = "|"),
+  indivage2,
+  paste(hdlevel, "^program$", sep = "|"),
+  hygieneD, #splevel, 
+  arealevel)
+regressorsD <- 
+  c("^\\(Interce", indivageD, 
+  paste(yield, weather.variables1, sep = "|"),
+  sexD,
+  paste(hdlevel, "^program$", sep = "|"),
+  hygieneD, #splevel, 
+  arealevel)
+@
+
+Regressors for 1999 data age group wise main estimation. \gobblepars
+<<Regressors for 1999 data age group wise main estimation, echo = F>>=
+regressorsAG1999 <- c("^\\(Interce", 
+  paste(indivnoagesib2, ageGroupwise2, sep = "|"),
+  yieldweather, 
+  hd2, hygiene2, #sp2, 
+  area2)
+regressorsAg1999 <- c("^\\(Interce", 
+  paste(indivnoagesib2, agegroupwise2, sep = "|"),
+  yieldweather, 
+  hd2, hygiene2, #sp2, 
+  area2)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsAG1999, colnames(zEm.1999))}}} \\ 
+Regressors for age group wise placebo tests. \gobblepars
+<<Regressors for age group wise placebo tests, echo = F>>=
+regressorsAG2002 <- c("^\\(Interce", 
+  paste(indivnoagesib3, ageGroupwise3, sep = "|"), 
+  yieldweather, 
+  hd3, hygiene3, #sp3, 
+  area3)
+regressorsAg2002 <- c("^\\(Interce", 
+  paste(indivnoagesib3, agegroupwise3, sep = "|"),
+  yieldweather, 
+  hd3, hygiene3, #sp3, 
+  area3)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsAg2002, colnames(zEp.1999))}}}
+
+%Regressors for 2002 data age group wise main estimation.
+<<Regressors for 2002 data age group wise main estimation, eval = F, echo = F>>=
+regressorsAG2002 <- regressorsAG1999
+regressorsAg2002 <- regressorsAg1999
+@
+
+Regressors for number of grades. \gobblepars
+<<Regressors for NumGrades, echo = F, results = 'hide'>>=
+regressorsNumGrades <- 
+  c("^\\(Interce", indivnoagesib2, 
+  paste(yield, weather.variables1, sep = "|"), 
+  paste(hd2, sp2, sep = "|"), hygiene2, #sp2, 
+  area2)
+  #"^age2$")
+regressorsNumGrades <- 
+  c("^\\(Interce", indivage2, 
+    paste(hdedunoagHH2, spedunoagHH2, sep = "|"),
+    paste(yield, weather.variables1, "^prog", sep = "|"), 
+    hygiene2, sib2, area2)
+@
+Regressors for number of grades placebo testing. \gobblepars 
+<<Regressors for NumGrades placebo, echo = F>>=
+regressorsNumGrades2002 <- 
+  c("^\\(Interce", indivage3, 
+    paste(hdedunoagHH3, spedunoagHH3, sep = "|"),
+    paste(yield, weather.variables1, "^prog", sep = "|"), 
+    hygiene3, sib3, area3)
+@
+Regressors for age of entry. \gobblepars
+<<Regressors for Entry, echo = F>>=
+regressorsEntry <- 
+  c("^\\(Interce", indivnoagesib2, yield, weather.variables1, 
+  hd2, hygiene2, sp2)
+print(regressorsEntry)
+@
+Regressors for entry age placebo testing. \gobblepars 
+<<Regressors for entry age placebo, echo = F>>=
+regressorsEntry2002 <- c("^\\(Interce", indivnoagesib3, 
+  paste(yield, weather.variables1, sep = "|"),
+  hd3, hygiene3, sp3, area3)
+@
+<<echo = F>>=
+@
+Regressors for gender subsample. \gobblepars 
+<<Regressors for gender subsample, echo = F>>=
+regressorsGender <- 
+#  c("^\\(Interce", indivnosexagesib2, paste(yield, weather.variables1, sep = "|"), 
+#  paste(hd2, sp2, sep = "|"), hygiene2, area2)
+  #sp2)
+# July 30  c("^\\(Interce", indivonlyage, paste(yield, weather.variables1, "^prog", sep = "|"), 
+# July 30  hygiene2, paste(hdeduonly2, sp2, sib2, sep = "|"), area2)
+  c("^\\(Interce", indivonlyage, paste(yield, weather.variables1, "^prog", sep = "|"), 
+    hygiene2, paste(hdeduonly2, sp2, sep = "|"), paste(sib2, area2, sep = "|"))
+regressorsGender2002 <- 
+ # July 30 c("^\\(Interce", #indivnosexagesib3, 
+ # July 30 indivonlyage, paste(yield, weather.variables1, sep = "|"), 
+ # July 30 hygiene3, paste(hdeduonly3, sp3, sib3, sep = "|"), area3)
+  #sp3)
+  c("^\\(Interce", indivonlyage, paste(yield, weather.variables1, "^prog", sep = "|"), 
+    hygiene3, paste(hdeduonly3, sp3, sep = "|"), paste(sib3, area3, sep = "|"))
+@
+Regressors for main with Edu1999. \gobblepars
+<<Regressors for main with Edu1999, echo = F>>=
+regressorsE <- 
+  c("^\\(Interce", indivagesib2, paste(yield, weather.variables1, sep = "|"), 
+    eduGroupwise2, 
+    hd2, hygiene2, sp2, area2)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsE, colnames(zEm.1999))}}}\\ Regressors for OLS. \gobblepars
+<<Regressors for OLS, echo = F>>=
+regressorsOLS <- 
+  c("^\\(Interce", indivageOLS, paste(yield, weather.variables1, sep = "|"), 
+  hdOLS, hygieneOLS, spOLS)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsOLS, colnames(zEm.1999))}}}\\ Regressors for non-muslim placebo tests. \gobblepars
+<<Regressors for non-muslim placebo tests, echo = F>>=
+regressorsN <- c("^\\(Interce", 
+  nonmuslims2, 
+  paste(indivagesib2, yieldweather, sep = "|"),
+  paste(hd2, sp2, sep = "|"), hygiene2, #sp2, 
+  area2)
+regressorsN <- c("^\\(Interce", 
+  paste(nonmuslims2, indivage2, sep = "|"),
+   paste(yield, weather.variables1, "^prog", sep = "|"), 
+  hygiene2, paste(hdeduonly2, sp2, sib2, sep = "|"), area2)
+regressorsN <- c("^\\(Interce", 
+  paste(nonmuslims2, indivage2, sep = "|"), 
+  paste(hdedunoagHH2, spedunoagHH2, sep = "|"),
+  paste(yield, weather.variables1, "^prog", sep = "|"), 
+  hygiene2, sib2, area2)
+regressorsN2002 <- c("^\\(Interce", 
+  paste(nonmuslims3, indivage3, sep = "|"),
+  paste(hdedunoagHH3, spedunoagHH3, sep = "|"),
+  paste(yield, weather.variables1, "^prog", sep = "|"), 
+  hygiene3, sib3, area3)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsN, colnames(zEm.1999))}}}\\ Regressors for flood. Flood affected thanas are \gobblepars
+<<flood thana>>=
+unique(zEm.1999[,.(flooded, thana)])
+@
+If we use flooded as a covariate, \Sexpr{unique(zEm.1999[flooded>0, thana])} will be dropped. So we will not be able to use thana dummies in flood regressions.\gobblepars
+<<Regressors for flood, echo = F>>=
+# area2 specification is dropped because of flooded dummy.
+regressorsF <- c("^\\(Interce", 
+  paste(indivyieldweather2, flood2, sep = "|"),
+  flood2.int,
+  paste(hd2, sp2, sep = "|"), hygiene2, area2)
+  #sp2)
+regressorsNF <- c("^\\(Interce", 
+  paste(indivyieldweather2, nonflood2, sep = "|"),
+  nonflood2.int,
+  paste(hd2, sp2, sep = "|"), hygiene2, area2)
+  #sp2)
+regressorsNF <- c("^\\(Interce", 
+   paste(nonflood2, nonflood2.int, indivage2, sep = "|"), 
+   paste(hdedunoagHH2, spedunoagHH2, sep = "|"),
+   paste(yield, weather.variables1, "^prog", sep = "|"), 
+   hygiene2, sib2, area2)
+regressorsNF2002 <- c("^\\(Interce", 
+   paste(nonflood3, nonflood3.int, indivage3, sep = "|"), 
+   paste(hdedunoagHH3, spedunoagHH3, sep = "|"),
+   paste(yield, weather.variables1, "^prog", sep = "|"), 
+   hygiene3, sib3, area3)
+regressorsF <- c("^\\(Interce", 
+   paste(flood2, flood2.int, indivage2, sep = "|"), 
+   paste(hdedunoagHH2, spedunoagHH2, sep = "|"),
+   paste(yield, weather.variables1, "^prog", sep = "|"), 
+   hygiene2, sib2, area2)
+regressorsF2002 <- c("^\\(Interce", 
+   paste(flood3, flood3.int, indivage3, sep = "|"), 
+   paste(hdedunoagHH3, spedunoagHH3, sep = "|"),
+   paste(yield, weather.variables1, "^prog", sep = "|"), 
+   hygiene3, sib3, area3)
+@
+\textcolor{darkgreen}{\textsf{\footnotesize \Sexpr{ShowCovariates(regressorsF, colnames(zEm.1999))}}}
+<<echo = F, eval = F>>=
+#  rp, dr: repetition/dropout will be dropped as it is a regressand
+regressands <- asc(strsplit("^dr|^sc|^re|^rp|^cm|^sd", "\\|"))
+regsnd <- rep("schoolp", length(regressors) + 1) #  +1: base
+clusterlevel <- "thana"
+@
