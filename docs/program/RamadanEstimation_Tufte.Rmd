@@ -32,6 +32,7 @@ link-citations: yes
 # path0 <- "c:/data/Ramadan/"; setwd(path <- paste0(path0, "submit2024/")); pathprogram <- paste0(path, "program/"); rmarkdown::render(paste0(pathprogram, "RamadanEstimation_Tufte.Rmd"))
 #### rmarkdown::render(paste0(path, "program/RamadanEstimation_Tufte.Rmd"), output_format = "pdf_document")
 #### Below are git bash commands.  ####
+#### To publish on github, make sure your html is under root/docs folder.
 #### cd c:/data/Ramadan/submit2024/
 #### git init
 #### git config --global user.name "SeiroIto"
@@ -40,16 +41,16 @@ link-citations: yes
 #### Close git once and start again. 
 #### Before running below, create .gitignore and place it in c:/data/Ramadan/submit2024/
 #### .gitignore has following lines
-####    /save/*.qs
-####    /save/*.rds
-####    /save/*.prn
-####    /save/Feb29/
-####    /progran/cache/
-#### git add c:/data/Ramadan/submit2024/program c:/data/Ramadan/submit2024/save   ## this adds files to track
-#### git add c:/data/Ramadan/submit2024/program   ## for most times, use this 
+####    /docs/save/*.qs
+####    /docs/save/*.rds
+####    /docs/save/*.prn
+####    /docs/save/Feb29/
+####    /docs/progran/cache/
+#### git add c:/data/Ramadan/submit2024/docs/program c:/data/Ramadan/submit2024/docs/save   ## this adds files to track
+#### git add c:/data/Ramadan/submit2024/docs/program   ## for most times, use this 
 #### Below may not be necessary if .gitignore works as intended. 
 #### Below tells git the files to untrack.
-#### git update-index --assume-unchanged c:/data/Ramadan/submit2024/save/*.qs
+#### git update-index --assume-unchanged c:/data/Ramadan/submit2024/docs/save/*.qs
 #### If wanting back to "being tracked":
 ####   git update-index --no-assume-unchanged filename
 ####   git rm --cached is “correct” when you want to be the only one who still has the file. 
