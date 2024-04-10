@@ -31,22 +31,33 @@ link-citations: yes
 #### c:\seiro\languages\R\R-4.2.1\bin\x64\Rscript.exe -e "path <- 'c:/data/Ramadan/program/'; rmarkdown::render('c:/data/Ramadan/program/RamadanEstimation_Tufte.Rmd')"
 # path0 <- "c:/data/Ramadan/"; setwd(path <- paste0(path0, "submit2024/")); pathprogram <- paste0(path, "program/"); rmarkdown::render(paste0(pathprogram, "RamadanEstimation_Tufte.Rmd"))
 #### rmarkdown::render(paste0(path, "program/RamadanEstimation_Tufte.Rmd"), output_format = "pdf_document")
+#### Below are git bash commands.  ####
 #### cd c:/data/Ramadan/submit2024/
 #### git init
 #### git config --global user.name "SeiroIto"
 #### git remote add origin https://github.com/SeiroIto/Ramadan.git  ## specify remote
-#### git add c:/data/Ramadan/submit2024/program c:/data/Ramadan/submit2024/save   ## this adds 
-#### git add c:/data/Ramadan/submit2024/program   ## for most times, use this 
 #### git branch -M main
+#### Close git once and start again. 
+#### Before running below, create .gitignore and place it in c:/data/Ramadan/submit2024/
+#### .gitignore has following lines
+####    /save/*.qs
+####    /save/*.rds
+####    /save/*.prn
+####    /save/Feb29/
+####    /progran/cache/
+#### git add c:/data/Ramadan/submit2024/program c:/data/Ramadan/submit2024/save   ## this adds files to track
+#### git add c:/data/Ramadan/submit2024/program   ## for most times, use this 
+#### Below may not be necessary if .gitignore works as intended. 
+#### Below tells git the files to untrack.
 #### git update-index --assume-unchanged c:/data/Ramadan/submit2024/save/*.qs
 #### If wanting back to "being tracked":
 ####   git update-index --no-assume-unchanged filename
 ####   git rm --cached is “correct” when you want to be the only one who still has the file. 
-#### git update-index --assume-unchanged c:/data/Ramadan/submit2024/save/Feb29
+#### git update-index --assume-unchanged c:/data/Ramadan/submit2024/save/Feb29/
 #### git update-index --assume-unchanged c:/data/Ramadan/submit2024/save/*.rds
 #### git update-index --assume-unchanged c:/data/Ramadan/submit2024/save/*.prn
-#### git commit -am "initial commit"
 #### git ls-tree -r main --name-only ## list all tracked files
+#### git commit -am "initial commit"
 #### git push -f origin main  ## push files to remote
 #### if error with push fatal: the remote end hung up unexpectedly, run below
 #### git config http.postBuffer 2000000000
