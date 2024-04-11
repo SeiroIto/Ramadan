@@ -29,7 +29,7 @@ header-includes:
 bibliography: c:/seiro/settings/Tex/seiro.bib
 link-citations: yes
 #### c:\seiro\languages\R\R-4.2.1\bin\x64\Rscript.exe -e "path <- 'c:/data/Ramadan/program/'; rmarkdown::render('c:/data/Ramadan/program/RamadanEstimation_Tufte.Rmd')"
-# path0 <- "c:/data/Ramadan/"; setwd(path <- paste0(path0, "submit2024/docs/")); pathprogram <- paste0(path, "program/"); rmarkdown::render(paste0(pathprogram, "RamadanEstimation_Tufte.Rmd"))
+# path0 <- "c:/data/Ramadan/"; setwd(path <- paste0(path0, "submit2024/")); pathprogram <- paste0(path, "program/"); rmarkdown::render(paste0(pathprogram, "RamadanEstimation_Tufte.Rmd"))
 #### rmarkdown::render(paste0(path, "program/RamadanEstimation_Tufte.Rmd"), output_format = "pdf_document")
 #### Below are git bash commands.  ####
 #### To publish on github, make sure your html is under root/docs folder.
@@ -41,13 +41,13 @@ link-citations: yes
 #### Close git once and start again. 
 #### Before running below, create .gitignore and place it in c:/data/Ramadan/submit2024/
 #### .gitignore has following lines
-####    /docs/save/*.qs
-####    /docs/save/*.rds
-####    /docs/save/*.prn
-####    /docs/save/Feb29/
-####    /docs/progran/cache/
-#### git add c:/data/Ramadan/submit2024/docs/program c:/data/Ramadan/submit2024/docs/save   ## this adds files to track
-#### git add c:/data/Ramadan/submit2024/docs/program   ## for most times, use this 
+####    /save/*.qs
+####    /save/*.rds
+####    /save/*.prn
+####    /save/Feb29/
+####    /progran/cache/
+#### git add c:/data/Ramadan/submit2024/program c:/data/Ramadan/submit2024/save   ## this adds files to track
+#### git add c:/data/Ramadan/submit2024/program   ## for most times, use this 
 #### Below may not be necessary if .gitignore works as intended. 
 #### Below tells git the files to untrack.
 #### git update-index --assume-unchanged c:/data/Ramadan/submit2024/docs/save/*.qs
@@ -114,7 +114,7 @@ library(rprojroot)
 #### Need to set project root
 setwd("c:/data/Ramadan/")
 getwd()
-here::i_am("Submit2024/docs/program/RamadanEstimation_Tufte.Rmd")
+here::i_am("Submit2024/program/RamadanEstimation_Tufte.Rmd")
 getwd()
 find_root_file("Workshop2024Mar26/code/EstimationCode/R", 
   "data_simulated_20230426.csv", criterion = has_file(".git/index"))
@@ -5357,6 +5357,7 @@ zEm.1999 <- qread("../save/zEm1999.qs")
 zEp.1999 <- qread("../save/zEp1999.qs")
 zEp.2002 <- qread("../save/zEp2002.qs")
 zEm.1999[, agHH0 :=  as.numeric(agHH0 > 0)]
+zEp.2002[, agHH0 :=  as.numeric(agHH0 > 0)]
 zEp.1999[, AgeIn1999 := Age[survey == 2002] - 3, by = uniquid]
 zEp.1999[, AgeIn2002 := Age[survey == 2002], by = uniquid]
 
@@ -5851,113 +5852,471 @@ qsave(DaysAbsent, "../save/DaysAbsent2024EnrollersGender.qs")
 qsave(DaysAbsentchg, "../save/DaysAbsentchg2024EnrollersGender.qs")
 ```
 
+```{r days absent of enrollers cross section, eval = F, results = 'hide', cache = F}
+library(clubSandwich)
+clusterlevel <- "thana"
+DivInto2Tables <- T
+SkipLowerBound <- 40
+zEm.1999 <- qread("../save/zEm1999.qs")
+samples <- c("main", "placebo")
+z23 <- c("z2", "z3")
+zsobj <- c("zmobjDays", "zpobjDays")
+zmobjDays <- c("zEm.1999", "zSm.1999")[1]
+zpobjDays <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[1]
+cohort.years.list <- list(# year age is defined
+  main = rep(1999, 2), 
+  placebo = c(rep(2002, 1), rep(1999, 1))
+  )
+cutout.years<- c(rep(2006, 1), rep(1999, 1), rep(2006, 1)) # year to drop in data, main = 2006, placebo 1999
+#### Used in "interaction with year InterYears" in results table
+InterYearsList <- list(main = rep(2002, 1), placebo = rep(c(2006, 2002), each = 2))
+regressors.list <- list(
+  main = regressorsM2024,
+  placebo = regressorsP2024
+)
+variables.always.use <- "^DaysAbsent$|^agHH$|^thana$|uniqu"
+yrXs <- c("yr2", "yr3")
+mix.reorder <- function(x, y=main.reorder.JHR) 
+  paste0(c(y[1], x, y[3], y[4]), collapse = "")
+sub.reorder <- function(x, z, y=main.reorder.JHR) 
+  paste0(c(y[1], gsub(x, z, y[2]), y[3], y[4]), collapse = "")
+reorder.list <- list(
+    main = main.reorder.JHR
+  , placebo = main.reorder.JHR
+)
+boxWidth <- 4
+centerWidth <- 1.3
+DaysAbsent <- DaysAbsentchg <- CIs <- NULL
+results <- resultsN <- vector("list", length = length(samples)) # ii
+ii <- jj <- rr <- yy <- m <- s <- ge <- 1
+j <- 2
+for (ii in 1:length(samples)) {
+  zSobj <- get(zsobj[ii])
+  # take away all .yr2$ and .*2 from regressorsS
+  regressorsS <-  regressors.list[[ii]]
+  regressorsS <- gsub("\\.yr.|\\.\\*yr[23]", "", regressorsS)
+  regressorsS <- gsub("\\.\\*[23]", "", regressorsS)
+  regressorsS <- gsub("\\$", "", regressorsS)
+  cohort.years <- cohort.years.list[[ii]]
+  cutout.year <- cutout.years[ii]
+  InterYears <- InterYearsList[[ii]]
+  var.always.use <- gsub("yr[23]", yrXs[ii], variables.always.use)
+  reorder <- reorder.list[[ii]]
+  sampleyears <- list(c(1999, 2002), c(2002, 2006))[[ii]]
+  regsnd <- rep("DaysAbsent", length(regressorsS))
+  # Use satterthwaite only.
+  est <- res <- vector("list", length = length(regressorsS)) # k, specification
+  res <- list(res, res, res, res) # m, agHH definition
+  names(res) <- aghh.defs
+  res <- list(boys = res, girls = res, "boys+girls" = res) # ge, gender
+  res <- list("extended" = res, "nuclear" = res, "exonly" = res) # j, nuclear, extended, extended only HHs
+  res <- list("LB10" = res, "LB11" = res, "LB12" = res) # s, age lowerbound
+  res <- list("1999" = res, "2002" = res) # yy, cross section year
+  res <- list("AtLeastOnce" = res, "BothPeriods" = res) # rr, sample by enrollment status
+  # res[[s]][[j]][[ge]][[m]][[k]] is same for each jj in zSobj: An element of results0[[jj]]
+  results0 <- vector("list", length = length(zSobj)) # jj, zE/zS sample selection
+  for (jj in 1) {
+    results0[[jj]] <- res
+    cat("\n\n")
+    print0(zSobj[jj])
+    cat("\n")
+    z01 <- changehyphen(get(zSobj[jj]))
+    # ss == 2: enrolled in 1999 and 2002. Number of grade progression?
+    z01[, ss := cumsum(schoolp), by = uniquid]
+    z01[, ss := ss[2], by = uniquid]
+    # Choose enrollment status: 1=at least once, 2=both rounds
+    for (rr in 1:2) {
+      # Choose year: 1=1999, 2=2002
+      for (yy in 1:2) {
+        z02 = copy(z01[survey == sampleyears[yy] & schoolp == 1 & ss>=rr & 
+          !is.na(sp.edulevel.primary) & !is.na(sp.edulevel.secondary) & !is.na(pcland), ])
+          z1 = copy(z02)
+          z1[, grepout("dummy[A-Z].*HH0?.yr.$", colnames(z1)) := NULL]
+    #       # keep UDOldSib, UDhdsex, UDnonmuslim, UDflooded as undemeaned levels
+    #       setnames(z1, 
+    #         grepout("UDOldSib|UDhds|UDnon|UDfl", colnames(z1)),
+    #         gsub("UD", "ud", grepout("UDOldSib|UDhds|UDnon|UDfl", colnames(z1))))
+    #       z1[, grepout("^UD", colnames(z1)) := NULL]
+    #       setnames(z1, 
+    #         grepout("^ud", colnames(z1)),
+    #         gsub("ud", "UD", grepout("^ud", colnames(z1))))
+          tabextend <- c("yes", "", "yes", "")
+          tabcohortdemeaned <- c("", "yes", "", "yes")
+          for (s in 1:3)
+          #  choice of age cutoff
+          {
+            s0 <- (10:12)[s]
+            if (ii == 2 & jj == 5) {
+              s0 <- 6
+              MaxAge <- 9
+            } else {
+              MaxAge <- 18
+            }
+            i <- paste0("older", s0)
+            # latter panel: 5 <= age < s0 in 1999/2002
+            iiid <- unique(z1[
+              s0 <= eval(parse(text = paste0("AgeIn", cohort.years[jj]))) & 
+              eval(parse(text = paste0("AgeIn", cohort.years[jj]))) <= MaxAge 
+              #maxAge
+              , uniquid])
+            # Keep only former complete panel and respective years.
+            z2 <- z1[uniquid %in% iiid & survey != cutout.year, ]
+            z2[, grepout("exist|In", colnames(z2)) := NULL]
+            z2 <- dropunbalanced(z2, returnDT = T)
+            # z3: nuclear family
+            z3 <- z2[sd == 1, ]
+            z3 <- dropunbalanced(z3, returnDT = T)
+            cat("\n\nage cutoff:", i, "\n\n")
+            print(table0(z1[, .(survey, agegroup = (uniquid %in% iiid))]))
+            cat("dimension of original z1:", dim(z1), "\n")
+            cat("dimension of z2 after keeping only", s0, "-", maxAge, "year olds:", 
+            dim(z1)[1], "==>", dim(z1[uniquid %in% iiid & survey != cutout.year, ])[1], "\n")
+            cat("dimension of z2 after keeping only balanced portion:", 
+            dim(z1[uniquid %in% iiid & survey != cutout.year, ])[1], "==>", dim(z2)[1], "\n")
+            cat("number of individuals in the panel:")
+            print(table(table(z2[, uniquid])))
+            cat("dimension of z3 after keeping only nuclear members:", dim(z3), "\n\n")
+            cat("first-diffference estimator\n")
+            for (j in 2) {
+              zz00 = copy(get(z23[j]))
+              for (ge in 1:3) {
+                if (ge == 1) {
+                  zz0 = copy(zz00[UDsex <= 0, ]) 
+                  zz0[, grepout("^sex", colnames(zz0)) := NULL]
+                } else  if (ge == 2){
+                  zz0 = copy(zz00[sex > 0, ])
+                  zz0[, grepout("^sex", colnames(zz0)) := NULL]
+                } else zz0 = copy(zz00)
+                if (nrow(zz0) < SkipLowerBound) {
+                  cat("Skipped due to small number of obs:", nrow(zz0), "\n")
+                  next
+                }
+                setkey(zz0, uniquid, survey)
+                zz0[, survey := NULL]
+                for (m in 1:length(aghh.defs)) {
+                  zz = copy(zz0)
+                  # Use a particular agHH definition.
+                  # change the name of current ag HH (agHH0, isagHH, ocagHH) to "agHH"
+                  setnames(zz, 
+                    grepout(aghh.defs[m], colnames(zz))
+                    ,
+                    gsub(aghh.defs[m], "agHH", grepout(aghh.defs[m], colnames(zz)))
+                  )
+                  # drop other ag HH definitions
+                  zz[, grepout(paste0(aghh.defs.regexpr[-m], collapse = "|"), colnames(zz)) := NULL]
+                  zz[, grepout(paste0("^", aghh.defs[-m], "$", collapse = "|"), colnames(zz)) := NULL]
+                  zz[, grepout(paste0("^UD", aghh.defs[-m], "$", collapse = "|"), colnames(zz)) := NULL]
+                  # Create X.agHH terms
+                  # add sex as covariate for UDTerms to have corresponding DemeanedTerms
+                  zz[, sex := UDsex - mean(UDsex)]
+                  # 1. Extract interaction terms
+                  yrXTerms <- grepout("\\.yr.$", colnames(zz))
+                  agIntTerms <- gsub("\\.yr.", "", grepout("\\.ag.*?\\.yr", yrXTerms))
+                  agIntHead <- gsub("\\.agHH", "", agIntTerms)
+                  UDagIntHead <- paste0("UD", agIntHead)
+                  UDagIntTerms <- paste0("UD", agIntTerms)
+                  # 2. Create UDagIntTerms (undemeaned interaction) UDX.agHH0 terms
+                  zz[, (UDagIntTerms) := NA]
+                  # agHH def is already demeaned
+                  zz[, agHH := as.integer(agHH>0)]
+                  for (v in 1:length(UDagIntTerms))
+                    set(zz, j = UDagIntTerms[v], value = zz[[UDagIntHead[v]]]*zz[["agHH"]])
+                  # 4. Create demeaned X terms
+                  # Restore demeaned terms to form demeaned interactions
+                  # (Also demean agHH def which is included in DemeanedTerms)
+                  for (v in 1:length(UDagIntHead))
+                    set(zz, j = agIntHead[v], 
+                      value = zz[[UDagIntHead[v]]]-mean(zz[[UDagIntHead[v]]]))
+                  # 4. Create agIntTerms (demeaned X.agHH terms)
+                  zz[, (agIntTerms) := NA]
+                  for (v in 1:length(agIntTerms))
+                    set(zz, j = agIntTerms[v], value = zz[[agIntHead[v]]]*zz[["agHH"]])
+                  # drop yrX terms
+                  zz[, grepout("\\.yr.$", colnames(zz)) := NULL]
+                  ns <- Rs <- NULL
+                  resul <- est <- vector("list", length = length(regressorsS))
+                  for (k in 1:length(regressorsS)) {
+                    if (s0 == 10 & j == 1 & m == 1) {
+                      cat(paste0("(", k, ")\n"))
+                      print0(paste0("+ ", 
+                        grepout(paste(regressorsS[k], sep = "", collapse = "|"), colnames(zz))))
+                    }
+                    regrsr <- paste(regressorsS[1:k], sep = "", collapse = "|")
+                    covariates <- grepout(
+                      paste(var.always.use, regrsr, sep = "|", collapse = "|")
+                      , colnames(zz))
+                    zr <- zz[, covariates, with = F]
+                    RHS <- covariates[!grepl("^uniquid$|^thana$|^DaysAbsent$|^UD", covariates)]
+                    form <- as.formula(paste0(regsnd[k], "~", paste(RHS, collapse = "+")))
+                    rsl <- lm(data=data.frame(zr), form)
+                    estres <- clubSandwich::coef_test(rsl, vcov = "CR2", 
+                      cluster = as.numeric(zr[, thana]), test = "Satterthwaite")
+                    estres <- as.data.frame(estres)
+                    estres <- estres[, -1]
+                    estci <- clubSandwich::conf_int(rsl, vcov = "CR2", level = 0.95, 
+                      test = "Satterthwaite", cluster = as.numeric(zr[, thana]), coefs = "All", p_values = T)
+                    estci <- as.data.frame(estci)
+                    colnames(estres)[c(1:2, 4:5)] <- c("Estimate", "Std. Error", "Satt. DoF", "Pr(>|t|)")
+                    estresLZ <- clx(rsl, cluster = matrix(as.numeric(zr[, thana])), 
+                      returnV = T, deviation = F)
+                    enrr <- zr[, .(MeanDaysAbsent = mean(DaysAbsent), Num = .N), by = agHH]
+                    resul[[k]] <- 
+                      list(est = summary(rsl)$coeff, estBRL = estres, ciBRL = estci,
+                        estLZ = estresLZ$est, ciLZ = estresLZ$ci,
+                        df = rsl$df.residual, reg = rsl, 
+                        R = summary(rsl)$adj.r, n = nrow(rsl$model),
+                        rate = enrr, level.data = zr)
+                    est[[k]] <- round(estres[, -3], 5)
+                    Rs <- c(Rs, summary(rsl)$adj.r)
+                    ns <- c(ns, nrow(rsl$model))
+                  }
+                  results0[[jj]][[yy]][[r]][[s]][[j]][[ge]][[m]] <- resul
+                  ciBRL <- lapply(resul, "[[", "ciBRL")
+                  ciBRL <- lapply(ciBRL, as.matrix)
+                  ciBRL <- lapply(ciBRL, function(x) as.data.table(x[, ]))
+                  ciBRL <- lapply(1:length(ciBRL), function(i) ciBRL[[i]][, reg := i])
+                  dfs <- lapply(resul, "[[", "df")
+                  ciBRL <- lapply(1:length(ciBRL), function(i) ciBRL[[i]][, df := dfs[[i]]])
+                  ciBRL <- lapply(1:length(ciBRL), function(i) ciBRL[[i]][, n := ns[i]])
+                  ciBRL <- lapply(1:length(ciBRL), function(i) ciBRL[[i]][, R2 := Rs[i]])
+                  ciBRL <- rbindlist(ciBRL, use.names = T, fill = T)
+                  ciBRL[, inference := "BRL"]
+                  setcolorder(ciBRL,  c("reg", "n", "df", "R2", "inference", "Coef", "beta", "SE", "p_val", "CI_L", "CI_U"))
+                  esp <- lapply(resul, "[[", "ciLZ")
+                  esp <- lapply(esp, as.matrix)
+                  esprn <- unlist(lapply(esp, rownames))
+                  esp <- lapply(esp, function(x) as.data.table(x[, ]))
+                  esp <- lapply(1:length(esp), function(i) esp[[i]][, reg := i])
+                  dfs <- lapply(resul, "[[", "df")
+                  esp <- lapply(1:length(esp), function(i) esp[[i]][, df := dfs[[i]]])
+                  esp <- lapply(1:length(esp), function(i) esp[[i]][, n := ns[i]])
+                  esp <- lapply(1:length(esp), function(i) esp[[i]][, R2 := Rs[i]])
+                  esp <- rbindlist(esp, use.names = T, fill = T)
+                  if (any(grepl("z value", colnames(esp)))) esp[, "z value" := NULL]
+                  estlz <- lapply(resul, "[[", "estLZ")
+                  estlz <- lapply(estlz, as.matrix)
+                  estrn <- unlist(lapply(estlz, rownames))
+                  estlz <- lapply(estlz, function(x) as.data.table(x[, ]))
+                  estlz <- rbindlist(estlz, use.names = T, fill = T)
+                  ciLZ <- cbind(Coef = estrn, estlz, esp)
+                  setnames(ciLZ,  c("Coef", "beta", "SE", "t", "p_val", "CI_L", "CI_U", "reg", "df", "n", "R2"))
+                  ciLZ[, t := NULL]
+                  ciLZ[, inference := "LZ"]
+                  cis <- rbindlist(list(ciBRL, ciLZ), use.names = T)
+                  cis[, data := zSobj[jj]]
+                  cis[, HHtype := c("all", "direct")[j]]
+                  cis[, agdef := aghh.defs[m]]
+                  cis[, agelb := s0]
+                  cis[, year := sampleyears[yy]]
+                  cis[, sample := c("contemporaneous", "all time")[rr]]
+                  cis[, gender := genderitems[ge]]
+                  CIs <- rbind(CIs, cis)
+                  enrr <- zr[, .(MeanDaysAbsent = mean(DaysAbsent), Num = .N), by = agHH]
+                  DaysAbsent <- rbind(DaysAbsent, 
+                    cbind(zSobj[jj], c("all", "nuclear")[j], 
+                      sampleyears[yy], c("contemporaneous", "all time")[rr],
+                      c("default", aghh.defs[-1])[m], 
+                      c("boys", "girls", "boys+girls")[ge],
+                      s0, enrr),
+                    use.names = F
+                  )
+                  # Save mean progression rate changes
+                  # x: agHH, y: nonagHH
+                  ttestE <- t.test(zr[agHH == 1L, DaysAbsent], zr[agHH == 0L, DaysAbsent])
+                  DaysAbsentchg <- rbind(DaysAbsentchg, 
+                    cbind(
+                        zSobj[jj], c("all", "nuclear")[j], 
+                        sampleyears[yy], c("contemporaneous", "all time")[rr],
+                        c("default", aghh.defs[-1])[m], 
+                        c("boys", "girls", "boys+girls")[ge],
+                        s0, round(-diff(unlist(ttestE["estimate"])), 3), # -diff = -(y - x) = AgHH - nonagHH
+                        t(as.numeric(unlist(lapply(ttestE[c("estimate", "conf.int", "p.value")], round, 4))))
+                        )
+                      )
+                }  # m: ag HH definitions
+              } # ge: gender
+            }  # j: z2 (incl. extended) or z3 (nuclear)
+          }  # s: upperbound age cutoffs (10, 15)
+      } # yy: 1999 or 2002
+    } # rr: 1 contemporanesou enroller or 2 all time enroller
+  }  # jj: zE / zS sample selection
+  results[[ii]] <- results0
+}  # ii: main / placebo samples
+#### results: Results under same obs with BRL (satterthwaith dof) information
+#### inference is not given unique level clnum. Each k spec has ciLZ and ciBRL.
+#### results[[ii]][[jj]][[rr]][[s]][[j]][[ge]][[m]][[k]]
+#### resultsN: Results under varying number of obs between specifications
+#### https://cran.r-project.org/web/packages/qs/vignettes/vignette.html
+setcolorder(CIs,  c("data", "sample", "year", "HHtype", "agdef", "agelb", "gender", "reg", "n", "df", "R2", "inference", 
+   "Coef", "beta", "SE", "p_val", "CI_L", "CI_U"))
+thesecols <- c("n", "df", "R2", "beta", "SE", "p_val", "CI_L", "CI_U")
+CIs[, (thesecols) := lapply(.SD, as.numeric), .SDcols = thesecols]
+thesecols <- colnames(CIs)[!colnames(CIs) %in% thesecols]
+CIs[, (thesecols) := lapply(.SD, as.factor), .SDcols = thesecols]
+library(qs)
+qsave(results, "../save/DID2024_DaysAbsentCrossSectionResults.qs")
+qsave(CIs, "../save/DID2024_DaysAbsentCrossSectionCIs.qs")
+
+CIs[grepl("Em", data) & grepl("4|5|7", reg) & grepl("^agH", Coef) & grepl("all", sample) & grepl(9, year) &
+  agelb == 10 & grepl("B", inference) & grepl("s.g", gender), ]
+
+DaysAbsent <- data.table(DaysAbsent)
+DaysAbsentchg <- data.table(DaysAbsentchg)
+setnames(DaysAbsentchg, c("data", "HHtype", "year", "sample", "agHHdef", 
+  "gender", "agelb", "AgNonag", "agHH", "nonagHH", "lb95", "ub95", "pvalue"))
+setnames(DaysAbsent, c("data", "HHtype", "year", "sample", "agHHdef", "gender", "agelb",
+   "agHH",  "rate", "Obs"))
+DaysAbsent[, gender := factor(gender, levels=genderitems)]
+DaysAbsent[, agHHdef := factor(agHHdef, levels=aghh.defs)]
+qsave(DaysAbsent, "../save/DaysAbsent2024CrossSection.qs")
+qsave(DaysAbsentchg, "../save/DaysAbsentchg2024CrossSection.qs")
+```
+
+
 ```{r tabulate grade absent by gender results, eval = F}
 #### GradeProgression: resultsGG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]], en = 1, 2
 #### DaysAbsent:          resultsDE[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
+#### inference is not given unique level clnum. Each k spec has ciLZ and ciBRL.
+#### results[[ii]][[jj]][[rr]][[s]][[j]][[ge]][[m]][[k]]
+#### DAbs cross section resultsDC[[ii]][[jj]][[rr]][[s]][[j]][[ge]][[m]][[k]], yy = 1, 2
 #### resultsGG <- qread("save/DID2024_NumGradesEnrollersGenderResults.qs")
 #### resultsDE <- qread("save/DID2024_DaysAbsentEnrollersGenderResults.qs")
+#### resultsDC <- qread("save/DID2024_DaysAbsentCrossSectionResults.qs")
 resultsGG <- qread("../save/DID2024_NumGradesEnrollersGenderResults.qs")
 resultsDE <- qread("../save/DID2024_DaysAbsentEnrollersGenderResults.qs")
-#### en: 1=initial enrollers of GG, 2=all time enrollers of GG, 3=all time enrollers of DE
+resultsDC <- qread("../save/DID2024_DaysAbsentCrossSectionResults.qs")
+#### en: 1=initial enrollers of GG, 2=all time enrollers of GG, 3=all time enrollers of DE, 4=cross section of DC
+ resultsGG <- qread("save/DID2024_NumGradesEnrollersGenderResults.qs")
+ resultsDE <- qread("save/DID2024_DaysAbsentEnrollersGenderResults.qs")
+ resultsDC <- qread("save/DID2024_DaysAbsentCrossSectionResults.qs")
 zsobj <- c("zmobj", "zpobj")
 zmobj <- "zEm.1999"
 zpobj <- c("zEp.2002", "zEp.1999")
 eGD <- NR <- Enr <- NULL
-for (gd in 1:3) {
+yylast <- c(1, 1, 1, 2)
+for (gd in 1:4) {
   for (ii in 1) {
     zSobj <- get(zsobj[[ii]])
     for (jj in 1:length(zSobj)) {
       thisdata <- zSobj[[jj]]
-      for (s in 1:3) {
-        for (j in 1:2) {
-          for (ge in 1:3) {
-            for (m in 1:4) {
-              for (clnum in 1:2) {
-                if (gd <= 2) 
-                  # 1: grades, sample of initial enrollers (enrolled in 1999)
-                  # 2: grades, sample of all time enrollers (enrolled in both periods)
-                  estGDs1 <- resultsGG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]] else 
-                  # days absent are estimated only with sample of all time enrollers
-                  estGDs1 <- resultsDE[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]]
-                estGDs <- lapply(estGDs1, "[[", "ci")
-                estGDs <- lapply(estGDs, data.table)
-                estGDs <- lapply(1:length(estGDs), function(i) estGDs[[i]][, reg := i])
-                estGDs <- rbindlist(estGDs)
-                # if clnum == 1, estGDs only contains CIs
-                if (clnum == 1) {
-                  esp <- lapply(estGDs1, "[[", "est")
-                  esp <- lapply(esp, as.matrix)
-                  esprn <- unlist(lapply(esp, rownames))
-                  esp <- lapply(esp, function(x) as.data.table(x[, ]))
-                  dfs <- lapply(lapply(estGDs1, "[[", "est"), function(x) attributes(x)$df)
-                  esp <- lapply(1:length(esp), function(i) esp[[i]][, df := dfs[[i]]])
-                  esp <- rbindlist(esp, use.names = T, fill = T)
-                  if (any(grepl("z value", colnames(esp)))) esp[, "z value" := NULL]
-                  estGDs <- cbind(Coef = esprn, esp, estGDs)
-                  setnames(estGDs,  c("Coef", "beta", "SE", "t", "p_val", "df", "CI_L", "CI_U", "reg"))
-                  estGDs[, t := NULL]
-                }
-                setcolorder(estGDs,  c("Coef", "beta", "SE", "df", "p_val", "CI_L", "CI_U", "reg"))
-                estGD <- estGDs
-                ####estGD[, file := c("grade", "absent", "grade enr", "grade initial enr", "absent enr")[gd]]
-                estGD[, file := c("grade initial enr", "grade enr", "absent enr")[gd]]
-                estGD[, agelb := (10:12)[s]]
-                estGD[, agdef := aghh.defs[m]]
-                estGD[, HHtype := c("all", "direct")[j]]
-                estGD[, inference := c("LZ", "BRL")[clnum]]
-                estGD[, gender := genderitems[ge]]
-                estGD[, data := thisdata]
-                eGD <- rbind(eGD, estGD)
-                # n and R2
-                nR <- lapply(lapply(estGDs1, "[[", "reg"), 
-                  function(x) t(c(length(summary(x)$res), summary(x)$r.sq)))
-                nR <- lapply(nR, data.table)
-                nR <- lapply(1:length(nR), function(i) nR[[i]][, reg := i])
-                nR <- rbindlist(nR)
-                # nR[, file := c("grade", "absent", "grade enr", "grade initial enr", "absent enr")[gd]]
-                nR[, file := c("grade initial enr", "grade enr", "absent enr")[gd]]
-                nR[, agelb := (10:12)[s]]
-                nR[, agdef := aghh.defs[m]]
-                nR[, HHtype := c("all", "direct")[j]]
-                nR[, gender := genderitems[ge]]
-                nR[, data := thisdata]
-                setnames(nR, paste0("V", 1:2), c("n", "R"))
-                nR[, n := formatC(n, digits = 0, format = "f")]
-                nR[, R := formatC(R, digits = 4, format = "f")]
-                # number of agHHs
-                nR2 <- unique(unlist(lapply(lapply(estGDs1, "[[", "diff.data"), 
-                  function(x) sum(x[, agHH]>0))))
-                nR[, Yes := formatC(nR2, digits = 0, format = "f")]
-                NR <- rbind(NR, nR, use.names = T, fill = T)
-                # treated and control means
-                zid <- lapply(estGDs1, "[[", "level.data")
-                zidd <- lapply(estGDs1, "[[", "diff.data")
-                zid <- lapply(1:length(zid), function(i) zid[[i]][uniquid %in% zidd[[i]][, uniquid], ])
-                zid <- lapply(zid, function(x) x[eval(parse(text=grepout("agHH$", colnames(x)))) > 0, 
-                          agHH := 1L])
-                zid <- lapply(zid, function(x) x[eval(parse(text=grepout("agHH$", colnames(x)))) <= 0, 
-                          agHH := 0L])
-                zid <- lapply(zid, function(x) x[, tee := 1:.N, by = uniquid])
-                if (gd %in% 1:2) 
-                  lapply(zid, function(x) setnames(x, "NumGrades", "LHS")) else
-                  lapply(zid, function(x) setnames(x, "DaysAbsent", "LHS"))
-                enr <- lapply(zid, function(x) x[, .(EnRate = mean(LHS), Num = .N), by = .(agHH, tee)])
-                enr <- lapply(1:length(enr), function(i) enr[[i]][, spec := i])
-                enr <- rbindlist(enr)
-                enr[, agelb := (10:12)[s]]
-                enr[, agdef := aghh.defs[m]]
-                enr[, HHtype := c("all", "direct")[j]]
-                enr[, gender := genderitems[ge]]
-                enr[, data := thisdata]
-                # enr[, file := c("grade", "absent", "grade enr", "grade initial enr", "absent enr")[gd]]
-                enr[, file := c("grade initial enr", "grade enr", "absent enr")[gd]]
-                enr <- unique(enr[, spec := NULL])
-                Enr <- rbind(Enr, enr)
-              } # clnum
-            } # m
-          } # ge
-        } # j
-      } # s
+      for (yy in 1:yylast[gd]) { # if gd == 4, do yy = 1, 2 else do yy = 1 only
+        for (s in 1:3) {
+          for (j in 1:2) {
+            for (ge in 1:3) {
+              for (m in 1:4) {
+                for (clnum in 1:2) {
+                  if (gd <= 2) 
+                    # 1: grades, sample of initial enrollers (enrolled in 1999)
+                    # 2: grades, sample of all time enrollers (enrolled in both periods)
+                    estGDs1 <- resultsGG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]] else 
+                    if (gd == 3)
+                    # days absent are estimated only with sample of all time enrollers
+                    estGDs1 <- resultsDE[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]] else
+                    # days absent are estimated only with sample of all time enrollers
+                    # only nuclear is estimated j = 2
+                    estGDs1 <- resultsDC[[ii]][[jj]][[yy]][[s]][[j]][[ge]][[m]]
+                  if (gd == 4) {
+                      if (j == 1) next
+                      if (clnum == 1) next
+                      estGDs <- lapply(estGDs1, "[[", "ciBRL")
+                    } else
+                    estGDs <- lapply(estGDs1, "[[", "ci")
+                  estGDs <- lapply(estGDs, data.table)
+                  estGDs <- lapply(1:length(estGDs), function(i) estGDs[[i]][, reg := i])
+                  estGDs <- rbindlist(estGDs)
+                  # if clnum == 1, estGDs only contains CIs
+                  if (clnum == 1) {
+                    if (gd < 4)
+                      esp <- lapply(estGDs1, "[[", "est") else
+                      esp <- lapply(estGDs1, "[[", "estLZ")
+                    esp <- lapply(esp, as.matrix)
+                    esprn <- unlist(lapply(esp, rownames))
+                    esp <- lapply(esp, function(x) as.data.table(x[, ]))
+                    dfs <- lapply(lapply(estGDs1, "[[", "est"), function(x) attributes(x)$df)
+                    esp <- lapply(1:length(esp), function(i) esp[[i]][, df := dfs[[i]]])
+                    esp <- rbindlist(esp, use.names = T, fill = T)
+                    if (any(grepl("z value", colnames(esp)))) esp[, "z value" := NULL]
+                    estGDs <- cbind(Coef = esprn, esp, estGDs)
+                    setnames(estGDs,  c("Coef", "beta", "SE", "t", "p_val", "df", "CI_L", "CI_U", "reg"))
+                    estGDs[, t := NULL]
+                  }
+                  setcolorder(estGDs,  c("Coef", "beta", "SE", "df", "p_val", "CI_L", "CI_U", "reg"))
+                  estGD <- estGDs
+                  ####estGD[, file := c("grade", "absent", "grade enr", "grade initial enr", "absent enr")[gd]]
+                  estGD[, file := c("grade initial enr", "grade enr", "absent enr", "absent cross sec")[gd]]
+                  estGD[, CrossSecYear := c(1999, 2002)[yy]]
+                  estGD[, agelb := (10:12)[s]]
+                  estGD[, agdef := aghh.defs[m]]
+                  estGD[, HHtype := c("all", "direct")[j]]
+                  estGD[, inference := c("LZ", "BRL")[clnum]]
+                  estGD[, gender := genderitems[ge]]
+                  estGD[, data := thisdata]
+                  eGD <- rbind(eGD, estGD, use.names = T)
+                  # n and R2
+                  nR <- lapply(lapply(estGDs1, "[[", "reg"), 
+                    function(x) t(c(length(summary(x)$res), summary(x)$r.sq)))
+                  nR <- lapply(nR, data.table)
+                  nR <- lapply(1:length(nR), function(i) nR[[i]][, reg := i])
+                  nR <- rbindlist(nR)
+                  # nR[, file := c("grade", "absent", "grade enr", "grade initial enr", "absent enr")[gd]]
+                  nR[, file := c("grade initial enr", "grade enr", "absent enr", "absent cross sec")[gd]]
+                  nR[, CrossSecYear := c(1999, 2002)[yy]]
+                  nR[, agelb := (10:12)[s]]
+                  nR[, agdef := aghh.defs[m]]
+                  nR[, HHtype := c("all", "direct")[j]]
+                  nR[, gender := genderitems[ge]]
+                  nR[, data := thisdata]
+                  setnames(nR, paste0("V", 1:2), c("n", "R"))
+                  nR[, n := formatC(n, digits = 0, format = "f")]
+                  nR[, R := formatC(R, digits = 4, format = "f")]
+                  # number of agHHs
+                  if (gd < 4) {
+                    nR2 <- unique(unlist(lapply(lapply(estGDs1, "[[", "diff.data"), 
+                      function(x) sum(x[, agHH]>0)))) 
+                  } else {
+                    nR2 <- unique(unlist(lapply(lapply(estGDs1, "[[", "level.data"), 
+                      function(x) sum(x[, agHH]>0)))) 
+                  }
+                  nR[, Yes := formatC(nR2, digits = 0, format = "f")]
+                  NR <- rbind(NR, nR, use.names = T, fill = T)
+                  # treated and control means
+                  if (gd < 4) {
+                    zid <- lapply(estGDs1, "[[", "level.data")
+                    zidd <- lapply(estGDs1, "[[", "diff.data")
+                    zid <- lapply(1:length(zid), function(i) zid[[i]][uniquid %in% zidd[[i]][, uniquid], ])
+                    zid <- lapply(zid, function(x) x[eval(parse(text=grepout("agHH$", colnames(x)))) > 0, 
+                              agHH := 1L])
+                    zid <- lapply(zid, function(x) x[eval(parse(text=grepout("agHH$", colnames(x)))) <= 0, 
+                              agHH := 0L])
+                    zid <- lapply(zid, function(x) x[, tee := 1:.N, by = uniquid])
+                    if (gd %in% 1:2) 
+                      lapply(zid, function(x) setnames(x, "NumGrades", "LHS")) else
+                      lapply(zid, function(x) setnames(x, "DaysAbsent", "LHS"))
+                    enr <- lapply(zid, function(x) x[, .(EnRate = mean(LHS), Num = .N), by = .(agHH, tee)])
+                  } else {
+                    zid <- lapply(estGDs1, "[[", "level.data")
+                    lapply(zid, function(x) setnames(x, "DaysAbsent", "LHS"))
+                    enr <- lapply(zid, function(x) x[, .(EnRate = mean(LHS), Num = .N), by = agHH])
+                    lapply(enr, function(x) x[, tee := yy])
+                  }
+                  enr <- lapply(1:length(enr), function(i) enr[[i]][, spec := i])
+                  enr <- rbindlist(enr)
+                  enr[, agelb := (10:12)[s]]
+                  enr[, agdef := aghh.defs[m]]
+                  enr[, HHtype := c("all", "direct")[j]]
+                  enr[, gender := genderitems[ge]]
+                  enr[, data := thisdata]
+                  # enr[, file := c("grade", "absent", "grade enr", "grade initial enr", "absent enr")[gd]]
+                  enr[, file := c("grade initial enr", "grade enr", "absent enr", "absent cross sec")[gd]]
+                  enr[, CrossSecYear := c(1999, 2002)[yy]]
+                  enr <- unique(enr[, spec := NULL])
+                  Enr <- rbind(Enr, enr, use.names = T)
+                } # clnum
+              } # m
+            } # ge
+          } # j
+        } # s
+      } # yy
     } # jj
   } # ii
 } # gd
@@ -5975,6 +6334,7 @@ eGD[, agdef := factor(agdef)]
 eGD[, gender := factor(gender, levels = genderitems)]
 eGD[, HHtype := factor(HHtype)]
 eGD[, file := factor(file)]
+eGD[, CrossSecYear := factor(CrossSecYear)]
 eGD[, reg := factor(reg)]
 eGD[, agelb := factor(agelb)]
 eGD[, agdef := factor(agdef)]
@@ -5983,6 +6343,7 @@ NR[, agdef := factor(agdef)]
 NR[, gender := factor(gender, levels = genderitems)]
 NR[, HHtype := factor(HHtype)]
 NR[, file := factor(file)]
+NR[, CrossSecYear := factor(CrossSecYear)]
 NR[, reg := factor(reg)]
 NR[, agelb := factor(agelb)]
 Enr[, data := factor(data)]
@@ -5990,6 +6351,7 @@ Enr[, agdef := factor(agdef)]
 Enr[, gender := factor(gender, levels = genderitems)]
 Enr[, HHtype := factor(HHtype)]
 Enr[, file := factor(file)]
+Enr[, CrossSecYear := factor(CrossSecYear)]
 Enr[, agelb := factor(agelb)]
 qsave(eGD, "../save/GenderGradeDaysAbsentTabulated2024.qs")
 qsave(NR, "../save/GenderGradeDaysAbsentTabulatedNR2024.qs")
@@ -6012,6 +6374,7 @@ resultsD <- qread("../save/DID2024_DaysAbsentEnrollersGenderResults.qs")
 ####resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 #### resultsG <- qread("save/DID2024_NumGradesEnrollersGenderResults.qs")
 #### resultsD <- qread("save/DID2024_DaysAbsentEnrollersGenderResults.qs")
+#### resultsC <- qread("save/DID2024_DaysAbsentCrossSectionResults.qs")
 #### NR <- qread("save/GenderGradeDaysAbsentTabulatedNR2024.qs")
 #### Enr <- qread("save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
 NR <- qread("../save/GenderGradeDaysAbsentTabulatedNR2024.qs")
@@ -6019,52 +6382,73 @@ Enr <- qread("../save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
 nR <- unique(NR[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ])
 enr0 <- Enr[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ]
 enr0[, EnRate := formatC(EnRate, digits = 4, format = "f")]
-ii <- jj <- en <- s <- m <- 1
+ii <- jj <- en <- s <- m <-  1
 j <- clnum <- 2
+
+
+21mann/4
+
+業者
+覚え書き
+リロケーションジャパン
+
+工事業者
+もりたにだいきん
+高橋さま
+080 2175 2834
+
+
+
+
 #### enrs <- c("initial", "all time", "others")[en]
+yylast <- c(1, 1, 1, 2)
 Tab <- NULL
-for (gd in 1:3) {
+for (gd in 1:4) {
   Tab0 <- NULL
-  for (ge in c(3, 1, 2)) {
-    if (gd < 3) 
-      cis0 <- lapply(resultsG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
-      cis0 <- lapply(resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
-    cis0 <- lapply(cis0, data.table)
-    cis <- lapply(cis0, function(x) x[, df := NULL])
-    cis <- lapply(cis, function(x) {
-     dm <- data.frame(x[, -1])
-     rownames(dm) <- as.character(unlist(x[, 1]))
-     dm
-     })
-    tab <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
-      UseHTML = T)
-    tab <- tab[grepl("^agHH.yr\\d|\\{agHH.yr\\d|Prog", rownames(tab)), ]
-    vs <- c("^agHH.yr\\d", "^Sti", "^NonS")
-    nums <- NULL
-    for (vv in vs) nums <- c(nums, grep(vv, rownames(tab))+0:2)
-    tab0 <- tab[nums, ]
-    rn <- rownames(tab0)
-    nr <- rbind(
-      formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
-        order(reg), R], digits = 4, format = "f")
-    , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
-        order(reg), Yes], digits = 0, format = "f")
-    , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
-        order(reg), n], digits = 0, format = "f")
-    )
-    enr <- matrix(
-     enr0[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
-       order(agHH, tee), EnRate], byrow = F, nrow = 4)
-    enr <- data.table(enr[, rep(1, 3)])
-    nr <- data.table(nr)
-    nr[2:3, c(1, 3) := ""]
-    enr[, c(1, 3) := ""]
-    tab2 <- rbindlist(list(tab0, rbind(nr, enr)), use.names = F)
-    Tab0 <- cbind(Tab0, tab2)
-  }
-  Tab0 <- rbind(t(matrix((gd-1)*9+1:ncol(Tab0))), Tab0, use.names = F) 
-  Tab <- rbind(Tab, Tab0)
-}
+  for (yy in 1) { # if gd == 4, do yy = 1, 2 else do yy = 1 only
+    for (ge in c(3, 1, 2)) {
+      if (gd < 3) 
+        cis0 <- lapply(resultsG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
+        if (gd == 3) 
+        cis0 <- lapply(resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
+        cis0 <- lapply(resultsDC[[ii]][[jj]][[yy]][[s]][[j]][[ge]][[m]], "[[", "ciBRL")
+      cis0 <- lapply(cis0, data.table)
+      cis <- lapply(cis0, function(x) x[, df := NULL])
+      cis <- lapply(cis, function(x) {
+       dm <- data.frame(x[, -1])
+       rownames(dm) <- as.character(unlist(x[, 1]))
+       dm
+       })
+      tab <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
+        UseHTML = T)
+      tab <- tab[grepl("^agHH.yr\\d|\\{agHH.yr\\d|Prog", rownames(tab)), ]
+      vs <- c("^agHH.yr\\d", "^Sti", "^NonS")
+      nums <- NULL
+      for (vv in vs) nums <- c(nums, grep(vv, rownames(tab))+0:2)
+      tab0 <- tab[nums, ]
+      rn <- rownames(tab0)
+      nr <- rbind(
+        formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
+          order(reg), R], digits = 4, format = "f")
+      , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
+          order(reg), Yes], digits = 0, format = "f")
+      , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
+          order(reg), n], digits = 0, format = "f")
+      )
+      enr <- matrix(
+       enr0[file == gdfiles[gd] & grepl(genderregexpr[ge], gender), ][
+         order(agHH, tee), EnRate], byrow = F, nrow = 4)
+      enr <- data.table(enr[, rep(1, 3)])
+      nr <- data.table(nr)
+      nr[2:3, c(1, 3) := ""]
+      enr[, c(1, 3) := ""]
+      tab2 <- rbindlist(list(tab0, rbind(nr, enr)), use.names = F)
+      Tab0 <- cbind(Tab0, tab2)
+    } # ge
+    Tab0 <- rbind(t(matrix((gd-1)*9+1:ncol(Tab0))), Tab0, use.names = F) 
+    Tab <- rbind(Tab, Tab0)
+  } # yy
+} # gd
 rn[grepl("^CI|^p", rn)] <- ""
 rn2 <- c("R2", "N: agHH", "N", 
   paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
@@ -6088,10 +6472,16 @@ kt <- row_spec(kt, 0:1, align = paste0(rep("c", ncol(Tab)), collapse = ""),
 kt <- row_spec(kt, rep(grep("^agHH.yr.$", Tab[, "variables"]), each = 3)+0:2, bold = T, 
   color = "black", background = "#87cefa")
 aghhrows <- grep("^agH", as.character(unlist(Tab[, 1])))
-kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999", aghhrows[1], aghhrows[2]-1)
-kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999 and 2002", aghhrows[2], aghhrows[3]-1)
-kt <- pack_rows(kt, group_label="Days absent: Enrolled in 1999 and 2002", aghhrows[3], grep("^Tha", Tab[, 1])-1)
-kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
+kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999", 
+  aghhrows[1], aghhrows[2]-1)
+kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999 and 2002", 
+  aghhrows[2], aghhrows[3]-1)
+kt <- pack_rows(kt, group_label="Days absent: Enrolled in 1999 and 2002", 
+  aghhrows[3], aghhrows[4]-1)
+kt <- pack_rows(kt, group_label="Days absent: Enrolled in 1999, cross section OLS", 
+  aghhrows[4], grep("^Tha", Tab[, 1])-1)
+kt <- pack_rows(kt, group_label="Common specifications", 
+  grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",

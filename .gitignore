@@ -1,6 +1,6 @@
 #### This is gitignore for Ramadan
-/docs/save/*.qs
-/docs/save/*.rds
-/docs/save/*.prn
-/docs/save/Feb29/
-/docs/progran/cache/
+/save/*.qs
+/save/*.rds
+/save/*.prn
+/save/Feb29/
+/progran/cache/

@@ -36,5 +36,5 @@ AgeGroup2 <- c("primary", "secondary", "college")
 placeboitems <- c("1999 cohort", "2002 cohort")
 
 ##### Other outcomes
-gdfiles <- c("grade initial enr", "grade enr", "absent enr")
+gdfiles <- c("grade initial enr", "grade enr", "absent enr", "absent cross sec")
 
