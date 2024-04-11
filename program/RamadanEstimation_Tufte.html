@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年04月09日 17:44</h4>
+<h4 class="date">2024年04月11日 16:36</h4>
 
 
 <div id="TOC">
@@ -353,6 +353,9 @@ if (window.hljs) {
 <ul>
 <li><a href="#estimating-equation">Estimating equation</a></li>
 <li><a href="#main-and-placebo-estimation">Main and placebo estimation</a></li>
+</ul></li>
+<li><a href="#results">Results</a>
+<ul>
 <li><a href="#main-estimation-results">Main estimation results</a></li>
 <li><a href="#age-group-wise-estimation-results">Age group wise estimation results</a></li>
 <li><a href="#placebo-estimation-results">Placebo estimation results</a></li>
@@ -377,8 +380,9 @@ if (window.hljs) {
   /* border: 1px solid yellow; */
   /* font-weight: bold; */
 }
+#### Default height of a block
 pre {
-  max-height: 950px;
+  max-height: 700px;
   overflow-y: auto;
 }
 pre[class] {
@@ -1764,15 +1768,32 @@ regressorsM2024Feb23 &lt;-
     paste(indivage2, yield, weather.variables1, prog, sep = &quot;|&quot;),
     paste(indivnoagesib2, hdedunoagHH2, spedunoagHH2, hygiene2, sep = &quot;|&quot;),
     area2)
+regressorsM2024Apr10 &lt;- 
+  c(&quot;^\\(Interce&quot;, 
+    paste(indivonlyage, yield, weather.variables1, OnlyStipendProg, area2, sep = &quot;|&quot;),
+    paste(indivnoagesib2, hdedunoagHH2, spedunoagHH2, hygiene2, sep = &quot;|&quot;))
 regressorsP2024Feb23 &lt;- 
   c(&quot;^\\(Interce&quot;, 
     paste(indivonlyage, yield, weather.variables1, StipendProg, sep = &quot;|&quot;),
     paste(indivnoagesib3, hdedunoagHH3, spedunoagHH3, hygiene3, sep = &quot;|&quot;),
     area3)
 regressorsP2024 &lt;- 
+regressorsP2024Feb24 &lt;- 
   c(&quot;^\\(Interce&quot;, 
     paste(indivonlyage, yield, weather.variables1, StipendProg, area3, sep = &quot;|&quot;),
+    paste(indivnoagesib3, hdedunoagHH3, spedunoagHH3, hygiene3, sep = &quot;|&quot;))
+regressorsP2024Apr10 &lt;- 
+  c(&quot;^\\(Interce&quot;, 
+    paste(indivonlyage, yield, weather.variables1, OnlyStipendProg, area3, sep = &quot;|&quot;),
     paste(indivnoagesib3, hdedunoagHH3, spedunoagHH3, hygiene3, sep = &quot;|&quot;))</code></pre>
+<p>Note that <code>NonStipendProgram</code> almost ceases to exist in 2002.</p>
+<ul>
+<li>The value of <code>NonStipendProgram</code> becomes 1 to 0 as time passes. This is only true for the recipients (111 for boys, 158 for girls) and will not pose multicollinearity.<br />
+</li>
+<li>So we can still use <code>StipendProgram</code> and <code>NonStipendProgram</code> separately in regressions.<br />
+</li>
+<li>This is not the case when we run cross section estimation for days absent later on.</li>
+</ul>
 <p>Specifications 2 and 3 in <code>regressorsM2024</code> (for main effects):</p>
 <ol start="2" style="list-style-type: decimal">
 <li>(highMeanY, lowMeanY, rainfallMeanY, yield, age2, StipendProgram, NonStipendProgram, dummyAailjhar.yr2, dummyChokoria.yr2, dummyHaziganj.yr2, dummyKalia.yr2, dummyModhupur.yr2, dummyMohadebpur.yr2, dummyNilphamarysadar.yr2, dummySherpursadar.yr2) <br><br> 3. (sex.yr2, pcland.yr2, pcnlasset.yr2, hd.edulevel.primary.yr2, hd.edulevel.secondary.yr2, sp.edulevel.primary.yr2, sp.edulevel.secondary.yr2, kutchalatrine.yr2, ownwater.yr2, OldSibF.yr2, OldSibM.yr2, sex.agHH0.yr2, pcland.agHH0.yr2, pcnlasset.agHH0.yr2, kutchalatrine.agHH0.yr2, ownwater.agHH0.yr2, OldSibF.agHH0.yr2, OldSibM.agHH0.yr2, sex.isagHH.yr2, pcland.isagHH.yr2, pcnlasset.isagHH.yr2, kutchalatrine.isagHH.yr2, ownwater.isagHH.yr2, OldSibF.isagHH.yr2, OldSibM.isagHH.yr2, sex.hdagHH.yr2, pcland.hdagHH.yr2, pcnlasset.hdagHH.yr2, kutchalatrine.hdagHH.yr2, ownwater.hdagHH.yr2, OldSibF.hdagHH.yr2, OldSibM.hdagHH.yr2, sex.ocagHH.yr2, pcland.ocagHH.yr2, pcnlasset.ocagHH.yr2, kutchalatrine.ocagHH.yr2, ownwater.ocagHH.yr2, OldSibF.ocagHH.yr2, OldSibM.ocagHH.yr2) <br><br></li>
@@ -1837,7 +1858,8 @@ k: specification</p>
 </li>
 <li>Use <code>DID2</code> with the first-differenced estimation data.</li>
 </ol>
-<pre class="r SeiroBenign"><code>#### Estimation by main/placebo * aghh.defs * age lb * gender * demeaned/level interaction * HHtype
+<pre class="r SeiroBenign"><code>#### Estimation by main/placebo * aghh.defs * age lb 
+####    * gender * demeaned/level interaction * HHtype
 #### with LiangZeger or Satterthwaite CRSEs.
 #### source(paste0(pathprogram, &quot;PartialFile.R&quot;))
 library(clubSandwich)
@@ -1852,13 +1874,15 @@ zEm.1999 &lt;- qread(&quot;../save/zEm1999.qs&quot;)
 zEm.1999[, agHH0 :=  as.integer(agHH0 &gt; 0)]
 ####zEm.1999[, FFWProgram := as.integer(grepl(&quot;FFW&quot;, anyprog))]
 #### In JHR paper, BRAC and Grameen members =&gt; program := 0
-#### Currently, !grepl(&quot;FFW|non-m&quot;, anyprog): BRAC and Grameen members =&gt; program := 1
+#### Currently, !grepl(&quot;FFW|non-m&quot;, anyprog): BRAC, Grameen members =&gt; program := 1
 #### To get JHR paper: 
 #### Comment out below (results in DID2024_MainResults_JHR.qs)
-#### zEm.1999[, NonFFWProgram := as.integer(!is.na(anyprog) &amp; !grepl(&quot;FFW|non-m&quot;, anyprog))]
+#### zEm.1999[, NonFFWProgram := 
+####  as.integer(!is.na(anyprog) &amp; !grepl(&quot;FFW|non-m&quot;, anyprog))]
 #### To get current version:
 #### Keeping the below line gives (results in DID2024_MainResults.qs)
-####zEm.1999[, NonFFWProgram := as.integer(!is.na(anyprog) &amp; !grepl(&quot;FFW|non-m|BRA|Gram&quot;, anyprog))]
+####zEm.1999[, NonFFWProgram := 
+####  as.integer(!is.na(anyprog) &amp; !grepl(&quot;FFW|non-m|BRA|Gram&quot;, anyprog))]
 #### non ag HHs have no siblings in agriculture...
 #### this is how we defined ag HHs.
 zEm.1999[survey==1999 &amp; age&gt;=10 &amp; age&lt;=18, 
@@ -6306,6 +6330,9 @@ Y
 </tfoot>
 </div>
 </div>
+</div>
+<div id="results" class="section level1">
+<h1>Results</h1>
 <div id="main-estimation-results" class="section level2">
 <h2>Main estimation results</h2>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; border-bottom: 0;">
@@ -12744,7 +12771,7 @@ mean of treated in 2002
 27
 </td>
 </tr>
-<tr grouplength="16">
+<tr grouplength="17">
 <td colspan="10" style="border-bottom: 1px solid;">
 <strong>Days absent: Enrolled in 1999 and 2002</strong>
 </td>
@@ -13197,6 +13224,357 @@ mean of treated in 2002
 </td>
 <td style="text-align:center;">
 3.0000
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+28
+</td>
+<td style="text-align:center;">
+29
+</td>
+<td style="text-align:center;">
+30
+</td>
+<td style="text-align:center;">
+31
+</td>
+<td style="text-align:center;">
+32
+</td>
+<td style="text-align:center;">
+33
+</td>
+<td style="text-align:center;">
+34
+</td>
+<td style="text-align:center;">
+35
+</td>
+<td style="text-align:center;">
+36
+</td>
+</tr>
+<tr grouplength="11">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Days absent: Enrolled in 1999 and 2002, cross section OLS of 1999</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+agHH
+</td>
+<td style="text-align:center;">
+0.008
+</td>
+<td style="text-align:center;">
+-0.201
+</td>
+<td style="text-align:center;">
+-0.190
+</td>
+<td style="text-align:center;">
+-0.187
+</td>
+<td style="text-align:center;">
+-0.155
+</td>
+<td style="text-align:center;">
+-0.391
+</td>
+<td style="text-align:center;">
+0.175
+</td>
+<td style="text-align:center;">
+-0.232
+</td>
+<td style="text-align:center;">
+-0.636
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+(98.1)
+</td>
+<td style="text-align:center;">
+(60.6)
+</td>
+<td style="text-align:center;">
+(59.1)
+</td>
+<td style="text-align:center;">
+(79.7)
+</td>
+<td style="text-align:center;">
+(83.6)
+</td>
+<td style="text-align:center;">
+(54.3)
+</td>
+<td style="text-align:center;">
+(38.0)
+</td>
+<td style="text-align:center;">
+(32.4)
+</td>
+<td style="text-align:center;">
+(5.5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+[-0.715, 0.730]
+</td>
+<td style="text-align:center;">
+[-1.112, 0.710]
+</td>
+<td style="text-align:center;">
+[-1.014, 0.635]
+</td>
+<td style="text-align:center;">
+[-1.900, 1.527]
+</td>
+<td style="text-align:center;">
+[-1.994, 1.684]
+</td>
+<td style="text-align:center;">
+[-1.966, 1.185]
+</td>
+<td style="text-align:center;">
+[-0.277, 0.627]
+</td>
+<td style="text-align:center;">
+[-0.761, 0.298]
+</td>
+<td style="text-align:center;">
+[-1.291, 0.019]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+StipendProgram
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.810
+</td>
+<td style="text-align:center;">
+-0.708
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.794
+</td>
+<td style="text-align:center;">
+-0.722
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.574
+</td>
+<td style="text-align:center;">
+-0.794
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(28.9)
+</td>
+<td style="text-align:center;">
+(30.6)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(19.5)
+</td>
+<td style="text-align:center;">
+(30.5)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(53.6)
+</td>
+<td style="text-align:center;">
+(33.5)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-2.503, 0.883]
+</td>
+<td style="text-align:center;">
+[-2.256, 0.840]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-2.145, 0.557]
+</td>
+<td style="text-align:center;">
+[-2.346, 0.902]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-2.714, 1.565]
+</td>
+<td style="text-align:center;">
+[-2.654, 1.066]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+R2
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.0444
+</td>
+<td style="text-align:center;">
+0.1748
+</td>
+<td style="text-align:center;">
+0.0010
+</td>
+<td style="text-align:center;">
+0.1056
+</td>
+<td style="text-align:center;">
+0.3321
+</td>
+<td style="text-align:center;">
+0.0012
+</td>
+<td style="text-align:center;">
+0.0773
+</td>
+<td style="text-align:center;">
+0.1996
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+N: agHH
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+144
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+56
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+88
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+263
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+107
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+156
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of control in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.4628
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.7308
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.2727
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.3697
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.7582
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.0784
 </td>
 <td style="text-align:center;">
 </td>

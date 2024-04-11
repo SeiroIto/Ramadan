@@ -40,6 +40,7 @@
 yield <- "^yield$"
 prog <- "^prog"
 StipendProg <- "dProgram"
+OnlyStipendProg <- "^StipendProgram"
 FFEProg <- "FFEProgram"
 FFWProg <- "FFWProgram"
   # clear, temperature, maxCloudCeiling, dew have strong correlations in 1999
