@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年04月15日 15:30</h4>
+<h4 class="date">2024年04月15日 16:42</h4>
 
 
 <div id="TOC">
@@ -394,12 +394,9 @@ pre[class] {
   background-color: inherit;
 }
 </style>
-<pre><code>## Warning: パッケージ &#39;knitr&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
-<pre><code>## Warning: パッケージ &#39;tufte&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
 <pre class="r SeiroBenign"><code>library(data.table)
-library(qs)</code></pre>
-<pre><code>qs 0.25.5</code></pre>
-<pre class="r SeiroBenign"><code>pathprogram &lt;- paste0(path, &quot;program/&quot;);  
+library(qs)
+pathprogram &lt;- paste0(path, &quot;program/&quot;);  
 pathprogram0 &lt;- paste0(path0, &quot;program/program/&quot;);  
 pathsource &lt;- paste0(path0, &quot;source/&quot;)
 pathsave &lt;- paste0(path, &quot;save/&quot;)
@@ -424,41 +421,6 @@ source(paste0(pathprogram, &quot;EstimatorFunctions.R&quot;))</code></pre>
 <h1>Read and format data</h1>
 <div id="define-samples" class="section level2">
 <h2>Define samples</h2>
-<pre><code> 要求されたパッケージ bit をロード中です </code></pre>
-<pre><code>Warning: パッケージ &#39;bit&#39; はバージョン 4.2.2 の R の下で造られました</code></pre>
-<pre><code>
- 次のパッケージを付け加えます: &#39;bit&#39; </code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:data.table&#39; からマスクされています:
-
-    setattr</code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
-
-    xor</code></pre>
-<pre><code>Attaching package bit64</code></pre>
-<pre><code>package:bit64 (c) 2011-2017 Jens Oehlschlaegel</code></pre>
-<pre><code>creators: integer64 runif64 seq :</code></pre>
-<pre><code>coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bitstring</code></pre>
-<pre><code>logical operator: ! &amp; | xor != == &lt; &lt;= &gt;= &gt;</code></pre>
-<pre><code>arithmetic operator: + - * / %/% %% ^</code></pre>
-<pre><code>math: sign abs sqrt log log2 log10</code></pre>
-<pre><code>math: floor ceiling trunc round</code></pre>
-<pre><code>querying: is.integer64 is.vector [is.atomic} [length] format print str</code></pre>
-<pre><code>values: is.na is.nan is.finite is.infinite</code></pre>
-<pre><code>aggregation: any all min max range sum prod</code></pre>
-<pre><code>cumulation: diff cummin cummax cumsum cumprod</code></pre>
-<pre><code>access: length&lt;- [ [&lt;- [[ [[&lt;-</code></pre>
-<pre><code>combine: c rep cbind rbind as.data.frame</code></pre>
-<pre><code>WARNING don&#39;t use as subscripts</code></pre>
-<pre><code>WARNING semantics differ from integer</code></pre>
-<pre><code>for more help type ?bit64</code></pre>
-<pre><code>
- 次のパッケージを付け加えます: &#39;bit64&#39; </code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:utils&#39; からマスクされています:
-
-    hashtab</code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
-
-    %in%, :, is.double, match, order, rank</code></pre>
 <pre class="SeiroLightGreen"><code>  [1] &quot;district&quot;                   &quot;thana&quot;                      &quot;survey&quot;                    
   [4] &quot;highMeanY&quot;                  &quot;lowMeanY&quot;                   &quot;rainfallMeanY&quot;             
   [7] &quot;regions&quot;                    &quot;i.district&quot;                 &quot;gps north&quot;                 
@@ -608,9 +570,6 @@ where <span class="math inline">\(\tilde{x}_{it}=x_{it}-\bar{x}_{i}\)</span>. Al
 </div>
 <div id="plain-did" class="section level2">
 <h2>Plain DID</h2>
-<pre><code>Registered S3 method overwritten by &#39;clubSandwich&#39;:
-  method    from    
-  bread.mlm sandwich</code></pre>
 <pre class="SeiroLightGreen"><code>[[1]]
        Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI p-value Sig.
  (Intercept)   0.4753 0.0254 5.57       0.4118      0.53875  &lt;0.001  ***
@@ -852,8 +811,6 @@ for (kk in c(&quot;t&quot;, &quot;Satterthwaite&quot;))
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = &quot;f&quot;)
     , &quot;]&quot;)</code></pre>
 </details>
-<pre><code>Warning in !is.null(rmarkdown::metadata$output) &amp;&amp; rmarkdown::metadata$output %in% : &#39;length(x) = 2
-&gt; 1&#39; in coercion to &#39;logical(1)&#39;</code></pre>
 <table style="NAborder-bottom: 0; margin-left: auto; margin-right: auto; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;" class="table lightable-classic">
 <caption>Differences between agricultural and non-agricultural households in main data (ref:SDiffTable)</caption>
 
@@ -11747,30 +11704,9 @@ Y
 </div>
 <div id="other-schooling-outcomes-grade-progression-and-days-absent-per-month" class="section level2">
 <h2>Other schooling outcomes: Grade progression and days absent per month</h2>
-<pre><code>Warning in `[.data.table`(z1, , `:=`(grepout(&quot;dummy[A-Z].*HH0?.yr.$&quot;, colnames(z1)), :
-length(LHS)==0; no columns to delete or assign RHS to.</code></pre>
-<pre><code> 要求されたパッケージ sandwich をロード中です </code></pre>
-<pre><code> 要求されたパッケージ lmtest をロード中です </code></pre>
-<pre><code> 要求されたパッケージ zoo をロード中です </code></pre>
-<pre><code>Warning: パッケージ &#39;zoo&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
-<pre><code>
- 次のパッケージを付け加えます: &#39;zoo&#39; </code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
-
-    as.Date, as.Date.numeric</code></pre>
-<pre><code>Warning in `[.data.table`(z1, , `:=`(grepout(&quot;dummy[A-Z].*HH0?.yr.$&quot;, colnames(z1)), :
-length(LHS)==0; no columns to delete or assign RHS to.
-
-Warning in `[.data.table`(z1, , `:=`(grepout(&quot;dummy[A-Z].*HH0?.yr.$&quot;, colnames(z1)), :
-length(LHS)==0; no columns to delete or assign RHS to.
-
-Warning in `[.data.table`(z1, , `:=`(grepout(&quot;dummy[A-Z].*HH0?.yr.$&quot;, colnames(z1)), :
-length(LHS)==0; no columns to delete or assign RHS to.</code></pre>
-<pre><code>Warning in as.data.table.list(x, keep.rownames = keep.rownames, check.names = check.names, : Item 2
-has 85 rows but longest item has 92; recycled with remainder.</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; border-bottom: 0;">
 <p><!--
-<caption>--><span class="marginnote shownote">Other outcome impacts: Year 1999-2002, 10-18 years old, direct offspring, Satterthwaite correction</span><!--</caption>--></p>
+<caption>--><span class="marginnote shownote">Other outcome impacts: 10-18 years old, direct offspring, Satterthwaite correction</span><!--</caption>--></p>
 <table class="table table-condensed" style="width: auto !important; ">
 
 
@@ -11828,133 +11764,133 @@ raw DID
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;background-color: #ffcc99 !important;text-align: cccccccccc;">
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-1
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-2
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-3
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-4
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-5
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-6
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-7
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-8
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccccccc;">
-9
-</td>
-</tr>
-<tr grouplength="17">
+<tr grouplength="18">
 <td colspan="10" style="border-bottom: 1px solid;">
 <strong>Grade progression: Enrolled in 1999</strong>
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+8
+</td>
+<td style="text-align:center;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 agHH.yr2
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.355
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.385
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.391
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.586
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.558
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.514
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.125
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.256
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.292
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (2.0)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (3.2)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (4.5)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (7.8)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (15.8)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (21.9)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (65.3)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (37.0)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (32.4)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.634, -0.077]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.723, -0.046]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.770, -0.011]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.260, 0.089]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.415, 0.300]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.449, 0.422]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.772, 0.522]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.906, 0.395]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.957, 0.374]
 </td>
 </tr>
@@ -12316,8 +12252,13 @@ mean of treated in 2002
 <td style="text-align:center;">
 </td>
 </tr>
+<tr grouplength="18">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Grade progression: Enrolled in 1999 and 2002</strong>
+</td>
+</tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
 10
@@ -12347,102 +12288,97 @@ mean of treated in 2002
 18
 </td>
 </tr>
-<tr grouplength="17">
-<td colspan="10" style="border-bottom: 1px solid;">
-<strong>Grade progression: Enrolled in 1999 and 2002</strong>
-</td>
-</tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 agHH.yr2
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.122
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.171
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.213
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.196
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.121
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.017
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.102
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.158
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.175
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (30.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (26.9)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (7.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (52.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (72.6)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (96.8)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (64.2)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (50.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (61.0)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.386, 0.143]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.518, 0.175]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.457, 0.031]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.913, 0.521]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.961, 0.720]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.092, 1.057]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.614, 0.409]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.706, 0.390]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.973, 0.623]
 </td>
 </tr>
@@ -12804,8 +12740,13 @@ mean of treated in 2002
 <td style="text-align:center;">
 </td>
 </tr>
+<tr grouplength="18">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Days absent: Enrolled in 1999 and 2002</strong>
+</td>
+</tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
 19
@@ -12835,102 +12776,97 @@ mean of treated in 2002
 27
 </td>
 </tr>
-<tr grouplength="17">
-<td colspan="10" style="border-bottom: 1px solid;">
-<strong>Days absent: Enrolled in 1999 and 2002</strong>
-</td>
-</tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 agHH.yr2
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.957
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 1.360
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 1.242
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 1.821
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 2.465
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 3.219
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.330
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.901
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.808
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (5.2)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (0.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (1.0)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (5.2)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (0.6)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (0.3)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (43.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (4.1)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (23.2)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.009, 1.922]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [0.538, 2.183]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [0.419, 2.066]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.022, 3.663]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [1.067, 3.863]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [1.786, 4.651]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.639, 1.300]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [0.052, 1.751]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.679, 2.295]
 </td>
 </tr>
@@ -13292,8 +13228,13 @@ mean of treated in 2002
 <td style="text-align:center;">
 </td>
 </tr>
+<tr grouplength="13">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Days absent: Enrolled in 1999 and 2002, cross section OLS of 1999</strong>
+</td>
+</tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
 28
@@ -13323,102 +13264,97 @@ mean of treated in 2002
 36
 </td>
 </tr>
-<tr grouplength="40">
-<td colspan="10" style="border-bottom: 1px solid;">
-<strong>Days absent: Enrolled in 1999 and 2002, cross section OLS of 1999</strong>
-</td>
-</tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 agHH
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.008
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.201
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.190
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.187
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.155
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.391
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.175
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.232
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.636
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (98.1)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (60.6)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (59.1)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (79.7)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (83.6)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (54.3)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (38.0)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (32.4)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (5.5)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.715, 0.730]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.112, 0.710]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.014, 0.635]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.900, 1.527]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.994, 1.684]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.966, 1.185]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.277, 0.627]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.761, 0.298]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.291, 0.019]
 </td>
 </tr>
@@ -13509,6 +13445,7 @@ StipendProgram
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+R2
 </td>
 <td style="text-align:center;">
 0.0000
@@ -13540,7 +13477,7 @@ StipendProgram
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-agHH
+N: agHH
 </td>
 <td style="text-align:center;">
 </td>
@@ -13566,6 +13503,7 @@ agHH
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+N
 </td>
 <td style="text-align:center;">
 </td>
@@ -13591,6 +13529,7 @@ agHH
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of control in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -13616,7 +13555,7 @@ agHH
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-StipendProgram
+mean of treated in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -13640,8 +13579,13 @@ StipendProgram
 <td style="text-align:center;">
 </td>
 </tr>
+<tr grouplength="12">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Grade progression: Placebo estimation of 2002 cohort</strong>
+</td>
+</tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
 1
@@ -13672,103 +13616,102 @@ StipendProgram
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+agHH.yr3
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.237
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.173
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.169
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.225
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.197
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.205
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.245
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.147
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.157
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-R2
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (8.4)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (9.8)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (25.8)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (21.0)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (23.6)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (41.5)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (17.2)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (24.6)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (36.4)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-N: agHH
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.517, 0.042]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.389, 0.043]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.499, 0.161]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.615, 0.165]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.563, 0.170]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.787, 0.377]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.630, 0.139]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.424, 0.130]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.545, 0.231]
 </td>
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-N
+R2
 </td>
 <td style="text-align:center;">
 0.0157
@@ -13800,7 +13743,7 @@ N
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 1999
+N: agHH
 </td>
 <td style="text-align:center;">
 </td>
@@ -13826,7 +13769,7 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 1999
+N
 </td>
 <td style="text-align:center;">
 </td>
@@ -13852,6 +13795,7 @@ mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of control in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -13873,87 +13817,93 @@ mean of treated in 1999
 5.2043
 </td>
 <td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
-agHH.yr3
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-5.2025
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-5.2000
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-5.2043
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.2883
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.2000
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.3548
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.2883
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.2000
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.3548
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
 </td>
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-R2
+mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+5.2025
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+5.2000
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+5.2043
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of control in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+7.2883
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+7.2000
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+7.3548
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+7.2883
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+7.2000
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+7.3548
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="11">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Grade progression: Placebo estimation of 1999 cohort</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
 10
@@ -13984,104 +13934,102 @@ R2
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-N: agHH
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+agHH.yr3
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.146
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.173
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.204
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.256
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.286
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.364
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.046
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.048
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.076
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-N
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (27.4)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (17.7)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (24.6)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (13.1)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (15.1)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (32.0)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (72.9)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (72.4)
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (61.9)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2002
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.440, 0.149]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.452, 0.105]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.593, 0.186]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.615, 0.103]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.718, 0.145]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-1.221, 0.493]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.359, 0.267]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.373, 0.276]
 </td>
-<td style="text-align:center;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.441, 0.288]
 </td>
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+R2
 </td>
 <td style="text-align:center;">
 0.0026
@@ -14113,7 +14061,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2006
+N: agHH
 </td>
 <td style="text-align:center;">
 </td>
@@ -14139,7 +14087,7 @@ mean of control in 2006
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2006
+N
 </td>
 <td style="text-align:center;">
 </td>
@@ -14165,231 +14113,28 @@ mean of treated in 2006
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.0504
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.1176
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.0000
-</td>
-<td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
-agHH.yr3
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-5.0504
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-5.1176
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-5.0000
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.4202
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.3137
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.5000
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.4202
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.3137
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-7.5000
-</td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-R2
-</td>
-<td style="text-align:center;">
-1
-</td>
-<td style="text-align:center;">
-2
-</td>
-<td style="text-align:center;">
-3
-</td>
-<td style="text-align:center;">
-4
-</td>
-<td style="text-align:center;">
-5
-</td>
-<td style="text-align:center;">
-6
-</td>
-<td style="text-align:center;">
-7
-</td>
-<td style="text-align:center;">
-8
-</td>
-<td style="text-align:center;">
-9
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-N: agHH
-</td>
-<td style="text-align:center;">
--0.355
-</td>
-<td style="text-align:center;">
--0.385
-</td>
-<td style="text-align:center;">
--0.391
-</td>
-<td style="text-align:center;">
--0.586
-</td>
-<td style="text-align:center;">
--0.558
-</td>
-<td style="text-align:center;">
--0.514
-</td>
-<td style="text-align:center;">
--0.125
-</td>
-<td style="text-align:center;">
--0.256
-</td>
-<td style="text-align:center;">
--0.292
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-N
-</td>
-<td style="text-align:center;">
-(2.0)
-</td>
-<td style="text-align:center;">
-(3.2)
-</td>
-<td style="text-align:center;">
-(4.5)
-</td>
-<td style="text-align:center;">
-(7.8)
-</td>
-<td style="text-align:center;">
-(15.8)
-</td>
-<td style="text-align:center;">
-(21.9)
-</td>
-<td style="text-align:center;">
-(65.3)
-</td>
-<td style="text-align:center;">
-(37.0)
-</td>
-<td style="text-align:center;">
-(32.4)
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of control in 2002
 </td>
 <td style="text-align:center;">
-[-0.634, -0.077]
 </td>
 <td style="text-align:center;">
-[-0.723, -0.046]
+5.0504
 </td>
 <td style="text-align:center;">
-[-0.770, -0.011]
 </td>
 <td style="text-align:center;">
-[-1.260, 0.089]
 </td>
 <td style="text-align:center;">
-[-1.415, 0.300]
+5.1176
 </td>
 <td style="text-align:center;">
-[-1.449, 0.422]
 </td>
 <td style="text-align:center;">
-[-0.772, 0.522]
 </td>
 <td style="text-align:center;">
-[-0.906, 0.395]
+5.0000
 </td>
 <td style="text-align:center;">
-[-0.957, 0.374]
 </td>
 </tr>
 <tr>
@@ -14399,26 +14144,23 @@ mean of treated in 2002
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-1.003
-</td>
-<td style="text-align:center;">
-1.053
+5.0504
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
--0.280
 </td>
 <td style="text-align:center;">
--0.521
+5.1176
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-1.345
 </td>
 <td style="text-align:center;">
-1.403
+5.0000
+</td>
+<td style="text-align:center;">
 </td>
 </tr>
 <tr>
@@ -14428,26 +14170,23 @@ mean of control in 2006
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-(0.1)
-</td>
-<td style="text-align:center;">
-(0.1)
+7.4202
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-(61.8)
 </td>
 <td style="text-align:center;">
-(36.3)
+7.3137
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-(0.2)
 </td>
 <td style="text-align:center;">
-(0.0)
+7.5000
+</td>
+<td style="text-align:center;">
 </td>
 </tr>
 <tr>
@@ -14457,26 +14196,23 @@ mean of treated in 2006
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-[0.573, 1.433]
-</td>
-<td style="text-align:center;">
-[0.616, 1.491]
+7.4202
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-[-1.868, 1.309]
 </td>
 <td style="text-align:center;">
-[-1.994, 0.952]
+7.3137
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-[0.698, 1.991]
 </td>
 <td style="text-align:center;">
-[0.977, 1.829]
+7.5000
+</td>
+<td style="text-align:center;">
 </td>
 </tr>
 <tr grouplength="2">

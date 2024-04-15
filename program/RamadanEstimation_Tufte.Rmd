@@ -4838,7 +4838,7 @@ kt
 
 ## Other schooling outcomes: Grade progression and days absent per month
 
-```{r num grades impacts by enrollers and by gender, eval = T, results = 'hide', cache = F}
+```{r num grades impacts by enrollers and by gender, eval = F, results = 'hide', cache = F}
 library(clubSandwich)
 source("TabGeneric.R")
 DivInto2Tables <- T
@@ -6202,7 +6202,7 @@ qsave(DaysAbsentchg, "../save/DaysAbsentchg2024CrossSection.qs")
 ```
 
 
-```{r tabulate grade absent by gender results, eval = T}
+```{r tabulate grade absent by gender results, eval = F}
 #### GradeProgression: resultsGG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]], en = 1, 2
 #### DaysAbsent:          resultsDE[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 #### inference is not given unique level clnum. Each k spec has ciLZ and ciBRL.
