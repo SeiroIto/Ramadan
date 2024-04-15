@@ -4838,8 +4838,9 @@ kt
 
 ## Other schooling outcomes: Grade progression and days absent per month
 
-```{r num grades impacts by enrollers and by gender, eval = F, results = 'hide', cache = F}
+```{r num grades impacts by enrollers and by gender, eval = T, results = 'hide', cache = F}
 library(clubSandwich)
+source("TabGeneric.R")
 DivInto2Tables <- T
 clusterlevel <- "thana"
 regressors.list <- list(
@@ -4858,10 +4859,25 @@ zEp.1999[, NonStipendProgram := NonFFEProgram[!is.na(NonFFEProgram)][1], by = un
 zEp.2002[, StipendProgram := FFEProgram[!is.na(FFEProgram)][1], by = uniquid]
 zEp.2002[, NonStipendProgram := NonFFEProgram[!is.na(NonFFEProgram)][1], by = uniquid]
 
-samples <- "main"
+#### Educa07 (grade level in numbers, 1, 2,... ) is a variable created by referring to class07.
+#### Corresponding variable in 1999-2002 is NumGrades
+zEp.2002[survey==2006, NumGrades := Educa07]
+zEp.2002[, dNumGrades := diff(NumGrades), by = uniquid]
+zEp.2002[survey==2002, dNumGrades := NA]
+#### Certain variations are found in grade progression
+addmargins(table0(zEp.2002[Age >= 10 & Age <= 18 & survey==2006, .(Age, dNumGrades)]))
+addmargins(table0(zEp.2002[Age >= 10 & Age <= 18, .(survey, NumGrades)]))
+#### Correct negative grade progression: 
+####  2002=reads in class 5, 2006=completes class 4=> 0 grade progression,
+####  but this case is computed as -1 year of grade progression
+zEp.2002[uniquid %in% uniquid[dNumGrades<0], NumGrades := NumGrades[1], by = uniquid]
+zEp.2002[, dNumGrades := NULL]
+
+samples <- c("main", "placebo")
 z234 <- c("z2", "z3", "z4")
-zsobj <- "zmobjOther"
-zmobjOther <- "zEm.1999"
+zsobj <- c("zmobj", "zpobj")
+zmobj <- "zEm.1999"
+zpobj <- "zEp.2002"
 cohort.years.list <- list(# year age is defined
   main = rep(1999, 1), # main: use 1999 age to set age range
   placebo = c(rep(2002, 1), rep(1999, 1))
@@ -5373,20 +5389,13 @@ qsave(NumGradeschg, "../save/NumGradeschg2024EnrollersGender.qs")
 
 ```{r days absent of enrollers by gender impacts, eval = F, results = 'hide', cache = F}
 library(clubSandwich)
+source("TabGeneric.R")
 clusterlevel <- "thana"
 DivInto2Tables <- T
 zEm.1999 <- qread("../save/zEm1999.qs")
-zEp.1999 <- qread("../save/zEp1999.qs")
-zEp.2002 <- qread("../save/zEp2002.qs")
 zEm.1999[, agHH0 :=  as.numeric(agHH0 > 0)]
-zEp.2002[, agHH0 :=  as.numeric(agHH0 > 0)]
-zEp.1999[, AgeIn1999 := Age[survey == 2002] - 3, by = uniquid]
-zEp.1999[, AgeIn2002 := Age[survey == 2002], by = uniquid]
-
-zEp.1999[, StipendProgram := FFEProgram[!is.na(FFEProgram)][1], by = uniquid]
-zEp.1999[, NonStipendProgram := NonFFEProgram[!is.na(NonFFEProgram)][1], by = uniquid]
-zEp.2002[, StipendProgram := FFEProgram[!is.na(FFEProgram)][1], by = uniquid]
-zEp.2002[, NonStipendProgram := NonFFEProgram[!is.na(NonFFEProgram)][1], by = uniquid]
+#### DaysAbsent is created in Create2RoundPanel.rnw
+#### There is no equivalent information in 2007 data.
 samples <- "main"
 z23 <- c("z2", "z3")
 zsobj <- c("zmobjDays", "zpobjDays")
@@ -5401,7 +5410,7 @@ cutout.years<- c(rep(2006, 1), rep(1999, 1), rep(2006, 1)) # year to drop in dat
 InterYearsList <- list(main = rep(2002, 1), placebo = rep(c(2006, 2002), each = 2))
 regressors.list <- list(
   main = regressorsM2024,
-  placebo = regressorsM2002
+  placebo = regressorsP2024
 )
 variables.always.use <- "^DaysAbsent$|^agHH.yr2|^agHH$|^thana$|uniqu"
 yrXs <- c("yr2", "yr3")
@@ -5417,8 +5426,8 @@ boxWidth <- 4
 centerWidth <- 1.3
 DaysAbsent <- DaysAbsentchg <- NULL
 results <- resultsN <- vector("list", length = length(samples)) # ii
-for (ii in 1:length(samples)) {
-####for (ii in 1) {
+####for (ii in 1:length(samples)) {
+for (ii in 1) {
   zSobj <- get(zsobj[ii])
   regressorsS <-  regressors.list[[ii]]
   cohort.years <- cohort.years.list[[ii]]
@@ -5876,6 +5885,7 @@ qsave(DaysAbsentchg, "../save/DaysAbsentchg2024EnrollersGender.qs")
 
 ```{r days absent of enrollers cross section, eval = F, results = 'hide', cache = F}
 library(clubSandwich)
+source("TabGeneric.R")
 clusterlevel <- "thana"
 DivInto2Tables <- T
 SkipLowerBound <- 40
@@ -6192,7 +6202,7 @@ qsave(DaysAbsentchg, "../save/DaysAbsentchg2024CrossSection.qs")
 ```
 
 
-```{r tabulate grade absent by gender results, eval = F}
+```{r tabulate grade absent by gender results, eval = T}
 #### GradeProgression: resultsGG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]], en = 1, 2
 #### DaysAbsent:          resultsDE[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 #### inference is not given unique level clnum. Each k spec has ciLZ and ciBRL.
@@ -6415,66 +6425,79 @@ j <- clnum <- rr <- 2
 #### rr=2: Enrolled in both peirods
 rylast <- c(1, 1, 1, 2)
 Tab <- NULL
-for (gd in 1:4) {
-  Tab0 <- NULL
-  for (yy in 1) { # if gd == 4, do yy = 1, 2 else do yy = 1 only
-    for (ge in c(3, 1, 2)) {
-      if (gd < 3) 
-        cis0 <- lapply(resultsG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
-        if (gd == 3) 
-        cis0 <- lapply(resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
-        cis0 <- lapply(resultsC[[ii]][[jj]][[yy]][[rr]][[s]][[j]][[ge]][[m]], "[[", "ciBRL")
-      cis0 <- lapply(cis0, data.table)
-      cis <- lapply(cis0, function(x) x[, df := NULL])
-      cis <- lapply(cis, function(x) {
-       dm <- data.frame(x[, -1])
-       rownames(dm) <- as.character(unlist(x[, 1]))
-       dm
-       })
-      tab <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
-        UseHTML = T)
-      tab <- tab[grepl("^agHH.yr\\d|\\{agHH.yr\\d|^agHH$|\\{agHH\\}|Prog", rownames(tab)), ]
-      vs <- c("^agHH", "^Sti", "^NonS")
-      nums <- NULL
-      for (vv in vs) nums <- c(nums, grep(vv, rownames(tab))+0:2)
-      tab0 <- tab[nums, ]
-      if (gd < 4) rn <- rownames(tab0)
-      if (gd == 4) nR <- nR0[CrossSecEnrollers == c("AtLeastOnce", "BothPeriods")[rr], ] else nR <- nR0
-      nr <- rbind(
-        formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
-          CrossSecYear == c(1999, 2002)[yy], ][
-          order(reg), R], digits = 4, format = "f")
-      , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
-          CrossSecYear == c(1999, 2002)[yy], ][
-          order(reg), Yes], digits = 0, format = "f")
-      , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
-          CrossSecYear == c(1999, 2002)[yy], ][
-          order(reg), n], digits = 0, format = "f")
-      )
-      if (gd < 4) enronumrows <- 4 else enronumrows <- 2
-      enr <- matrix(
-       enr0[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
-          CrossSecYear == c(1999, 2002)[yy], ][
-         order(agHH, tee), EnRate], byrow = F, nrow = enronumrows)
-      enr <- data.table(enr[, rep(1, 3)])
-      nr <- data.table(nr)
-      nr[2:3, c(1, 3) := ""]
-      enr[, c(1, 3) := ""]
-      tab2 <- rbindlist(list(tab0, rbind(nr, enr)), use.names = F)
-      Tab0 <- cbind(Tab0, tab2)
-    } # ge
-    Tab0 <- rbind(t(matrix((gd-1)*9+1:ncol(Tab0))), Tab0, use.names = F) 
-    Tab <- rbind(Tab, Tab0)
-  } # yy
-} # gd
-rn[grepl("^CI|^p", rn)] <- ""
-rn2 <- c("R2", "N: agHH", "N", 
+for (ii in 1:2) {
+  for (gd in 1:4) {
+    #gd 1: NumGrade 1999 enrollers, 2: NumGrade complete panel enrollers, 
+    #    3: DaysAbsent 1999 enrollers, 4: DaysAbsent 1999 cross sectional OLS
+    Tab0 <- NULL
+    # Placebo is estimated only for NumGrades. No DaysAbsent data collected in 2006.
+    if (gd > 2 & ii == 2) next
+    for (yy in 1) { # if gd == 4, do yy = 1, 2 else do yy = 1 only
+      for (ge in c(3, 1, 2)) {
+        if (gd < 3) 
+          cis0 <- lapply(resultsG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
+          if (gd == 3) 
+          cis0 <- lapply(resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
+          cis0 <- lapply(resultsC[[ii]][[jj]][[yy]][[rr]][[s]][[j]][[ge]][[m]], "[[", "ciBRL")
+        cis0 <- lapply(cis0, data.table)
+        cis <- lapply(cis0, function(x) x[, df := NULL])
+        cis <- lapply(cis, function(x) {
+         dm <- data.frame(x[, -1])
+         rownames(dm) <- as.character(unlist(x[, 1]))
+         dm
+         })
+        tab <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
+          UseHTML = T)
+        tab <- tab[grepl("^agHH.yr\\d|\\{agHH.yr\\d|^agHH$|\\{agHH\\}|Prog", rownames(tab)), ]
+        vs <- c("^agHH", "^Sti", "^NonS")
+        nums <- NULL
+        for (vv in vs) nums <- c(nums, grep(vv, rownames(tab))+0:2)
+        tab0 <- tab[nums, ]
+        rn <- rownames(tab0)
+        rn[grepl("^CI|^p", rn)] <- ""
+        assign(paste0("rn", gd, ii),  rn)
+        if (gd == 4) nR <- nR0[CrossSecEnrollers == c("AtLeastOnce", "BothPeriods")[rr], ] else nR <- nR0
+        nr <- rbind(
+          formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
+            CrossSecYear == c(1999, 2002)[yy], ][
+            order(reg), R], digits = 4, format = "f")
+        , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
+            CrossSecYear == c(1999, 2002)[yy], ][
+            order(reg), Yes], digits = 0, format = "f")
+        , formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
+            CrossSecYear == c(1999, 2002)[yy], ][
+            order(reg), n], digits = 0, format = "f")
+        )
+        if (gd < 4) enronumrows <- 4 else enronumrows <- 2
+        enr <- matrix(
+         enr0[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
+            CrossSecYear == c(1999, 2002)[yy], ][
+           order(agHH, tee), EnRate], byrow = F, nrow = enronumrows)
+        enr <- data.table(enr[, rep(1, 3)])
+        nr <- data.table(nr)
+        nr[2:3, c(1, 3) := ""]
+        enr[, c(1, 3) := ""]
+        tab2 <- rbindlist(list(tab0, rbind(nr, enr)), use.names = F)
+        Tab0 <- cbind(Tab0, tab2)
+      } # ge
+      Tab0 <- rbind(t(matrix((gd-1)*9+1:ncol(Tab0))), Tab0, use.names = F) 
+      Tab <- rbind(Tab, Tab0)
+    } # yy
+  } # gd
+} # ii
+r2n1 <- c("R2", "N: agHH", "N", 
   paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
-rnm <- rep(c(" ", rn, rn2), 3)
-Tab <- as.matrix(cbind(covariates = c(rnm, 
-    c("", "agHH", "", "", "StipendProgram", "", "", 
-      "R2", "N: agHH", "N", paste0("mean of ", c("control in ", "treated in "), 1999)
-    ))
+r2n2 <- c("R2", "N: agHH", "N", 
+  paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(2002, 2006), each = 2)))
+r2ncross <- c("R2", "N: agHH", "N", paste0("mean of ", c("control in ", "treated in "), 1999))
+rnm11 <- c(" ", rn11, r2n1)
+rnm12 <- c(" ", rn12, r2n2)
+rnm21 <- c(" ", rn21, r2n1)
+rnm22 <- c(" ", rn22, r2n2)
+rnm31 <- c(" ", rn31, r2n1)
+rnm41 <- c(" ", rn41, r2ncross)
+Tab <- as.matrix(cbind(covariates = 
+  c(rnm11, rnm21, rnm31, rnm41, rnm12, rnm22)
   , Tab))
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
@@ -6484,24 +6507,28 @@ colnames(Tab) <- c("variables", rep(c("raw DID", "+covariates+Thana trends", "+H
 bgcolor <- "#ffcc99"
 kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")),
   row.names = F, caption = 
-  "Other outcome impacts: Year 1999-2002, 10-18 years old, direct offspring, Satterthwaite correction")
+  "Other outcome impacts: 10-18 years old, direct offspring, Satterthwaite correction")
 kt <- add_header_above(kt, c(" " = 1, "boys+girls" = 3, "boys" = 3, "girls" = 3),
   background = bgcolor)
 kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T, 
   bootstrap_options = c("condensed"))
-kt <- row_spec(kt, 0:1, align = paste0(rep("c", ncol(Tab)), collapse = ""), 
+kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)), collapse = ""), 
   background = bgcolor)
-kt <- row_spec(kt, rep(grep("^agHH.yr.$", Tab[, "variables"]), each = 3)+0:2, bold = T, 
-  color = "black", background = "#87cefa")
 aghhrows <- grep("^agH", as.character(unlist(Tab[, 1])))
+kt <- row_spec(kt, rep(aghhrows, each = 3)+0:2, 
+  color = "black", background = "#87cefa")
 kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999", 
-  aghhrows[1], aghhrows[2]-1)
+  aghhrows[1]-1, aghhrows[2]-1)
 kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999 and 2002", 
-  aghhrows[2], aghhrows[3]-1)
+  aghhrows[2]-1, aghhrows[3]-1)
 kt <- pack_rows(kt, group_label="Days absent: Enrolled in 1999 and 2002", 
-  aghhrows[3], aghhrows[4]-1)
+  aghhrows[3]-1, aghhrows[4]-1)
 kt <- pack_rows(kt, group_label="Days absent: Enrolled in 1999 and 2002, cross section OLS of 1999", 
-  aghhrows[4], grep("^Tha", Tab[, 1])-1)
+  aghhrows[4]-1, aghhrows[5]-1)
+kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 2002 cohort", 
+  aghhrows[5]-1, aghhrows[6]-1)
+kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 1999 cohort", 
+  aghhrows[6]-1, grep("^Tha", Tab[, 1])-1)
 kt <- pack_rows(kt, group_label="Common specifications", 
   grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
