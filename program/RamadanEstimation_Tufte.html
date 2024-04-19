@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年04月18日 20:48</h4>
+<h4 class="date">2024年04月19日 17:43</h4>
 
 
 <div id="TOC">
@@ -394,12 +394,9 @@ pre[class] {
   background-color: inherit;
 }
 </style>
-<pre><code>## Warning: パッケージ &#39;knitr&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
-<pre><code>## Warning: パッケージ &#39;tufte&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
 <pre class="r SeiroBenign"><code>library(data.table)
-library(qs)</code></pre>
-<pre><code>qs 0.25.5</code></pre>
-<pre class="r SeiroBenign"><code>pathprogram &lt;- paste0(path, &quot;program/&quot;);  
+library(qs)
+pathprogram &lt;- paste0(path, &quot;program/&quot;);  
 pathprogram0 &lt;- paste0(path0, &quot;program/program/&quot;);  
 pathsource &lt;- paste0(path0, &quot;source/&quot;)
 pathsave &lt;- paste0(path, &quot;save/&quot;)
@@ -424,41 +421,6 @@ source(paste0(pathprogram, &quot;EstimatorFunctions.R&quot;))</code></pre>
 <h1>Read and format data</h1>
 <div id="define-samples" class="section level2">
 <h2>Define samples</h2>
-<pre><code> 要求されたパッケージ bit をロード中です </code></pre>
-<pre><code>Warning: パッケージ &#39;bit&#39; はバージョン 4.2.2 の R の下で造られました</code></pre>
-<pre><code>
- 次のパッケージを付け加えます: &#39;bit&#39; </code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:data.table&#39; からマスクされています:
-
-    setattr</code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
-
-    xor</code></pre>
-<pre><code>Attaching package bit64</code></pre>
-<pre><code>package:bit64 (c) 2011-2017 Jens Oehlschlaegel</code></pre>
-<pre><code>creators: integer64 runif64 seq :</code></pre>
-<pre><code>coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bitstring</code></pre>
-<pre><code>logical operator: ! &amp; | xor != == &lt; &lt;= &gt;= &gt;</code></pre>
-<pre><code>arithmetic operator: + - * / %/% %% ^</code></pre>
-<pre><code>math: sign abs sqrt log log2 log10</code></pre>
-<pre><code>math: floor ceiling trunc round</code></pre>
-<pre><code>querying: is.integer64 is.vector [is.atomic} [length] format print str</code></pre>
-<pre><code>values: is.na is.nan is.finite is.infinite</code></pre>
-<pre><code>aggregation: any all min max range sum prod</code></pre>
-<pre><code>cumulation: diff cummin cummax cumsum cumprod</code></pre>
-<pre><code>access: length&lt;- [ [&lt;- [[ [[&lt;-</code></pre>
-<pre><code>combine: c rep cbind rbind as.data.frame</code></pre>
-<pre><code>WARNING don&#39;t use as subscripts</code></pre>
-<pre><code>WARNING semantics differ from integer</code></pre>
-<pre><code>for more help type ?bit64</code></pre>
-<pre><code>
- 次のパッケージを付け加えます: &#39;bit64&#39; </code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:utils&#39; からマスクされています:
-
-    hashtab</code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
-
-    %in%, :, is.double, match, order, rank</code></pre>
 <pre class="SeiroLightGreen"><code>  [1] &quot;district&quot;                   &quot;thana&quot;                      &quot;survey&quot;                    
   [4] &quot;highMeanY&quot;                  &quot;lowMeanY&quot;                   &quot;rainfallMeanY&quot;             
   [7] &quot;regions&quot;                    &quot;i.district&quot;                 &quot;gps north&quot;                 
@@ -608,9 +570,6 @@ where <span class="math inline">\(\tilde{x}_{it}=x_{it}-\bar{x}_{i}\)</span>. Al
 </div>
 <div id="plain-did" class="section level2">
 <h2>Plain DID</h2>
-<pre><code>Registered S3 method overwritten by &#39;clubSandwich&#39;:
-  method    from    
-  bread.mlm sandwich</code></pre>
 <pre class="SeiroLightGreen"><code>[[1]]
        Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI p-value Sig.
  (Intercept)   0.4753 0.0254 5.57       0.4118      0.53875  &lt;0.001  ***
@@ -852,8 +811,6 @@ for (kk in c(&quot;t&quot;, &quot;Satterthwaite&quot;))
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = &quot;f&quot;)
     , &quot;]&quot;)</code></pre>
 </details>
-<pre><code>Warning in !is.null(rmarkdown::metadata$output) &amp;&amp; rmarkdown::metadata$output %in% : &#39;length(x) = 2
-&gt; 1&#39; in coercion to &#39;logical(1)&#39;</code></pre>
 <table style="NAborder-bottom: 0; margin-left: auto; margin-right: auto; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;" class="table lightable-classic">
 <caption>Differences between agricultural and non-agricultural households in main data (ref:SDiffTable)</caption>
 
@@ -11817,7 +11774,7 @@ raw DID
 <tbody>
 <tr grouplength="18">
 <td colspan="10" style="border-bottom: 1px solid;">
-<strong>Grade progression: Enrolled in 1999</strong>
+<strong>Grade progression: Students enrolled in 1999</strong>
 </td>
 </tr>
 <tr>
@@ -12305,7 +12262,7 @@ mean of treated in 2002
 </tr>
 <tr grouplength="18">
 <td colspan="10" style="border-bottom: 1px solid;">
-<strong>Grade progression: Enrolled in 1999 and 2002</strong>
+<strong>Grade progression: Students enrolled in 1999 and 2002</strong>
 </td>
 </tr>
 <tr>
@@ -12793,7 +12750,7 @@ mean of treated in 2002
 </tr>
 <tr grouplength="18">
 <td colspan="10" style="border-bottom: 1px solid;">
-<strong>Days absent: Enrolled in 1999 and 2002</strong>
+<strong>Days absent: Students enrolled in 1999 and 2002</strong>
 </td>
 </tr>
 <tr>
@@ -13281,7 +13238,7 @@ mean of treated in 2002
 </tr>
 <tr grouplength="13">
 <td colspan="10" style="border-bottom: 1px solid;">
-<strong>Days absent: Enrolled in 1999 and 2002, cross section OLS of 1999</strong>
+<strong>Days absent: Students enrolled in 1999 and 2002, cross section OLS of 2000</strong>
 </td>
 </tr>
 <tr>
@@ -13585,32 +13542,6 @@ mean of control in 1999
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-3.4628
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-3.7308
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-3.2727
-</td>
-<td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 1999
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
 3.3697
 </td>
 <td style="text-align:center;">
@@ -13630,40 +13561,417 @@ mean of treated in 1999
 <td style="text-align:center;">
 </td>
 </tr>
-<tr grouplength="12">
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.3773
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.5714
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.2538
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="13">
 <td colspan="10" style="border-bottom: 1px solid;">
-<strong>Grade progression: Placebo estimation of 2002 cohort</strong>
+<strong>Days absent: Students enrolled in 1999 and 2002, cross section OLS of 2003</strong>
 </td>
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
-1
+37
 </td>
 <td style="text-align:center;">
-2
+38
 </td>
 <td style="text-align:center;">
-3
+39
 </td>
 <td style="text-align:center;">
-4
+40
 </td>
 <td style="text-align:center;">
-5
+41
 </td>
 <td style="text-align:center;">
-6
+42
 </td>
 <td style="text-align:center;">
-7
+43
 </td>
 <td style="text-align:center;">
-8
+44
 </td>
 <td style="text-align:center;">
-9
+45
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+agHH
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.964
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+1.182
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+1.059
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+1.634
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+1.966
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+2.604
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.506
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.737
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.363
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(1.1)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(1.5)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(4.4)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(1.8)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(9.5)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(3.7)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(16.8)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(2.5)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(52.9)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[0.310, 1.618]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[0.328, 2.035]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[0.040, 2.078]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[0.396, 2.872]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.494, 4.426]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[0.238, 4.970]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.283, 1.294]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[0.133, 1.341]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.968, 1.694]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+StipendProgram
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.680
+</td>
+<td style="text-align:center;">
+-1.136
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-2.483
+</td>
+<td style="text-align:center;">
+-3.381
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.906
+</td>
+<td style="text-align:center;">
+-0.708
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(24.8)
+</td>
+<td style="text-align:center;">
+(17.1)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(8.8)
+</td>
+<td style="text-align:center;">
+(16.0)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(28.5)
+</td>
+<td style="text-align:center;">
+(41.6)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-1.972, 0.611]
+</td>
+<td style="text-align:center;">
+[-2.961, 0.689]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-5.945, 0.979]
+</td>
+<td style="text-align:center;">
+[-9.285, 2.522]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-2.845, 1.032]
+</td>
+<td style="text-align:center;">
+[-2.683, 1.266]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+R2
+</td>
+<td style="text-align:center;">
+0.0194
+</td>
+<td style="text-align:center;">
+0.0788
+</td>
+<td style="text-align:center;">
+0.1685
+</td>
+<td style="text-align:center;">
+0.0485
+</td>
+<td style="text-align:center;">
+0.1516
+</td>
+<td style="text-align:center;">
+0.3628
+</td>
+<td style="text-align:center;">
+0.0059
+</td>
+<td style="text-align:center;">
+0.0612
+</td>
+<td style="text-align:center;">
+0.1647
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+N: agHH
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+144
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+56
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+88
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+263
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+107
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+156
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+2.7857
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+2.5000
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.0000
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.7500
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.1339
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.5057
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="12">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Grade progression: Placebo estimation of 2002 cohort enrolled in 2002</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 4em;" indentlevel="2">
+</td>
+<td style="text-align:center;">
+46
+</td>
+<td style="text-align:center;">
+47
+</td>
+<td style="text-align:center;">
+48
+</td>
+<td style="text-align:center;">
+49
+</td>
+<td style="text-align:center;">
+50
+</td>
+<td style="text-align:center;">
+51
+</td>
+<td style="text-align:center;">
+52
+</td>
+<td style="text-align:center;">
+53
+</td>
+<td style="text-align:center;">
+54
 </td>
 </tr>
 <tr>
@@ -13950,38 +14258,38 @@ mean of treated in 2006
 </tr>
 <tr grouplength="11">
 <td colspan="10" style="border-bottom: 1px solid;">
-<strong>Grade progression: Placebo estimation of 1999 cohort</strong>
+<strong>Grade progression: Placebo estimation of 1999 cohort enrolled in 2002</strong>
 </td>
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
-10
+55
 </td>
 <td style="text-align:center;">
-11
+56
 </td>
 <td style="text-align:center;">
-12
+57
 </td>
 <td style="text-align:center;">
-13
+58
 </td>
 <td style="text-align:center;">
-14
+59
 </td>
 <td style="text-align:center;">
-15
+60
 </td>
 <td style="text-align:center;">
-16
+61
 </td>
 <td style="text-align:center;">
-17
+62
 </td>
 <td style="text-align:center;">
-18
+63
 </td>
 </tr>
 <tr>
@@ -14364,7 +14672,13 @@ Y
 </li>
 <li>Stipend and non-stipend programs help reduce the absence for 4-6 days per month among boys, but not among girls.<br />
 </li>
-<li>Placebo estimation using 2002 cohort shows children from agricultural households tend to progress more slowly by 0.04, 0.06 year per annum (0.51, 0.69 months), which are roughly half in size of delayed progression than the 1999 impacts, although the <span class="math inline">\(p\)</span> values are not small.</li>
+<li>Cross sectional estimates in 2003 (using enrollers of 1999 and 2002) show a monthly 1.0 - 1.2 day increase for children of agricultural households. This reflects that the survey asks days absent of June - August of 2003, which coincide with July-August planting period.<br />
+</li>
+<li>In contrast to this, cross sectional estimates in 2000 (using enrollers of 1999 and 2002) show a zero increase for children of agricultural households. In 1999, children from agricultural households benefited from the exam preponement. While we do not have information to support the claim, it is possible that these children who progressed to the next grade may have opted not to work in the field during the planting period of 2000.<br />
+</li>
+<li>Placebo estimation using 2002 cohort shows children from agricultural households tend to progress more slowly by 0.04, 0.06 year per annum (0.51, 0.69 months), which are roughly half in size of the 1999 impacts, although the <span class="math inline">\(p\)</span> values for placebo estimation are around 10% and are not as small as 1999 impact estimates.<br />
+</li>
+<li>Placebo estimation using 1999 cohort shows statistically zero impacts of grade progression, consistent with our maintained hypothesis.</li>
 </ul>
 </div>
 </div>

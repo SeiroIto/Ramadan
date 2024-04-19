@@ -6432,8 +6432,8 @@ resultsC <- qread("../save/DID2024_DaysAbsentCrossSectionResults.qs")
 NR <- qread("../save/GenderGradeDaysAbsentTabulatedNR2024.qs")
 Enr <- qread("../save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
 nR0 <- unique(NR[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ])
-enr0 <- Enr[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ]
-enr0[, EnRate := formatC(EnRate, digits = 4, format = "f")]
+Enr0 <- Enr[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ]
+Enr0[, EnRate := formatC(EnRate, digits = 4, format = "f")]
 ii <- jj <- en <- s <- m <-  1
 j <- clnum <- rr <- 2
 #### enrs <- c("initial", "all time", "others")[en]
@@ -6443,11 +6443,15 @@ Tab <- NULL
 for (ii in 1:2) {
   for (gd in 1:4) {
     #gd 1: NumGrade 1999 enrollers, 2: NumGrade complete panel enrollers, 
-    #    3: DaysAbsent 1999 enrollers, 4: DaysAbsent 1999 cross sectional OLS
+    #    3: DaysAbsent 1999 enrollers, 4: DaysAbsent 2002 cross sectional OLS
     Tab0 <- NULL
     # Placebo is estimated only for NumGrades. No DaysAbsent data collected in 2006.
     if (gd > 2 & ii == 2) next
-    for (yy in 1) { # if gd == 4, do yy = 1, 2 else do yy = 1 only
+    for (yy in 1:2) { 
+    # For gd == 4, yy = 2 (2002, July-August, asked in Sep-Oct) covers 
+    # 2 months of planting season absenteeism in a 3 month recall question.
+      if (gd < 4 & yy == 2) next
+      Tab00 <- NULL
       for (ge in c(3, 1, 2)) {
         if (gd < 3) 
           cis0 <- lapply(resultsG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
@@ -6471,7 +6475,13 @@ for (ii in 1:2) {
         rn <- rownames(tab0)
         rn[grepl("^CI|^p", rn)] <- ""
         assign(paste0("rn", gd, ii),  rn)
-        if (gd == 4) nR <- nR0[CrossSecEnrollers == c("AtLeastOnce", "BothPeriods")[rr], ] else nR <- nR0
+        if (gd == 4) {
+          nR <- nR0[CrossSecEnrollers == c("AtLeastOnce", "BothPeriods")[rr], ] 
+          enr0 <- Enr0[CrossSecEnrollers == c("AtLeastOnce", "BothPeriods")[rr], ] 
+        } else {
+          nR <- nR0
+          enr0 <- Enr0
+        }
         nr <- rbind(
           formatC(nR[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
             CrossSecYear == c(1999, 2002)[yy], ][
@@ -6493,26 +6503,29 @@ for (ii in 1:2) {
         nr[2:3, c(1, 3) := ""]
         enr[, c(1, 3) := ""]
         tab2 <- rbindlist(list(tab0, rbind(nr, enr)), use.names = F)
-        Tab0 <- cbind(Tab0, tab2)
+        Tab00 <- cbind(Tab00, tab2)
       } # ge
-      Tab0 <- rbind(t(matrix((gd-1)*9+1:ncol(Tab0))), Tab0, use.names = F) 
-      Tab <- rbind(Tab, Tab0)
+      Tab00 <- rbind(t(matrix((gd-1)*9+(yy-1)*9+(ii-1)*45+1:ncol(Tab00))), Tab00, use.names = F) 
+      Tab0 <- rbind(Tab0, Tab00)
     } # yy
+    Tab <- rbind(Tab, Tab0)
   } # gd
 } # ii
 r2n1 <- c("R2", "N: agHH", "N", 
   paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
 r2n2 <- c("R2", "N: agHH", "N", 
   paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(2002, 2006), each = 2)))
-r2ncross <- c("R2", "N: agHH", "N", paste0("mean of ", c("control in ", "treated in "), 1999))
+r2ncross9 <- c("R2", "N: agHH", "N", paste0("mean of ", c("control in ", "treated in "), 1999))
+r2ncross2 <- c("R2", "N: agHH", "N", paste0("mean of ", c("control in ", "treated in "), 2002))
 rnm11 <- c(" ", rn11, r2n1)
 rnm12 <- c(" ", rn12, r2n2)
 rnm21 <- c(" ", rn21, r2n1)
 rnm22 <- c(" ", rn22, r2n2)
 rnm31 <- c(" ", rn31, r2n1)
-rnm41 <- c(" ", rn41, r2ncross)
+rnm41 <- c(" ", rn41, r2ncross9)
+rnm42 <- c(" ", rn41, r2ncross2)
 Tab <- as.matrix(cbind(covariates = 
-  c(rnm11, rnm21, rnm31, rnm41, rnm12, rnm22)
+  c(rnm11, rnm21, rnm31, rnm41, rnm42, rnm12, rnm22)
   , Tab))
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
@@ -6538,12 +6551,14 @@ kt <- pack_rows(kt, group_label="Grade progression: Students enrolled in 1999 an
   aghhrows[2]-1, aghhrows[3]-1)
 kt <- pack_rows(kt, group_label="Days absent: Students enrolled in 1999 and 2002", 
   aghhrows[3]-1, aghhrows[4]-1)
-kt <- pack_rows(kt, group_label="Days absent: Students enrolled in 1999 and 2002, cross section OLS of 1999", 
+kt <- pack_rows(kt, group_label="Days absent: Students enrolled in 1999 and 2002, cross section OLS of 2000", 
   aghhrows[4]-1, aghhrows[5]-1)
-kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 2002 cohort enrolled in 2002", 
+kt <- pack_rows(kt, group_label="Days absent: Students enrolled in 1999 and 2002, cross section OLS of 2003", 
   aghhrows[5]-1, aghhrows[6]-1)
+kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 2002 cohort enrolled in 2002", 
+  aghhrows[6]-1, aghhrows[7]-1)
 kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 1999 cohort enrolled in 2002", 
-  aghhrows[6]-1, grep("^Tha", Tab[, 1])-1)
+  aghhrows[7]-1, grep("^Tha", Tab[, 1])-1)
 kt <- pack_rows(kt, group_label="Common specifications", 
   grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
@@ -6560,7 +6575,10 @@ kt
 * Absence increases for about 2-3 days per month among boys. It also increases among girls but the estimates are noisy.  
 * A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors.  
 * Stipend and non-stipend programs help reduce the absence for 4-6 days per month among boys, but not among girls.  
-* Placebo estimation using 2002 cohort shows children from agricultural households tend to progress more slowly by `r round(c(.17, .23)/4, 2)` year per annum (`r round((c(.17, .23)/4)*12, 2)` months), which are roughly half in size of delayed progression than the 1999 impacts, although the $p$ values are not small.  
+* Cross sectional estimates in 2003 (using enrollers of 1999 and 2002) show a monthly 1.0 - 1.2 day increase for children of agricultural households. This reflects that the survey asks days absent of June - August of 2003, which coincide with July-August planting period.  
+* In contrast to this, cross sectional estimates in 2000 (using enrollers of 1999 and 2002) show a zero increase for children of agricultural households. In 1999, children from agricultural households benefited from the exam preponement.  While we do not have information to support the claim, it is possible that these children who progressed to the next grade may have opted not to work in the field during the planting period of 2000.   
+* Placebo estimation using 2002 cohort shows children from agricultural households tend to progress more slowly by `r round(c(.17, .23)/4, 2)` year per annum (`r round((c(.17, .23)/4)*12, 2)` months), which are roughly half in size of the 1999 impacts, although the $p$ values for placebo estimation are around 10% and are not as small as 1999 impact estimates.  
+* Placebo estimation using 1999 cohort shows statistically zero impacts of grade progression, consistent with our maintained hypothesis.  
 
 ```{r show days absent results, eval = F}
 ####resultsG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
