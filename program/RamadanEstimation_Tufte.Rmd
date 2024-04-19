@@ -3049,15 +3049,15 @@ for (ge in c(3, 1, 2)){
     for (vv in vs) nums <- c(nums, grep(vv, rownames(tab0))+0:2)
     tab0 <- tab0[nums, ]
     nr <- rbind(
-      formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[m], gender), ][
+      formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
         order(reg), R], digits = 4, format = "f")
-    , formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[m], gender), ][
+    , formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
         order(reg), Yes], digits = 0, format = "f")
-    , formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[m], gender), ][
+    , formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
         order(reg), n], digits = 0, format = "f")
     )
     enr <- matrix(
-     enr0[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[m], gender), ][
+     enr0[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
        order(agHH, tee), EnRate], byrow = F, nrow = 4)
     enr <- data.table(enr[, rep(1, 3)])
     nr <- data.table(nr)
@@ -3093,13 +3093,13 @@ kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T,
   bootstrap_options = c("condensed"))
 kt <- add_header_above(kt, c(" " = 1, "Agricultural HHs" = 3, "Agricultural HHs (head)" = 3),
   background = bgcolor)
-kt <- row_spec(kt, 0:1, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
+kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
   background = bgcolor)
 kt <- row_spec(kt, rep(grep("^agHH.yr.$", Tab[, "variables"]), each = 3)+0:2, bold = T, 
   color = "black", background = "#87cefa")
-kt <- pack_rows(kt, group_label="Boys+Girls", grep("^agH", rnm)[1], grep("^agH", rnm)[1]+2)
-kt <- pack_rows(kt, group_label="Boys", grep("^agH", rnm)[2], grep("^agH", rnm)[2]+2)
-kt <- pack_rows(kt, group_label="Girls", grep("^agH", rnm)[3], grep("^agH", rnm)[3]+2)
+kt <- pack_rows(kt, group_label="Boys+Girls", grep("^agH", rnm)[1]-1, grep("^agH", rnm)[1]+2)
+kt <- pack_rows(kt, group_label="Boys", grep("^agH", rnm)[2]-1, grep("^agH", rnm)[2]+2)
+kt <- pack_rows(kt, group_label="Girls", grep("^agH", rnm)[3]-1, grep("^agH", rnm)[3]+2)
 kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
@@ -4838,6 +4838,12 @@ kt
 
 ## Other schooling outcomes: Grade progression and days absent per month
 
+* InitialEnrollers: enrolled in 1999.  
+* AllTimeEnrollers: enrolled in 1999 and 2002. 
+* Late enrollers: ss1 (schoolp in 1999) = 0, ss2 (schoolp in 2002) = 1  
+* Never enrollers: ss1 (schoolp in 1999) = 0, ss2 (schoolp in 2002) = 0  
+
+
 ```{r num grades impacts by enrollers and by gender, eval = F, results = 'hide', cache = F}
 library(clubSandwich)
 source("TabGeneric.R")
@@ -4903,6 +4909,8 @@ centerWidth <- 1.3
 SkipLowerBound <- 50
 NumGrades <- NumGradeschg <- NULL
 results <- resultsN <- vector("list", length = length(samples)) # ii
+ii <- jj <- s <- m <- ge <- 1
+j <- clnum <- 2
 for (ii in 1:length(samples)) {
 ####for (ii in 1) {
   zSobj <- get(zsobj[ii])
@@ -4940,9 +4948,17 @@ for (ii in 1:length(samples)) {
     z01[, ss := cumsum(schoolp), by = uniquid]
     z01[, ss2 := ss[2], by = uniquid]
     z01[grepl(2, ss2), EnrollerStatus := "all time"]
-    z01[, c("ss", "ss1", "ss2") := NULL]
+    table(z01[, .(ss1, EnrollerStatus)])
+    table(z01[, .(ss2, EnrollerStatus)]) 
+    # EnrollerStatus = others: 2 cases
+    #   1. ss1 = 0, ss2 = 1: Late enrollers
+    #   2. ss1 = 0, ss2 = 0: Never enrollers
+    z01[grepl(0, ss1) & grepl(1, ss2), EnrollerStatus := "late"]
+    z01[grepl(0, ss1) & grepl(0, ss2), EnrollerStatus := "never"]
     z01[, EnrollerStatus := factor(EnrollerStatus, levels = 
-      c("initial", "all time", "others"))]
+      c("initial", "all time", "late", "never"))]
+    table(z01[, .(ss2, EnrollerStatus)])
+    z01[, c("ss", "ss1", "ss2") := NULL]
     for (en in 1:2) {
       enrs <- c("initial", "all time", "others")[en]
       #### This selects only dropouts for en == 1: z02 <- z01[grepl(enrs, EnrollerStatus), ]
@@ -4969,9 +4985,8 @@ for (ii in 1:length(samples)) {
           MaxAge <- 9
         } else {
           MaxAge <- 18
+          s0 <- (10:12)[s]
         }
-        i <- paste0("older", s0)
-        s0 <- (10:12)[s]
         i <- paste0("older", s0)
         # latter panel: s <= age < maxAge in 1999/2002
         iiid <- unique(z1[
@@ -6517,17 +6532,17 @@ kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)), collapse = ""),
 aghhrows <- grep("^agH", as.character(unlist(Tab[, 1])))
 kt <- row_spec(kt, rep(aghhrows, each = 3)+0:2, 
   color = "black", background = "#87cefa")
-kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999", 
+kt <- pack_rows(kt, group_label="Grade progression: Students enrolled in 1999", 
   aghhrows[1]-1, aghhrows[2]-1)
-kt <- pack_rows(kt, group_label="Grade progression: Enrolled in 1999 and 2002", 
+kt <- pack_rows(kt, group_label="Grade progression: Students enrolled in 1999 and 2002", 
   aghhrows[2]-1, aghhrows[3]-1)
-kt <- pack_rows(kt, group_label="Days absent: Enrolled in 1999 and 2002", 
+kt <- pack_rows(kt, group_label="Days absent: Students enrolled in 1999 and 2002", 
   aghhrows[3]-1, aghhrows[4]-1)
-kt <- pack_rows(kt, group_label="Days absent: Enrolled in 1999 and 2002, cross section OLS of 1999", 
+kt <- pack_rows(kt, group_label="Days absent: Students enrolled in 1999 and 2002, cross section OLS of 1999", 
   aghhrows[4]-1, aghhrows[5]-1)
-kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 2002 cohort", 
+kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 2002 cohort enrolled in 2002", 
   aghhrows[5]-1, aghhrows[6]-1)
-kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 1999 cohort", 
+kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 1999 cohort enrolled in 2002", 
   aghhrows[6]-1, grep("^Tha", Tab[, 1])-1)
 kt <- pack_rows(kt, group_label="Common specifications", 
   grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
@@ -6540,11 +6555,12 @@ kt
 ```
 
 * Grade progreesion and days absent impacts are consistent with main results.  
-* Grade progression impacts are negative and delays progression by .35-40 years in a three year period. Only the larger sample gives small $p$ values. Impacts on boys are larger in magnitude yet the sample size is too small, because we must condition on children who are enrolled in 1999.  
+* Grade progression impacts are negative and delays progression by .35-40 years in a three year period (`r round(c(.35, .40)/3, 2)` per annum or `r round((c(.35, .4)/4)*12, 2)` months). Only the larger sample gives small $p$ values. Impacts on boys are larger in magnitude yet the sample size is too small, because we must condition on children who are enrolled in 1999.  
 * Stipend and non-stipend programs help increase the progression for 1.3-1.5 year in a three year period among girls, but not among boys.  
 * Absence increases for about 2-3 days per month among boys. It also increases among girls but the estimates are noisy.  
 * A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors.  
 * Stipend and non-stipend programs help reduce the absence for 4-6 days per month among boys, but not among girls.  
+* Placebo estimation using 2002 cohort shows children from agricultural households tend to progress more slowly by `r round(c(.17, .23)/4, 2)` year per annum (`r round((c(.17, .23)/4)*12, 2)` months), which are roughly half in size of delayed progression than the 1999 impacts, although the $p$ values are not small.  
 
 ```{r show days absent results, eval = F}
 ####resultsG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]]

@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年04月15日 16:42</h4>
+<h4 class="date">2024年04月18日 20:48</h4>
 
 
 <div id="TOC">
@@ -394,9 +394,12 @@ pre[class] {
   background-color: inherit;
 }
 </style>
+<pre><code>## Warning: パッケージ &#39;knitr&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
+<pre><code>## Warning: パッケージ &#39;tufte&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
 <pre class="r SeiroBenign"><code>library(data.table)
-library(qs)
-pathprogram &lt;- paste0(path, &quot;program/&quot;);  
+library(qs)</code></pre>
+<pre><code>qs 0.25.5</code></pre>
+<pre class="r SeiroBenign"><code>pathprogram &lt;- paste0(path, &quot;program/&quot;);  
 pathprogram0 &lt;- paste0(path0, &quot;program/program/&quot;);  
 pathsource &lt;- paste0(path0, &quot;source/&quot;)
 pathsave &lt;- paste0(path, &quot;save/&quot;)
@@ -421,6 +424,41 @@ source(paste0(pathprogram, &quot;EstimatorFunctions.R&quot;))</code></pre>
 <h1>Read and format data</h1>
 <div id="define-samples" class="section level2">
 <h2>Define samples</h2>
+<pre><code> 要求されたパッケージ bit をロード中です </code></pre>
+<pre><code>Warning: パッケージ &#39;bit&#39; はバージョン 4.2.2 の R の下で造られました</code></pre>
+<pre><code>
+ 次のパッケージを付け加えます: &#39;bit&#39; </code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:data.table&#39; からマスクされています:
+
+    setattr</code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
+
+    xor</code></pre>
+<pre><code>Attaching package bit64</code></pre>
+<pre><code>package:bit64 (c) 2011-2017 Jens Oehlschlaegel</code></pre>
+<pre><code>creators: integer64 runif64 seq :</code></pre>
+<pre><code>coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bitstring</code></pre>
+<pre><code>logical operator: ! &amp; | xor != == &lt; &lt;= &gt;= &gt;</code></pre>
+<pre><code>arithmetic operator: + - * / %/% %% ^</code></pre>
+<pre><code>math: sign abs sqrt log log2 log10</code></pre>
+<pre><code>math: floor ceiling trunc round</code></pre>
+<pre><code>querying: is.integer64 is.vector [is.atomic} [length] format print str</code></pre>
+<pre><code>values: is.na is.nan is.finite is.infinite</code></pre>
+<pre><code>aggregation: any all min max range sum prod</code></pre>
+<pre><code>cumulation: diff cummin cummax cumsum cumprod</code></pre>
+<pre><code>access: length&lt;- [ [&lt;- [[ [[&lt;-</code></pre>
+<pre><code>combine: c rep cbind rbind as.data.frame</code></pre>
+<pre><code>WARNING don&#39;t use as subscripts</code></pre>
+<pre><code>WARNING semantics differ from integer</code></pre>
+<pre><code>for more help type ?bit64</code></pre>
+<pre><code>
+ 次のパッケージを付け加えます: &#39;bit64&#39; </code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:utils&#39; からマスクされています:
+
+    hashtab</code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
+
+    %in%, :, is.double, match, order, rank</code></pre>
 <pre class="SeiroLightGreen"><code>  [1] &quot;district&quot;                   &quot;thana&quot;                      &quot;survey&quot;                    
   [4] &quot;highMeanY&quot;                  &quot;lowMeanY&quot;                   &quot;rainfallMeanY&quot;             
   [7] &quot;regions&quot;                    &quot;i.district&quot;                 &quot;gps north&quot;                 
@@ -570,6 +608,9 @@ where <span class="math inline">\(\tilde{x}_{it}=x_{it}-\bar{x}_{i}\)</span>. Al
 </div>
 <div id="plain-did" class="section level2">
 <h2>Plain DID</h2>
+<pre><code>Registered S3 method overwritten by &#39;clubSandwich&#39;:
+  method    from    
+  bread.mlm sandwich</code></pre>
 <pre class="SeiroLightGreen"><code>[[1]]
        Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI p-value Sig.
  (Intercept)   0.4753 0.0254 5.57       0.4118      0.53875  &lt;0.001  ***
@@ -811,6 +852,8 @@ for (kk in c(&quot;t&quot;, &quot;Satterthwaite&quot;))
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = &quot;f&quot;)
     , &quot;]&quot;)</code></pre>
 </details>
+<pre><code>Warning in !is.null(rmarkdown::metadata$output) &amp;&amp; rmarkdown::metadata$output %in% : &#39;length(x) = 2
+&gt; 1&#39; in coercion to &#39;logical(1)&#39;</code></pre>
 <table style="NAborder-bottom: 0; margin-left: auto; margin-right: auto; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;" class="table lightable-classic">
 <caption>Differences between agricultural and non-agricultural households in main data (ref:SDiffTable)</caption>
 
@@ -6381,31 +6424,31 @@ raw DID
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align:right;background-color: #ffcc99 !important;text-align: cccccc;">
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccc;">
-1
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccc;">
-2
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccc;">
-3
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccc;">
-4
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccc;">
-5
-</td>
-<td style="text-align:center;background-color: #ffcc99 !important;text-align: cccccc;">
-6
-</td>
-</tr>
-<tr grouplength="3">
+<tr grouplength="4">
 <td colspan="7" style="border-bottom: 1px solid;">
 <strong>Boys+Girls</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+6
 </td>
 </tr>
 <tr>
@@ -6590,13 +6633,13 @@ OldSibM.agHH.yr2
 R2
 </td>
 <td style="text-align:center;">
-0.0096
+0.0018
 </td>
 <td style="text-align:center;">
-0.3662
+0.4421
 </td>
 <td style="text-align:center;">
-0.4148
+0.4839
 </td>
 <td style="text-align:center;">
 0.0085
@@ -6615,7 +6658,7 @@ N: agHH
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-197
+384
 </td>
 <td style="text-align:center;">
 </td>
@@ -6634,7 +6677,7 @@ N
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-306
+626
 </td>
 <td style="text-align:center;">
 </td>
@@ -6653,7 +6696,7 @@ mean of treated in 1999
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.7156
+0.7769
 </td>
 <td style="text-align:center;">
 </td>
@@ -6672,7 +6715,7 @@ mean of control in 1999
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.4679
+0.4959
 </td>
 <td style="text-align:center;">
 </td>
@@ -6691,7 +6734,7 @@ mean of treated in 2002
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.6396
+0.7135
 </td>
 <td style="text-align:center;">
 </td>
@@ -6710,7 +6753,7 @@ mean of control in 2002
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.2944
+0.3906
 </td>
 <td style="text-align:center;">
 </td>
@@ -6722,8 +6765,13 @@ mean of control in 2002
 <td style="text-align:center;">
 </td>
 </tr>
+<tr grouplength="4">
+<td colspan="7" style="border-bottom: 1px solid;">
+<strong>Boys</strong>
+</td>
+</tr>
 <tr>
-<td style="text-align:right;">
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;">
 7
@@ -6742,11 +6790,6 @@ mean of control in 2002
 </td>
 <td style="text-align:center;">
 12
-</td>
-</tr>
-<tr grouplength="3">
-<td colspan="7" style="border-bottom: 1px solid;">
-<strong>Boys</strong>
 </td>
 </tr>
 <tr>
@@ -6940,13 +6983,13 @@ R2
 0.4148
 </td>
 <td style="text-align:center;">
-0.0085
+0.0328
 </td>
 <td style="text-align:center;">
-0.4446
+0.3738
 </td>
 <td style="text-align:center;">
-0.4839
+0.4199
 </td>
 </tr>
 <tr>
@@ -6963,7 +7006,7 @@ N: agHH
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-346
+177
 </td>
 <td style="text-align:center;">
 </td>
@@ -6982,7 +7025,7 @@ N
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-626
+306
 </td>
 <td style="text-align:center;">
 </td>
@@ -7001,7 +7044,7 @@ mean of treated in 1999
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.7464
+0.6512
 </td>
 <td style="text-align:center;">
 </td>
@@ -7020,7 +7063,7 @@ mean of control in 1999
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.4893
+0.4419
 </td>
 <td style="text-align:center;">
 </td>
@@ -7039,7 +7082,7 @@ mean of treated in 2002
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.7312
+0.6780
 </td>
 <td style="text-align:center;">
 </td>
@@ -7058,13 +7101,18 @@ mean of control in 2002
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.3844
+0.2938
 </td>
 <td style="text-align:center;">
 </td>
 </tr>
+<tr grouplength="4">
+<td colspan="7" style="border-bottom: 1px solid;">
+<strong>Girls</strong>
+</td>
+</tr>
 <tr>
-<td style="text-align:right;">
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;">
 13
@@ -7083,11 +7131,6 @@ mean of control in 2002
 </td>
 <td style="text-align:center;">
 18
-</td>
-</tr>
-<tr grouplength="3">
-<td colspan="7" style="border-bottom: 1px solid;">
-<strong>Girls</strong>
 </td>
 </tr>
 <tr>
@@ -7272,22 +7315,22 @@ OldSibM.agHH.yr2
 R2
 </td>
 <td style="text-align:center;">
-0.0096
+0.0001
 </td>
 <td style="text-align:center;">
-0.3662
+0.5925
 </td>
 <td style="text-align:center;">
-0.4148
+0.6104
 </td>
 <td style="text-align:center;">
-0.0085
+0.0001
 </td>
 <td style="text-align:center;">
-0.4446
+0.5928
 </td>
 <td style="text-align:center;">
-0.4839
+0.6084
 </td>
 </tr>
 <tr>
@@ -7297,14 +7340,14 @@ N: agHH
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-197
+187
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-346
+169
 </td>
 <td style="text-align:center;">
 </td>
@@ -7316,14 +7359,14 @@ N
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-306
+320
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-626
+320
 </td>
 <td style="text-align:center;">
 </td>
@@ -7335,14 +7378,14 @@ mean of treated in 1999
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.7156
+0.8271
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.7464
+0.8278
 </td>
 <td style="text-align:center;">
 </td>
@@ -7354,14 +7397,14 @@ mean of control in 1999
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.4679
+0.5188
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.4893
+0.5298
 </td>
 <td style="text-align:center;">
 </td>
@@ -7373,14 +7416,14 @@ mean of treated in 2002
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.6396
+0.7914
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.7312
+0.7870
 </td>
 <td style="text-align:center;">
 </td>
@@ -7392,14 +7435,14 @@ mean of control in 2002
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.2944
+0.4920
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-0.3844
+0.4793
 </td>
 <td style="text-align:center;">
 </td>
@@ -11704,6 +11747,14 @@ Y
 </div>
 <div id="other-schooling-outcomes-grade-progression-and-days-absent-per-month" class="section level2">
 <h2>Other schooling outcomes: Grade progression and days absent per month</h2>
+<ul>
+<li>InitialEnrollers: enrolled in 1999.<br />
+</li>
+<li>AllTimeEnrollers: enrolled in 1999 and 2002.</li>
+<li>Late enrollers: ss1 (schoolp in 1999) = 0, ss2 (schoolp in 2002) = 1<br />
+</li>
+<li>Never enrollers: ss1 (schoolp in 1999) = 0, ss2 (schoolp in 2002) = 0</li>
+</ul>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; border-bottom: 0;">
 <p><!--
 <caption>--><span class="marginnote shownote">Other outcome impacts: 10-18 years old, direct offspring, Satterthwaite correction</span><!--</caption>--></p>
@@ -14303,7 +14354,7 @@ Y
 <ul>
 <li>Grade progreesion and days absent impacts are consistent with main results.<br />
 </li>
-<li>Grade progression impacts are negative and delays progression by .35-40 years in a three year period. Only the larger sample gives small <span class="math inline">\(p\)</span> values. Impacts on boys are larger in magnitude yet the sample size is too small, because we must condition on children who are enrolled in 1999.<br />
+<li>Grade progression impacts are negative and delays progression by .35-40 years in a three year period (0.12, 0.13 per annum or 1.05, 1.2 months). Only the larger sample gives small <span class="math inline">\(p\)</span> values. Impacts on boys are larger in magnitude yet the sample size is too small, because we must condition on children who are enrolled in 1999.<br />
 </li>
 <li>Stipend and non-stipend programs help increase the progression for 1.3-1.5 year in a three year period among girls, but not among boys.<br />
 </li>
@@ -14311,7 +14362,9 @@ Y
 </li>
 <li>A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors.<br />
 </li>
-<li>Stipend and non-stipend programs help reduce the absence for 4-6 days per month among boys, but not among girls.</li>
+<li>Stipend and non-stipend programs help reduce the absence for 4-6 days per month among boys, but not among girls.<br />
+</li>
+<li>Placebo estimation using 2002 cohort shows children from agricultural households tend to progress more slowly by 0.04, 0.06 year per annum (0.51, 0.69 months), which are roughly half in size of delayed progression than the 1999 impacts, although the <span class="math inline">\(p\)</span> values are not small.</li>
 </ul>
 </div>
 </div>
