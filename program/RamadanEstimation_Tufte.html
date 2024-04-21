@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年04月19日 17:43</h4>
+<h4 class="date">2024年04月21日 08:56</h4>
 
 
 <div id="TOC">
@@ -394,9 +394,12 @@ pre[class] {
   background-color: inherit;
 }
 </style>
+<pre><code>## Warning: パッケージ &#39;knitr&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
+<pre><code>## Warning: パッケージ &#39;tufte&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
 <pre class="r SeiroBenign"><code>library(data.table)
-library(qs)
-pathprogram &lt;- paste0(path, &quot;program/&quot;);  
+library(qs)</code></pre>
+<pre><code>qs 0.25.5</code></pre>
+<pre class="r SeiroBenign"><code>pathprogram &lt;- paste0(path, &quot;program/&quot;);  
 pathprogram0 &lt;- paste0(path0, &quot;program/program/&quot;);  
 pathsource &lt;- paste0(path0, &quot;source/&quot;)
 pathsave &lt;- paste0(path, &quot;save/&quot;)
@@ -421,6 +424,41 @@ source(paste0(pathprogram, &quot;EstimatorFunctions.R&quot;))</code></pre>
 <h1>Read and format data</h1>
 <div id="define-samples" class="section level2">
 <h2>Define samples</h2>
+<pre><code> 要求されたパッケージ bit をロード中です </code></pre>
+<pre><code>Warning: パッケージ &#39;bit&#39; はバージョン 4.2.2 の R の下で造られました</code></pre>
+<pre><code>
+ 次のパッケージを付け加えます: &#39;bit&#39; </code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:data.table&#39; からマスクされています:
+
+    setattr</code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
+
+    xor</code></pre>
+<pre><code>Attaching package bit64</code></pre>
+<pre><code>package:bit64 (c) 2011-2017 Jens Oehlschlaegel</code></pre>
+<pre><code>creators: integer64 runif64 seq :</code></pre>
+<pre><code>coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bitstring</code></pre>
+<pre><code>logical operator: ! &amp; | xor != == &lt; &lt;= &gt;= &gt;</code></pre>
+<pre><code>arithmetic operator: + - * / %/% %% ^</code></pre>
+<pre><code>math: sign abs sqrt log log2 log10</code></pre>
+<pre><code>math: floor ceiling trunc round</code></pre>
+<pre><code>querying: is.integer64 is.vector [is.atomic} [length] format print str</code></pre>
+<pre><code>values: is.na is.nan is.finite is.infinite</code></pre>
+<pre><code>aggregation: any all min max range sum prod</code></pre>
+<pre><code>cumulation: diff cummin cummax cumsum cumprod</code></pre>
+<pre><code>access: length&lt;- [ [&lt;- [[ [[&lt;-</code></pre>
+<pre><code>combine: c rep cbind rbind as.data.frame</code></pre>
+<pre><code>WARNING don&#39;t use as subscripts</code></pre>
+<pre><code>WARNING semantics differ from integer</code></pre>
+<pre><code>for more help type ?bit64</code></pre>
+<pre><code>
+ 次のパッケージを付け加えます: &#39;bit64&#39; </code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:utils&#39; からマスクされています:
+
+    hashtab</code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
+
+    %in%, :, is.double, match, order, rank</code></pre>
 <pre class="SeiroLightGreen"><code>  [1] &quot;district&quot;                   &quot;thana&quot;                      &quot;survey&quot;                    
   [4] &quot;highMeanY&quot;                  &quot;lowMeanY&quot;                   &quot;rainfallMeanY&quot;             
   [7] &quot;regions&quot;                    &quot;i.district&quot;                 &quot;gps north&quot;                 
@@ -570,6 +608,9 @@ where <span class="math inline">\(\tilde{x}_{it}=x_{it}-\bar{x}_{i}\)</span>. Al
 </div>
 <div id="plain-did" class="section level2">
 <h2>Plain DID</h2>
+<pre><code>Registered S3 method overwritten by &#39;clubSandwich&#39;:
+  method    from    
+  bread.mlm sandwich</code></pre>
 <pre class="SeiroLightGreen"><code>[[1]]
        Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI p-value Sig.
  (Intercept)   0.4753 0.0254 5.57       0.4118      0.53875  &lt;0.001  ***
@@ -811,6 +852,8 @@ for (kk in c(&quot;t&quot;, &quot;Satterthwaite&quot;))
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = &quot;f&quot;)
     , &quot;]&quot;)</code></pre>
 </details>
+<pre><code>Warning in !is.null(rmarkdown::metadata$output) &amp;&amp; rmarkdown::metadata$output %in% : &#39;length(x) = 2
+&gt; 1&#39; in coercion to &#39;logical(1)&#39;</code></pre>
 <table style="NAborder-bottom: 0; margin-left: auto; margin-right: auto; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;" class="table lightable-classic">
 <caption>Differences between agricultural and non-agricultural households in main data (ref:SDiffTable)</caption>
 
@@ -14671,6 +14714,8 @@ Y
 <li>A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors.<br />
 </li>
 <li>Stipend and non-stipend programs help reduce the absence for 4-6 days per month among boys, but not among girls.<br />
+</li>
+<li>Stipend and non-stipend programs may improve grade progression among girls, and they may improve daily attendance among boys. While it is unclear why they only affect atendance but not progression among boys, girls may attend schools constantly with or without them because they are less engaged in remunerative work. Lower opportunity costs of schooling among girls may also allow a stronger responce to programs in terms of progression.<br />
 </li>
 <li>Cross sectional estimates in 2003 (using enrollers of 1999 and 2002) show a monthly 1.0 - 1.2 day increase for children of agricultural households. This reflects that the survey asks days absent of June - August of 2003, which coincide with July-August planting period.<br />
 </li>
