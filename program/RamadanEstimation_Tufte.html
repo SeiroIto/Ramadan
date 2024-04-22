@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年04月22日 13:09</h4>
+<h4 class="date">2024年04月22日 18:00</h4>
 
 
 <div id="TOC">
@@ -767,7 +767,7 @@ for (v in c(varcompare2, varcompare3)) {
   )
 }
 #### substitute variable names
-source(paste0(pathprogram, &quot;substitution_table.R&quot;))
+source(paste0(pathprogram, &quot;SubstitutionTableForHTML.R&quot;))
 colnames(SampleDiff) &lt;- c(&quot;sample&quot;, &quot;age&quot;, &quot;variables&quot;, &quot;overall&quot;,
   &quot;agHH&quot;, &quot;nonagHH&quot;, &quot;t&quot;, &quot;Satterthwaite&quot;)
 SampleDiff &lt;- data.table(SampleDiff)
@@ -8651,69 +8651,69 @@ raw DID
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 Agricultural household
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.053
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.030
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.044
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.048
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.023
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.037
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (14.2)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (40.6)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (35.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (16.8)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (53.0)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (35.5)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.129, 0.023]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.112, 0.051]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.149, 0.062]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.121, 0.026]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.105, 0.060]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.125, 0.052]
 </td>
 </tr>
@@ -8992,69 +8992,69 @@ mean of treated in 2006
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 Agricultural household
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.004
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.020
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.029
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.004
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.027
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.045
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (93.5)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (57.9)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (35.6)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (94.6)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (48.6)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (29.0)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.098, 0.105]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.100, 0.061]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.098, 0.041]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.127, 0.120]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.115, 0.061]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.140, 0.049]
 </td>
 </tr>
@@ -9333,69 +9333,69 @@ mean of treated in 2006
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 Agricultural household
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.106
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.037
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.049
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.090
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.029
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.049
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (7.9)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (44.4)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (49.3)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (10.3)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (46.2)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (25.3)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.228, 0.016]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.147, 0.073]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.213, 0.114]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.204, 0.024]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.119, 0.060]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.144, 0.045]
 </td>
 </tr>
@@ -9719,69 +9719,69 @@ Y
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 Agricultural household
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.023
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.031
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.033
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.022
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.028
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.034
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (61.1)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (22.9)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (39.5)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (63.3)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (37.9)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (31.4)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.128, 0.082]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.088, 0.026]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.120, 0.054]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.125, 0.082]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.099, 0.043]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.110, 0.041]
 </td>
 </tr>
@@ -10060,69 +10060,69 @@ mean of treated in 2006
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 Agricultural household
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.030
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.007
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.001
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 0.019
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.011
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.017
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (55.0)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (87.2)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (98.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (76.1)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (81.7)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (72.4)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.086, 0.146]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.101, 0.116]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.114, 0.116]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.126, 0.164]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.123, 0.100]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.129, 0.095]
 </td>
 </tr>
@@ -10401,69 +10401,69 @@ mean of treated in 2006
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 Agricultural household
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.084
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.058
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.069
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.070
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.047
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 -0.066
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (27.5)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (28.1)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (27.8)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (31.1)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (31.0)
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (19.0)
 </td>
 </tr>
 <tr>
-<td style="text-align:right;font-weight: bold;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.256, 0.087]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.177, 0.062]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.212, 0.074]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.224, 0.084]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.151, 0.057]
 </td>
-<td style="text-align:center;font-weight: bold;color: black !important;background-color: #87cefa !important;">
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.177, 0.044]
 </td>
 </tr>
@@ -10823,7 +10823,7 @@ raw DID
 </tr>
 </thead>
 <tbody>
-<tr grouplength="9">
+<tr grouplength="6">
 <td colspan="4" style="border-bottom: 1px solid;">
 <strong>Boys</strong>
 </td>
@@ -10883,7 +10883,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-non-Muslim
+Non-Muslim
 </td>
 <td style="text-align:center;">
 </td>
@@ -10907,7 +10907,7 @@ non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -10919,8 +10919,8 @@ non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-non-Muslim <span class="math inline">\(\times\)</span> ag HH
+<td style="text-align:right;">
+Non-Muslim <span class="math inline">\(\times\)</span> ag HH
 </td>
 <td style="text-align:center;">
 </td>
@@ -10932,7 +10932,7 @@ non-Muslim <span class="math inline">\(\times\)</span> ag HH
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -10943,13 +10943,13 @@ non-Muslim <span class="math inline">\(\times\)</span> ag HH
 (26.7)
 </td>
 </tr>
-<tr grouplength="9">
-<td colspan="4" style="border-bottom: 1px solid;">
+<tr grouplength="2">
+<td colspan="4" style="border-bottom: 1px solid;padding-left: 4em;" indentlevel="2">
 <strong>Girls</strong>
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -10961,7 +10961,7 @@ non-Muslim <span class="math inline">\(\times\)</span> ag HH
 </td>
 </tr>
 <tr>
-<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;">
 Agricultural household
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
@@ -10975,7 +10975,7 @@ Agricultural household
 </td>
 </tr>
 <tr>
-<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (90.5)
@@ -10988,7 +10988,7 @@ Agricultural household
 </td>
 </tr>
 <tr>
-<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.163, 0.180]
@@ -11001,8 +11001,8 @@ Agricultural household
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-non-Muslim
+<td style="text-align:right;">
+Non-Muslim
 </td>
 <td style="text-align:center;">
 </td>
@@ -11014,7 +11014,7 @@ non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -11026,7 +11026,7 @@ non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;padding-left: 4em;" indentlevel="2">
 </td>
 <td style="text-align:center;">
 </td>
@@ -11039,7 +11039,7 @@ non-Muslim
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-non-Muslim <span class="math inline">\(\times\)</span> ag HH
+Non-Muslim <span class="math inline">\(\times\)</span> ag HH
 </td>
 <td style="text-align:center;">
 </td>
@@ -11062,13 +11062,13 @@ non-Muslim <span class="math inline">\(\times\)</span> ag HH
 (24.2)
 </td>
 </tr>
-<tr grouplength="9">
-<td colspan="4" style="border-bottom: 1px solid;">
+<tr grouplength="5">
+<td colspan="4" style="border-bottom: 1px solid;padding-left: 2em;" indentlevel="1">
 <strong>Boys+Girls</strong>
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -11080,7 +11080,7 @@ non-Muslim <span class="math inline">\(\times\)</span> ag HH
 </td>
 </tr>
 <tr>
-<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;">
 Agricultural household
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
@@ -11094,7 +11094,7 @@ Agricultural household
 </td>
 </tr>
 <tr>
-<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 (38.8)
@@ -11107,7 +11107,7 @@ Agricultural household
 </td>
 </tr>
 <tr>
-<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
 [-0.151, 0.067]
@@ -11120,8 +11120,8 @@ Agricultural household
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-non-Muslim
+<td style="text-align:right;">
+Non-Muslim
 </td>
 <td style="text-align:center;">
 </td>
@@ -11133,7 +11133,7 @@ non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -11145,7 +11145,7 @@ non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -11157,8 +11157,8 @@ non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
-non-Muslim <span class="math inline">\(\times\)</span> ag HH
+<td style="text-align:right;">
+Non-Muslim <span class="math inline">\(\times\)</span> ag HH
 </td>
 <td style="text-align:center;">
 </td>
@@ -11170,7 +11170,7 @@ non-Muslim <span class="math inline">\(\times\)</span> ag HH
 </td>
 </tr>
 <tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+<td style="text-align:right;">
 </td>
 <td style="text-align:center;">
 </td>
@@ -11326,7 +11326,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-flooded
+Flood
 </td>
 <td style="text-align:center;">
 0.045
@@ -11366,7 +11366,7 @@ flooded
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-flood <span class="math inline">\(\times\)</span> ag HH
+Flood <span class="math inline">\(\times\)</span> ag HH
 </td>
 <td style="text-align:center;">
 </td>
@@ -11448,7 +11448,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-flooded
+Flood
 </td>
 <td style="text-align:center;">
 -0.071
@@ -11488,7 +11488,7 @@ flooded
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-flood <span class="math inline">\(\times\)</span> ag HH
+Flood <span class="math inline">\(\times\)</span> ag HH
 </td>
 <td style="text-align:center;">
 </td>
@@ -11570,7 +11570,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-flooded2
+Flood
 </td>
 <td style="text-align:center;">
 -0.017
@@ -11610,7 +11610,7 @@ flooded2
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-flood <span class="math inline">\(\times\)</span> ag HH
+Flood <span class="math inline">\(\times\)</span> ag HH
 </td>
 <td style="text-align:center;">
 </td>
@@ -11904,7 +11904,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to stipend program
+Stipend program
 </td>
 <td style="text-align:center;">
 </td>
@@ -11989,7 +11989,7 @@ membership to stipend program
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to non-stipend program
+Non-stipend program
 </td>
 <td style="text-align:center;">
 </td>
@@ -12392,7 +12392,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to stipend program
+Stipend program
 </td>
 <td style="text-align:center;">
 </td>
@@ -12477,7 +12477,7 @@ membership to stipend program
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to non-stipend program
+Non-stipend program
 </td>
 <td style="text-align:center;">
 </td>
@@ -12880,7 +12880,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to stipend program
+Stipend program
 </td>
 <td style="text-align:center;">
 </td>
@@ -12965,7 +12965,7 @@ membership to stipend program
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to non-stipend program
+Non-stipend program
 </td>
 <td style="text-align:center;">
 </td>
@@ -13368,7 +13368,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to stipend program
+Stipend program
 </td>
 <td style="text-align:center;">
 </td>
@@ -13719,7 +13719,7 @@ Agricultural household
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-membership to stipend program
+Stipend program
 </td>
 <td style="text-align:center;">
 </td>

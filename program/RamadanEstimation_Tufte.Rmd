@@ -699,7 +699,7 @@ for (v in c(varcompare2, varcompare3)) {
   )
 }
 #### substitute variable names
-source(paste0(pathprogram, "substitution_table.R"))
+source(paste0(pathprogram, "SubstitutionTableForHTML.R"))
 colnames(SampleDiff) <- c("sample", "age", "variables", "overall",
   "agHH", "nonagHH", "t", "Satterthwaite")
 SampleDiff <- data.table(SampleDiff)
@@ -4788,9 +4788,9 @@ kt <- row_spec(kt, 0:1, align = paste0(rep("c", ncol(Tab)-1), collapse = ""),
   background = "#ffcc99")
 kt <- row_spec(kt, rep(grep("Agri", Tab[, "variables"]), each = 3)+0:2, bold = F, 
   color = "black", background = "#87cefa")
-kt <- pack_rows(kt, group_label="Boys", grep("Agri", rn)[1], grep(" Non.*ag", rn)[1]+2)
-kt <- pack_rows(kt, group_label="Girls", grep("Agri", rn)[2], grep(" Non.*ag", rn)[2]+2)
-kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rn)[3], grep(" Non.*ag", rn)[3]+2)
+kt <- pack_rows(kt, group_label="Boys", grep("Agri", rn)[1], grep(" Non", rn)[1]+2)
+kt <- pack_rows(kt, group_label="Girls", grep("Agri", rn)[2], grep(" Non", rn)[2]+2)
+kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rn)[3], grep(" Non", rn)[3]+2)
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
@@ -4827,7 +4827,7 @@ rn <- rownames(Tab)
 rn[-seq(1, length(rn), 3)] <- ""
 rn <- gsub("1$", "", rn)
 rn <- gsub("22$", "2", rn)
-rn <- gsub("m2$", "m", rn)
+rn <- gsub("d2$", "d", rn)
 ####  replace variable names, deleting std error names
 for (k in 1:nrow(sbt)){
   if (any(grepl(sbt[k, "org"], rn))) 
