@@ -131,7 +131,7 @@ data_sim <- fread(FPath("docs/Workshop2024Mar26/code/EstimationCode/R",
 ``
 
 
-```{r option setting 2, echo = T, eval = T, cache = F, warning = F, results = "hide"}
+```{r path and def files, echo = T, eval = T, cache = F, warning = F, results = "hide"}
 library(data.table)
 library(qs)
 pathprogram <- paste0(path, "program/");  
@@ -149,7 +149,7 @@ file.remove(list.files("program/cache", full.names = T))
 #### Uncommenting below deletes all input/output of R from html. Why???
 #### render_listings()	####	it changes "<-" to real arrows, etc., prettifying
 #### substitution table "sbt"
-source(paste0(pathprogram, "substitution_table.R"))
+source(paste0(pathprogram, "SubstitutionTableForHTML.R"))
 #### agHH defs, minAge, maxAge
 source(paste0(pathprogram, "DefinitionsAndParameters.R")) 
 #### Tabulation functions
@@ -3077,6 +3077,11 @@ rn[grepl("^CI|^p", rn)] <- ""
 rn2 <- c("R2", "N: agHH", "N", 
   paste0("mean of ", rep(c("treated in ", "control in "), 2), rep(c(1999, 2002), each = 2)))
 rnm <- rep(c(" ", rn, rn2), 3)
+####  replace variable names, deleting std error names
+for (k in 1:nrow(sbt)){
+  if (any(grepl(sbt[k, "org"], rnm))) 
+    rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
+}
 Tab <- cbind(covariates = rnm, Tab)
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 2)),
@@ -3095,11 +3100,11 @@ kt <- add_header_above(kt, c(" " = 1, "Agricultural HHs" = 3, "Agricultural HHs 
   background = bgcolor)
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
   background = bgcolor)
-kt <- row_spec(kt, rep(grep("^agHH.yr.$", Tab[, "variables"]), each = 3)+0:2, bold = T, 
+kt <- row_spec(kt, rep(grep("Agri", Tab[, "variables"]), each = 3)+0:2, bold = T, 
   color = "black", background = "#87cefa")
-kt <- pack_rows(kt, group_label="Boys+Girls", grep("^agH", rnm)[1]-1, grep("^agH", rnm)[1]+2)
-kt <- pack_rows(kt, group_label="Boys", grep("^agH", rnm)[2]-1, grep("^agH", rnm)[2]+2)
-kt <- pack_rows(kt, group_label="Girls", grep("^agH", rnm)[3]-1, grep("^agH", rnm)[3]+2)
+kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rnm)[1]-1, grep("Agri", rnm)[1]+2)
+kt <- pack_rows(kt, group_label="Boys", grep("Agri", rnm)[2]-1, grep("Agri", rnm)[2]+2)
+kt <- pack_rows(kt, group_label="Girls", grep("Agri", rnm)[3]-1, grep("Agri", rnm)[3]+2)
 kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
@@ -3179,6 +3184,15 @@ rn[grepl("^CI|^p", rn)] <- ""
 rn2 <- c("R2", "N: agHH", "N", 
   paste0("mean of ", rep(c("treated in ", "control in "), 2), rep(c(1999, 2002), each = 2)))
 rnm <- rep(c(" ", rn, rn2), 2)
+####  replace variable names, deleting std error names
+for (k in 1:nrow(sbt)){
+  if (any(grepl(sbt[k, "org"], rnm))) 
+    rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
+}
+rnm <- gsub("\\\\hspace\\{.5em\\}", "    ",
+####  "<span><span style=\"margin-left: 1em\" />", 
+####  "<img src=\"transparent.png\" height=\".1px\" width=\".5em\">", rnm)
+rnm)
 Tab <- cbind(covariates = rnm, Tab)
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
@@ -3197,10 +3211,10 @@ kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T,
   bootstrap_options = c("condensed"))
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
   background = bgcolor)
-kt <- row_spec(kt, rep(grep("^agHH.yr.$", Tab[, "variables"]), each = 3)+0:2, bold = T, 
+kt <- row_spec(kt, rep(grep("Agri", Tab[, "variables"]), each = 3)+0:2, bold = F, 
   color = "black", background = "#87cefa")
-kt <- pack_rows(kt, group_label="Primary", grep("^agH", rnm)[1]-1, grep("^agH", rnm)[2]-2)
-kt <- pack_rows(kt, group_label="Secondary", grep("^agH", rnm)[2]-1, grep("mean.*2002", rnm)[2])
+kt <- pack_rows(kt, group_label="Primary", grep("Agri", rnm)[1]-1, grep("Agri", rnm)[2]-2)
+kt <- pack_rows(kt, group_label="Secondary", grep("Agri", rnm)[2]-1, grep("mean.*2002", rnm)[2])
 kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
@@ -3281,6 +3295,11 @@ for (jj in 1:2) {
   rn2 <- c("R2", "N: agHH", "N", 
     paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(2002, 2006), each = 2)))
   rnm <- rep(c(" ", rn, rn2), 3)
+  ####  replace variable names, deleting std error names
+  for (k in 1:nrow(sbt)){
+    if (any(grepl(sbt[k, "org"], rnm))) 
+      rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
+  }
   Tab0 <- cbind(covariates = rnm, Tab0)
   Tab0 <- rbind(Tab0, 
     "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 2)),
@@ -3302,8 +3321,8 @@ kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T,
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
   background = bgcolor)
 #### Hilight main effects
-aghhrows <- grep("^agHH.yr.$", Tab[, 1])
-kt <- row_spec(kt, rep(aghhrows, each = 3)+rep(0:2, length(aghhrows)), bold = T, 
+aghhrows <- grep("Agri", Tab[, 1])
+kt <- row_spec(kt, rep(aghhrows, each = 3)+rep(0:2, length(aghhrows)), bold = F, 
   color = "black", background = "#87cefa")
 #### Grouping rows
 kt <- pack_rows(kt, group_label="2002 cohort: Boys+girls", aghhrows[1]-1, aghhrows[2]-2)
@@ -4747,6 +4766,12 @@ rn[-seq(1, length(rn), 3)] <- ""
 rn <- gsub("1$", "", rn)
 rn <- gsub("22$", "2", rn)
 rn <- gsub("m2$", "m", rn)
+####  replace variable names, deleting std error names
+for (k in 1:nrow(sbt)){
+  if (any(grepl(sbt[k, "org"], rn))) 
+    rn[grep(sbt[k, "org"], rn)] <- sbt[k, "changedto"]
+}
+rn <- gsub("\\\\hspace\\{.5em\\}", "    ", rn)
 Tab <- cbind(covariates = rn, Tab)
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", "", "Y", "Y"),
@@ -4761,11 +4786,11 @@ kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T,
   bootstrap_options = c("condensed"))
 kt <- row_spec(kt, 0:1, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
   background = "#ffcc99")
-kt <- row_spec(kt, rep(grep("^agHH.yr.$", Tab[, "variables"]), each = 3)+0:2, bold = T, 
+kt <- row_spec(kt, rep(grep("Agri", Tab[, "variables"]), each = 3)+0:2, bold = F, 
   color = "black", background = "#87cefa")
-kt <- pack_rows(kt, group_label="Boys", grep("^agH", rn)[1], grep("^non.*ag.*yr", rn)[1]+2)
-kt <- pack_rows(kt, group_label="Girls", grep("^agH", rn)[2], grep("^non.*ag.*yr", rn)[2]+2)
-kt <- pack_rows(kt, group_label="Boys+Girls", grep("^agH", rn)[3], grep("^non.*ag.*yr", rn)[3]+2)
+kt <- pack_rows(kt, group_label="Boys", grep("Agri", rn)[1], grep(" Non.*ag", rn)[1]+2)
+kt <- pack_rows(kt, group_label="Girls", grep("Agri", rn)[2], grep(" Non.*ag", rn)[2]+2)
+kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rn)[3], grep(" Non.*ag", rn)[3]+2)
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
@@ -4803,6 +4828,12 @@ rn[-seq(1, length(rn), 3)] <- ""
 rn <- gsub("1$", "", rn)
 rn <- gsub("22$", "2", rn)
 rn <- gsub("m2$", "m", rn)
+####  replace variable names, deleting std error names
+for (k in 1:nrow(sbt)){
+  if (any(grepl(sbt[k, "org"], rn))) 
+    rn[grep(sbt[k, "org"], rn)] <- sbt[k, "changedto"]
+}
+rn <- gsub("\\\\hspace\\{.5em\\}", "    ", rn)
 Tab <- cbind(covariates = rn, Tab)
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", "", "", ""),
@@ -4817,11 +4848,11 @@ kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T,
   bootstrap_options = c("condensed"))
 kt <- row_spec(kt, 0:1, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
   background = "#ffcc99")
-kt <- row_spec(kt, rep(grep("^agHH.yr.$", Tab[, "variables"]), each = 3)+0:2, bold = T, 
+kt <- row_spec(kt, rep(grep("Agri", Tab[, "variables"]), each = 3)+0:2, bold = F, 
   color = "black", background = "#87cefa")
-kt <- pack_rows(kt, group_label="Boys", grep("^agH", rn)[1], grep("^fl.*ag.*yr", rn)[1]+2)
-kt <- pack_rows(kt, group_label="Girls", grep("^agH", rn)[2], grep("^fl.*ag.*yr", rn)[2]+2)
-kt <- pack_rows(kt, group_label="Boys+Girls", grep("^agH", rn)[3], grep("^fl.*ag.*yr", rn)[3]+2)
+kt <- pack_rows(kt, group_label="Boys", grep("Agri", rn)[1], grep(" Fl.*ag", rn)[1]+2)
+kt <- pack_rows(kt, group_label="Girls", grep("Agri", rn)[2], grep(" Fl.*ag", rn)[2]+2)
+kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rn)[3], grep(" Fl.*ag", rn)[3]+2)
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
@@ -6524,9 +6555,14 @@ rnm22 <- c(" ", rn22, r2n2)
 rnm31 <- c(" ", rn31, r2n1)
 rnm41 <- c(" ", rn41, r2ncross9)
 rnm42 <- c(" ", rn41, r2ncross2)
-Tab <- as.matrix(cbind(covariates = 
-  c(rnm11, rnm21, rnm31, rnm41, rnm42, rnm12, rnm22)
-  , Tab))
+rnm <- c(rnm11, rnm21, rnm31, rnm41, rnm42, rnm12, rnm22)
+####  replace variable names, deleting std error names
+for (k in 1:nrow(sbt)){
+  if (any(grepl(sbt[k, "org"], rnm))) 
+    rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
+}
+rnm <- gsub("\\\\hspace\\{.5em\\}", "    ", rnm)
+Tab <- as.matrix(cbind(covariates = rnm, Tab))
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
   "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 3)))
@@ -6542,7 +6578,7 @@ kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T,
   bootstrap_options = c("condensed"))
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)), collapse = ""), 
   background = bgcolor)
-aghhrows <- grep("^agH", as.character(unlist(Tab[, 1])))
+aghhrows <- grep("Agri", as.character(unlist(Tab[, 1])))
 kt <- row_spec(kt, rep(aghhrows, each = 3)+0:2, 
   color = "black", background = "#87cefa")
 kt <- pack_rows(kt, group_label="Grade progression: Students enrolled in 1999", 
