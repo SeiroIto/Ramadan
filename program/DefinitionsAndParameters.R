@@ -38,3 +38,17 @@ placeboitems <- c("1999 cohort", "2002 cohort")
 ##### Other outcomes
 gdfiles <- c("grade initial enr", "grade enr", "absent enr", "absent cross sec")
 
+
+#### ggplot theme
+ThisTheme <- ggplot2::theme(
+   axis.text.x = element_text(size = 12, angle = 0, vjust = 1, hjust = .5), 
+   axis.text.y = element_text(size = 12), 
+   axis.title = element_text(size = 10), 
+   strip.text.x = element_text(color = "blue", size = 8, 
+     margin = margin(0, 1.25, 0, 1.25, "cm")), 
+   strip.text.y = element_text(color = "blue", size = 8, 
+     margin = margin(1.5, 0, 1.5, 0, "cm")),
+   panel.spacing.x = unit(c(.1), units = "cm"),
+   panel.spacing.y = unit(.1, units = "cm"), 
+   legend.position = "none")
+ThisThemeEnd <- ThisTheme + ggplot2::theme(legend.position="bottom")

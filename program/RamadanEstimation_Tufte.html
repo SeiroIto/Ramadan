@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年04月22日 18:00</h4>
+<h4 class="date">2024年04月26日 11:28</h4>
 
 
 <div id="TOC">
@@ -361,6 +361,19 @@ if (window.hljs) {
 <li><a href="#placebo-estimation-results">Placebo estimation results</a></li>
 <li><a href="#non-muslim-and-flooded">Non Muslim and Flooded</a></li>
 <li><a href="#other-schooling-outcomes-grade-progression-and-days-absent-per-month">Other schooling outcomes: Grade progression and days absent per month</a></li>
+</ul></li>
+<li><a href="#appendix-tables">Appendix tables</a>
+<ul>
+<li><a href="#main">Main</a>
+<ul>
+<li><a href="#by-gender-and-by-aghh-def">By gender and by aghh def</a></li>
+<li><a href="#by-different-age-cutoff">By different age cutoff</a></li>
+</ul></li>
+<li><a href="#by-age-group">By age group</a></li>
+<li><a href="#placebo">Placebo</a>
+<ul>
+<li><a href="#by-gender-and-by-aghh-def-1">By gender and by aghh def</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#memo-on-fd-and-did">Memo on FD and DID</a></li>
 </ul>
@@ -1763,6 +1776,12 @@ regressorsM2024Feb28 &lt;-
   c(&quot;^\\(Interce&quot;, 
     paste(indivonlyage, yield, weather.variables1, StipendProg, area2, sep = &quot;|&quot;),
     paste(indivnoagesib2, hdedunoagHH2, spedunoagHH2, hygiene2, sep = &quot;|&quot;))
+regressorsM2024Apr23 &lt;- 
+  c(&quot;^\\(Interce&quot;, 
+    #paste(indivonlyage, yield, weather.variables1, StipendProg, area2, sep = &quot;|&quot;),
+    paste(indivonlyage, StipendProg, sep = &quot;|&quot;),
+    paste(yield, weather.variables1, area2, sep = &quot;|&quot;),
+    paste(indivnoagesib2, hdedunoagHH2, spedunoagHH2, hygiene2, sep = &quot;|&quot;))
 regressorsM2024Feb23 &lt;- 
   c(&quot;^\\(Interce&quot;, 
     paste(indivage2, yield, weather.variables1, prog, sep = &quot;|&quot;),
@@ -1858,6 +1877,10 @@ k: specification</p>
 </li>
 <li>Use <code>DID2</code> with the first-differenced estimation data.</li>
 </ol>
+<pre class="SeiroLightGreen"><code>Previous and new estimates</code></pre>
+<p>Common previous and current covariates: (Intercept), highMeanY, lowMeanY, rainfallMeanY, yield, age2, agHH.yr2, sex.yr2, hd.edulevel.primary.yr2, hd.edulevel.secondary.yr2, sp.edulevel.primary.yr2, sp.edulevel.secondary.yr2, pcnlasset.yr2, pcland.yr2, ownwater.yr2, kutchalatrine.yr2, OldSibF.yr2, OldSibM.yr2, dummyAailjhar.yr2, dummyChokoria.yr2, dummyHaziganj.yr2, sex.agHH.yr2, pcnlasset.agHH.yr2, pcland.agHH.yr2, ownwater.agHH.yr2, kutchalatrine.agHH.yr2, OldSibF.agHH.yr2, OldSibM.agHH.yr2</p>
+<p>Covariates only in previous spec 7: program</p>
+<p>Covariates only in current spec 4: StipendProgram, NonStipendProgram</p>
 <pre class="r SeiroBenign"><code>#### Estimation by main/placebo * aghh.defs * age lb 
 ####    * gender * demeaned/level interaction * HHtype
 #### with LiangZeger or Satterthwaite CRSEs.
@@ -1923,11 +1946,11 @@ reorder.list &lt;- list(
 boxWidth &lt;- 4
 centerWidth &lt;- 1.3
 Enr.Base &lt;- Enrchg.Base &lt;- NULL
+samples &lt;- c(&quot;main&quot;, &quot;placebo&quot;)
 results &lt;- resultsN &lt;- vector(&quot;list&quot;, length = length(samples)) # ii
 names(results) &lt;- names(resultsN) &lt;- samples
 ii &lt;- jj &lt;-  m &lt;- s &lt;- 1
 j &lt;- 2; ge &lt;- 3
-samples &lt;- c(&quot;main&quot;, &quot;placebo&quot;)
 z234 &lt;- c(&quot;z2&quot;, &quot;z3&quot;, &quot;z4&quot;)
 zsobj &lt;- c(&quot;zmobj&quot;, &quot;zpobj&quot;)
 zmobj &lt;- c(&quot;zEm.1999&quot;, &quot;zSm.1999&quot;)[1]
@@ -2454,10 +2477,6 @@ setnames(Enr.Base, c(&quot;sample&quot;, &quot;HHtype&quot;, &quot;agHHdef&quot;
 qsave(Enr.Base, &quot;../save/Enr2024.Base.qs&quot;)
 qsave(Enrchg.Base, &quot;../save/Enrchg2024.Base.qs&quot;)</code></pre>
 <p>Results of 10 - 18, nuclear, boys and girls. Compare with previous results. Previous results also include sex*agHH*yr in specifications 2 to 7. So specification 1 for both estimation and new, spec 4 and previous spec 7 are comparable.</p>
-<pre class="SeiroLightGreen"><code>Previous and new estimates</code></pre>
-<p>Common previous and current covariates: (Intercept), highMeanY, lowMeanY, rainfallMeanY, yield, age2, agHH.yr2, sex.yr2, hd.edulevel.primary.yr2, hd.edulevel.secondary.yr2, sp.edulevel.primary.yr2, sp.edulevel.secondary.yr2, pcnlasset.yr2, pcland.yr2, ownwater.yr2, kutchalatrine.yr2, OldSibF.yr2, OldSibM.yr2, dummyAailjhar.yr2, dummyChokoria.yr2, dummyHaziganj.yr2, sex.agHH.yr2, pcnlasset.agHH.yr2, pcland.agHH.yr2, ownwater.agHH.yr2, kutchalatrine.agHH.yr2, OldSibF.agHH.yr2, OldSibM.agHH.yr2</p>
-<p>Covariates only in previous spec 7: program</p>
-<p>Covariates only in current spec 4: StipendProgram, NonStipendProgram</p>
 <pre class="SeiroLightGreen"><code>[1] TRUE</code></pre>
 <pre class="SeiroLightGreen"><code>   uniquid survey      anyprog program program2
 1: 4360.04   2002 Grameen Bank   FALSE        1
@@ -6648,7 +6667,7 @@ N
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 1999
+mean of control in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -6667,7 +6686,7 @@ mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 1999
+mean of control in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -6686,7 +6705,7 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 2002
+mean of treated in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -6705,7 +6724,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 2002
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -6989,7 +7008,7 @@ N
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 1999
+mean of control in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -7008,7 +7027,7 @@ mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 1999
+mean of control in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -7027,7 +7046,7 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 2002
+mean of treated in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -7046,7 +7065,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 2002
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -7330,7 +7349,7 @@ N
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 1999
+mean of control in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -7349,7 +7368,7 @@ mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 1999
+mean of control in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -7368,7 +7387,7 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 2002
+mean of treated in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -7387,7 +7406,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 2002
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -7479,7 +7498,9 @@ Y
 </li>
 <li>Impacts are most strongly found among boys.<br />
 </li>
-<li>Impacts on girls are negative, but the size is small and estimates are noisy.</li>
+<li>Impacts on girls are negative, but the size is small and estimates are noisy.<br />
+</li>
+<li>Note: Corr(lowMeanY, highMeanY)=.193 using regression data for boys, nuclear, 10 - 18. So the estimates on these covariates are not suffering from biases arising from multicollinearity.</li>
 </ul>
 </div>
 <div id="age-group-wise-estimation-results" class="section level2">
@@ -7912,7 +7933,7 @@ N
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 1999
+mean of control in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -7938,7 +7959,7 @@ mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 1999
+mean of control in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -7964,7 +7985,7 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+mean of treated in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -7990,7 +8011,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2002
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -8382,7 +8403,7 @@ N
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 1999
+mean of control in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -8408,7 +8429,7 @@ mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 1999
+mean of control in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -8434,7 +8455,7 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of treated in 2002
+mean of treated in 1999
 </td>
 <td style="text-align:center;">
 </td>
@@ -8460,7 +8481,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;">
-mean of control in 2002
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -8909,7 +8930,7 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+mean of control in 2006
 </td>
 <td style="text-align:center;">
 </td>
@@ -8928,7 +8949,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2006
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -9250,7 +9271,7 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+mean of control in 2006
 </td>
 <td style="text-align:center;">
 </td>
@@ -9269,7 +9290,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2006
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -9591,7 +9612,7 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+mean of control in 2006
 </td>
 <td style="text-align:center;">
 </td>
@@ -9610,7 +9631,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2006
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -9977,7 +9998,7 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+mean of control in 2006
 </td>
 <td style="text-align:center;">
 </td>
@@ -9996,7 +10017,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2006
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -10318,7 +10339,7 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+mean of control in 2006
 </td>
 <td style="text-align:center;">
 </td>
@@ -10337,7 +10358,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2006
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -10659,7 +10680,7 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
+mean of control in 2006
 </td>
 <td style="text-align:center;">
 </td>
@@ -10678,7 +10699,7 @@ mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of control in 2006
+mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
@@ -12184,32 +12205,6 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 1999
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.2025
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.2000
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.2043
-</td>
-<td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of control in 2002
 </td>
 <td style="text-align:center;">
@@ -12236,26 +12231,52 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+5.0261
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+5.1081
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.9496
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.2883
+6.7565
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.2000
+6.5225
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.3548
+6.9748
 </td>
 <td style="text-align:center;">
 </td>
@@ -12672,32 +12693,6 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 1999
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.0504
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.1176
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.0000
-</td>
-<td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of control in 2002
 </td>
 <td style="text-align:center;">
@@ -12724,26 +12719,52 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.7021
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.4906
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.8295
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.4202
+6.9504
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.3137
+6.4906
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.5000
+7.2273
 </td>
 <td style="text-align:center;">
 </td>
@@ -13160,32 +13181,6 @@ mean of control in 1999
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 1999
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-3.3697
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-3.7582
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-3.0784
-</td>
-<td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of control in 2002
 </td>
 <td style="text-align:center;">
@@ -13212,26 +13207,52 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.3773
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.5714
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+3.2538
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of treated in 2002
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-2.7857
+3.7500
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-2.5000
+4.1339
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-3.0000
+3.5057
 </td>
 <td style="text-align:center;">
 </td>
@@ -14180,32 +14201,6 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.2025
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.2000
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.2043
-</td>
-<td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of control in 2006
 </td>
 <td style="text-align:center;">
@@ -14232,26 +14227,52 @@ mean of control in 2006
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+5.0261
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+5.1081
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.9496
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of treated in 2006
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.2883
+6.7565
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.2000
+6.5225
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.3548
+6.9748
 </td>
 <td style="text-align:center;">
 </td>
@@ -14498,32 +14519,6 @@ mean of control in 2002
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-mean of treated in 2002
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.0504
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.1176
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-5.0000
-</td>
-<td style="text-align:center;">
-</td>
-</tr>
-<tr>
-<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of control in 2006
 </td>
 <td style="text-align:center;">
@@ -14550,26 +14545,52 @@ mean of control in 2006
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
+mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.7021
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.4906
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+4.8295
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
 mean of treated in 2006
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.4202
+6.9504
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.3137
+6.4906
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-7.5000
+7.2273
 </td>
 <td style="text-align:center;">
 </td>
@@ -14662,7 +14683,11 @@ Y
 <ul>
 <li>Grade progreesion and days absent impacts are consistent with main results.<br />
 </li>
-<li>Grade progression impacts are negative and delays progression by .35-40 years in a three year period (0.12, 0.13 per annum or 1.05, 1.2 months). Only the larger sample gives small <span class="math inline">\(p\)</span> values. Impacts on boys are larger in magnitude yet the sample size is too small, because we must condition on children who are enrolled in 1999.<br />
+<li>Grade progression impact estimates are negative. Exam-harvest overlap delays progression by .35-40 years (4.2, 4.8 months). Only the larger sample gives small <span class="math inline">\(p\)</span> values. Impacts on boys are larger in magnitude yet the sample size is too small, because we must condition on children who are enrolled in 1999.<br />
+</li>
+<li>One year impact: As the calendar was favorable in 1999-2001, we consider these estimates as a one year impact because the negative effects were realised only in the academic year of 2002 which were captured in the survey in 2003.<br />
+</li>
+<li>What this means: Even when the children of agricultural households are not dropping out of school, at least a third of them lag behind in one grade progression relative to the children of non-agricultural households.<br />
 </li>
 <li>Stipend and non-stipend programs help increase the progression for 1.3-1.5 year in a three year period among girls, but not among boys.<br />
 </li>
@@ -14674,14 +14699,4400 @@ Y
 </li>
 <li>Stipend and non-stipend programs may improve grade progression among girls, and they may improve daily attendance among boys. While it is unclear why they only affect atendance but not progression among boys, girls may attend schools constantly with or without them because they are less engaged in remunerative work. Lower opportunity costs of schooling among girls may also allow a stronger responce to programs in terms of progression.<br />
 </li>
+<li>One possible interpretation is: Boys respond in terms of daily attendance/absence, but not in terms of progression. Opposite is true for girls.<br />
+</li>
 <li>Cross sectional estimates in 2003 (using enrollers of 1999 and 2002) show a monthly 1.0 - 1.2 day increase for children of agricultural households. This reflects that the survey asks days absent of June - August of 2003, which coincide with July-August planting period.<br />
 </li>
-<li>In contrast to this, cross sectional estimates in 2000 (using enrollers of 1999 and 2002) show a zero increase for children of agricultural households. In 1999, children from agricultural households benefited from the exam preponement. While we do not have information to support the claim, it is possible that these children who progressed to the next grade may have opted not to work in the field during the planting period of 2000.<br />
+<li>In contrast to this, cross sectional estimates in 2000 (using enrollers of 1999 and 2002) show a zero increase for children of agricultural households. In 1999, children from agricultural households benefited from the exam preponement.<br />
 </li>
-<li>Placebo estimation using 2002 cohort shows children from agricultural households tend to progress more slowly by 0.04, 0.06 year per annum (0.51, 0.69 months), which are roughly half in size of the 1999 impacts, although the <span class="math inline">\(p\)</span> values for placebo estimation are around 10% and are not as small as 1999 impact estimates.<br />
+<li>While we do not have information to support the claim, it is possible that these children who progressed to the next grade may have opted not to work in the field during the planting period of 2000.<br />
+</li>
+<li>Placebo estimation using 2002 cohort shows the children from agricultural households tend to progress more slowly by 0.04, 0.06 year per annum (0.51, 0.69 months), which are roughly half the size of 1999 impacts, although the <span class="math inline">\(p\)</span> values for placebo estimation are around 10% and are not as small as the 1999 impact estimates.<br />
 </li>
 <li>Placebo estimation using 1999 cohort shows statistically zero impacts of grade progression, consistent with our maintained hypothesis.</li>
 </ul>
+</div>
+</div>
+<div id="appendix-tables" class="section level1">
+<h1>Appendix tables</h1>
+<div id="main" class="section level2">
+<h2>Main</h2>
+<div id="by-gender-and-by-aghh-def" class="section level3">
+<h3>By gender and by aghh def</h3>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; border-bottom: 0;">
+<p><!--
+<caption>--><span class="marginnote shownote">Main results: Enrollment impacts for year 1999-2002, 10-18 years old, direct offspring, Satterthwaite correction</span><!--</caption>--></p>
+<table class="table table-condensed" style="width: auto !important; ">
+
+
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;position: sticky; top:0; background-color: #FFFFFF;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; padding-right: 4px; padding-left: 4px; background-color: #ffcc99 !important;position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Boys+girls
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; padding-right: 4px; padding-left: 4px; background-color: #ffcc99 !important;position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Boys
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; padding-right: 4px; padding-left: 4px; background-color: #ffcc99 !important;position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Girls
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+variables
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 3
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 3
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 3
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>agHH0</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+8
+</td>
+<td style="text-align:center;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0419
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0571
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0770
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0975
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1287
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1202
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.0088
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0242
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0472
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.131, 0.047)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.109, -0.005)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.126, -0.028)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.239, 0.045)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.221, -0.037)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.186, -0.054)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.129, 0.147)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.160, 0.111)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.184, 0.089)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.151, 0.067]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.123, 0.008]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.144, -0.009]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.280, 0.085]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.245, -0.012]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.211, -0.029]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.163, 0.180]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.200, 0.152]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.240, 0.145]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0286
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.1106
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0289
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.090, 0.033)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.186, -0.035)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.136, 0.193)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.119, 0.062]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.210, -0.011]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.219, 0.277]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0964
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0521
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0911
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.191, -0.002)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.149, 0.045)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.193, 0.011)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.229, 0.036]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.209, 0.105]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.231, 0.048]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0018
+</td>
+<td style="text-align:center;">
+0.4421
+</td>
+<td style="text-align:center;">
+0.4839
+</td>
+<td style="text-align:center;">
+0.0096
+</td>
+<td style="text-align:center;">
+0.3662
+</td>
+<td style="text-align:center;">
+0.4148
+</td>
+<td style="text-align:center;">
+0.0001
+</td>
+<td style="text-align:center;">
+0.5925
+</td>
+<td style="text-align:center;">
+0.6104
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+384
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+197
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+187
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+626
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+306
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+320
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7769
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7156
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.8271
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7135
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6396
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7914
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4959
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4679
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5188
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3906
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2944
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4920
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>isagHH</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+10
+</td>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+13
+</td>
+<td style="text-align:center;">
+14
+</td>
+<td style="text-align:center;">
+15
+</td>
+<td style="text-align:center;">
+16
+</td>
+<td style="text-align:center;">
+17
+</td>
+<td style="text-align:center;">
+18
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0561
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0661
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0899
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1290
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1550
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1441
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.0105
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0268
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0503
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.148, 0.036)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.123, -0.010)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.134, -0.046)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.267, 0.009)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.247, -0.063)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.197, -0.092)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.128, 0.149)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.159, 0.106)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.184, 0.084)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.169, 0.057]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.136, 0.004]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.151, -0.029]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.305, 0.047]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.270, -0.040]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.221, -0.067]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.159, 0.180]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.196, 0.143]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.237, 0.136]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0228
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0840
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0080
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.088, 0.042)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.158, -0.010)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.162, 0.178)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.114, 0.068]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.185, 0.017]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.241, 0.257]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0904
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0280
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.1040
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.177, -0.004)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.130, 0.074)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.169, -0.039)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.209, 0.028]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.190, 0.134]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.189, -0.019]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0033
+</td>
+<td style="text-align:center;">
+0.4432
+</td>
+<td style="text-align:center;">
+0.4868
+</td>
+<td style="text-align:center;">
+0.0173
+</td>
+<td style="text-align:center;">
+0.3734
+</td>
+<td style="text-align:center;">
+0.4186
+</td>
+<td style="text-align:center;">
+0.0001
+</td>
+<td style="text-align:center;">
+0.5926
+</td>
+<td style="text-align:center;">
+0.6124
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+360
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+189
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+171
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+626
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+306
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+320
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7744
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7094
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.8255
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7111
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6402
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7895
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5000
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4786
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5168
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3806
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2804
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4912
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>hdagHH</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+19
+</td>
+<td style="text-align:center;">
+20
+</td>
+<td style="text-align:center;">
+21
+</td>
+<td style="text-align:center;">
+22
+</td>
+<td style="text-align:center;">
+23
+</td>
+<td style="text-align:center;">
+24
+</td>
+<td style="text-align:center;">
+25
+</td>
+<td style="text-align:center;">
+26
+</td>
+<td style="text-align:center;">
+27
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0897
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0761
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0846
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1749
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1521
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1445
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0097
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0294
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0423
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.177, -0.003)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.126, -0.026)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.134, -0.035)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.330, -0.020)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.232, -0.073)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.192, -0.097)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.097, 0.078)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.150, 0.091)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.173, 0.088)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.197, 0.018]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.140, -0.012]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.153, -0.016]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.368, 0.019]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.251, -0.053]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.206, -0.083]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.119, 0.100]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.187, 0.128]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.223, 0.138]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0281
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0817
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0088
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.091, 0.035)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.162, -0.001)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.166, 0.183)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.113, 0.057]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.189, 0.026]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.248, 0.266]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0573
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0057
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0721
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.150, 0.035)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.090, 0.079)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.170, 0.026)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.179, 0.064]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.128, 0.117]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.204, 0.060]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0085
+</td>
+<td style="text-align:center;">
+0.4446
+</td>
+<td style="text-align:center;">
+0.4839
+</td>
+<td style="text-align:center;">
+0.0328
+</td>
+<td style="text-align:center;">
+0.3738
+</td>
+<td style="text-align:center;">
+0.4199
+</td>
+<td style="text-align:center;">
+0.0001
+</td>
+<td style="text-align:center;">
+0.5928
+</td>
+<td style="text-align:center;">
+0.6084
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+346
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+177
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+169
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+626
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+306
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+320
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7464
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6512
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.8278
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7312
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6780
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7870
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4893
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4419
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5298
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3844
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2938
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4793
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>ocagHH</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+28
+</td>
+<td style="text-align:center;">
+29
+</td>
+<td style="text-align:center;">
+30
+</td>
+<td style="text-align:center;">
+31
+</td>
+<td style="text-align:center;">
+32
+</td>
+<td style="text-align:center;">
+33
+</td>
+<td style="text-align:center;">
+34
+</td>
+<td style="text-align:center;">
+35
+</td>
+<td style="text-align:center;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0111
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0402
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0535
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0556
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1194
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1024
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.0313
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0024
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0172
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.090, 0.068)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.085, 0.004)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.084, -0.023)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.175, 0.064)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.209, -0.029)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.178, -0.026)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.107, 0.170)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.119, 0.114)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.132, 0.098)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.108, 0.085]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.095, 0.014]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.099, -0.008]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.206, 0.095]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.229, -0.010]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.203, -0.002]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.140, 0.202]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.148, 0.144]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.178, 0.144]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0159
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0758
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0265
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.077, 0.045)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.160, 0.008)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.111, 0.164)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.098, 0.067]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.192, 0.041]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.178, 0.230]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0672
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0312
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0563
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.162, 0.028)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.134, 0.072)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.163, 0.050)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.195, 0.060]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.182, 0.120]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.198, 0.086]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0001
+</td>
+<td style="text-align:center;">
+0.4407
+</td>
+<td style="text-align:center;">
+0.4790
+</td>
+<td style="text-align:center;">
+0.0033
+</td>
+<td style="text-align:center;">
+0.3655
+</td>
+<td style="text-align:center;">
+0.4043
+</td>
+<td style="text-align:center;">
+0.0010
+</td>
+<td style="text-align:center;">
+0.5920
+</td>
+<td style="text-align:center;">
+0.6064
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+340
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+180
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+160
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+626
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+306
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+320
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7867
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7222
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.8375
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 1999
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6971
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6278
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7750
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4860
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4444
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5188
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3853
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2944
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4875
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Common specifications</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+Thana fixed trends
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+Y
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+HH fixed trends
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+</tr>
+</tbody>
+</table>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Sample of direct offspring of household heads.
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+</td>
+</tr>
+</tfoot>
+</div>
+</div>
+<div id="by-different-age-cutoff" class="section level3">
+<h3>By different age cutoff</h3>
+<pre class="SeiroLightGreen"><code>                                               V1                               V2                               
+ &quot;Agricultural households * year 2002&quot;         &quot;-0.0419^{\\phantom{***}}&quot;       &quot;-0.0571^{*\\phantom{**}}&quot;       
+ &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;\\mbox{\\tiny (-0.131, 0.047)}&quot; &quot;\\mbox{\\tiny (-0.109, -0.005)}&quot;
+ &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;\\mbox{\\tiny [-0.151, 0.067]}&quot; &quot;\\mbox{\\tiny [-0.123, 0.008]}&quot; 
+ &quot;\\underline{\\phantom{mm}} * Older sisters&quot;  &quot;&quot;                               &quot;&quot;                               
+ &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               &quot;&quot;                               
+ &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               &quot;&quot;                               
+ &quot;\\underline{\\phantom{mm}} * Older brothers&quot; &quot;&quot;                               &quot;&quot;                               
+ &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               &quot;&quot;                               
+ &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               &quot;&quot;                               
+ &quot;$\\bar{R}^{2}$&quot;                              &quot;0.0018&quot;                         &quot;0.4421&quot;                         
+ &quot;N: Agricultural HHs&quot;                         &quot; &quot;                              &quot;384&quot;                            
+ &quot;N&quot;                                           &quot; &quot;                              &quot;626&quot;                            
+ &quot;Mean of control in 1999&quot;                     &quot; &quot;                              &quot;0.7769&quot;                         
+ &quot;Mean of treated in 1999&quot;                     &quot; &quot;                              &quot;0.7135&quot;                         
+ &quot;Mean of control in 2002&quot;                     &quot; &quot;                              &quot;0.4959&quot;                         
+ &quot;Mean of treated in 2002&quot;                     &quot; &quot;                              &quot;0.3906&quot;                         
+ V3                                V4                               V5                               
+ &quot;-0.0770^{**\\phantom{*}}&quot;        &quot;-0.0975^{\\phantom{***}}&quot;       &quot;-0.1287^{**\\phantom{*}}&quot;       
+ &quot;\\mbox{\\tiny (-0.126, -0.028)}&quot; &quot;\\mbox{\\tiny (-0.239, 0.045)}&quot; &quot;\\mbox{\\tiny (-0.221, -0.037)}&quot;
+ &quot;\\mbox{\\tiny [-0.144, -0.009]}&quot; &quot;\\mbox{\\tiny [-0.280, 0.085]}&quot; &quot;\\mbox{\\tiny [-0.245, -0.012]}&quot;
+ &quot;-0.0286^{\\phantom{***}}&quot;        &quot;&quot;                               &quot;&quot;                               
+ &quot;\\mbox{\\tiny (-0.090, 0.033)}&quot;  &quot;&quot;                               &quot;&quot;                               
+ &quot;\\mbox{\\tiny [-0.119, 0.062]}&quot;  &quot;&quot;                               &quot;&quot;                               
+ &quot;-0.0964^{\\phantom{***}}&quot;        &quot;&quot;                               &quot;&quot;                               
+ &quot;\\mbox{\\tiny (-0.191, -0.002)}&quot; &quot;&quot;                               &quot;&quot;                               
+ &quot;\\mbox{\\tiny [-0.229, 0.036]}&quot;  &quot;&quot;                               &quot;&quot;                               
+ &quot;0.4839&quot;                          &quot;0.0096&quot;                         &quot;0.3662&quot;                         
+ &quot; &quot;                               &quot; &quot;                              &quot;197&quot;                            
+ &quot; &quot;                               &quot; &quot;                              &quot;306&quot;                            
+ &quot; &quot;                               &quot; &quot;                              &quot;0.7156&quot;                         
+ &quot; &quot;                               &quot; &quot;                              &quot;0.6396&quot;                         
+ &quot; &quot;                               &quot; &quot;                              &quot;0.4679&quot;                         
+ &quot; &quot;                               &quot; &quot;                              &quot;0.2944&quot;                         
+ V6                                V7                                    V8                              
+ &quot;-0.1202^{**\\phantom{*}}&quot;        &quot;\\phantom{-}0.0088^{\\phantom{***}}&quot; &quot;-0.0242^{\\phantom{***}}&quot;      
+ &quot;\\mbox{\\tiny (-0.186, -0.054)}&quot; &quot;\\mbox{\\tiny (-0.129, 0.147)}&quot;      &quot;\\mbox{\\tiny (-0.160, 0.111)}&quot;
+ &quot;\\mbox{\\tiny [-0.211, -0.029]}&quot; &quot;\\mbox{\\tiny [-0.163, 0.180]}&quot;      &quot;\\mbox{\\tiny [-0.200, 0.152]}&quot;
+ &quot;-0.1106^{**\\phantom{*}}&quot;        &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny (-0.186, -0.035)}&quot; &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny [-0.210, -0.011]}&quot; &quot;&quot;                                    &quot;&quot;                              
+ &quot;-0.0521^{\\phantom{***}}&quot;        &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny (-0.149, 0.045)}&quot;  &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny [-0.209, 0.105]}&quot;  &quot;&quot;                                    &quot;&quot;                              
+ &quot;0.4148&quot;                          &quot;0.0001&quot;                              &quot;0.5925&quot;                        
+ &quot; &quot;                               &quot; &quot;                                   &quot;187&quot;                           
+ &quot; &quot;                               &quot; &quot;                                   &quot;320&quot;                           
+ &quot; &quot;                               &quot; &quot;                                   &quot;0.8271&quot;                        
+ &quot; &quot;                               &quot; &quot;                                   &quot;0.7914&quot;                        
+ &quot; &quot;                               &quot; &quot;                                   &quot;0.5188&quot;                        
+ &quot; &quot;                               &quot; &quot;                                   &quot;0.4920&quot;                        
+ V9                                   
+ &quot;-0.0472^{\\phantom{***}}&quot;           
+ &quot;\\mbox{\\tiny (-0.184, 0.089)}&quot;     
+ &quot;\\mbox{\\tiny [-0.240, 0.145]}&quot;     
+ &quot;\\phantom{-}0.0289^{\\phantom{***}}&quot;
+ &quot;\\mbox{\\tiny (-0.136, 0.193)}&quot;     
+ &quot;\\mbox{\\tiny [-0.219, 0.277]}&quot;     
+ &quot;-0.0911^{\\phantom{***}}&quot;           
+ &quot;\\mbox{\\tiny (-0.193, 0.011)}&quot;     
+ &quot;\\mbox{\\tiny [-0.231, 0.048]}&quot;     
+ &quot;0.6104&quot;                             
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  </code></pre>
+<pre class="SeiroLightGreen"><code>                                               V1                               V2                              
+ &quot;Agricultural households * year 2002&quot;         &quot;-0.0589^{\\phantom{***}}&quot;       &quot;-0.0788^{\\phantom{***}}&quot;      
+ &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;\\mbox{\\tiny (-0.165, 0.047)}&quot; &quot;\\mbox{\\tiny (-0.160, 0.003)}&quot;
+ &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;\\mbox{\\tiny [-0.188, 0.070]}&quot; &quot;\\mbox{\\tiny [-0.179, 0.022]}&quot;
+ &quot;\\underline{\\phantom{mm}} * Older sisters&quot;  &quot;&quot;                               &quot;&quot;                              
+ &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               &quot;&quot;                              
+ &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               &quot;&quot;                              
+ &quot;\\underline{\\phantom{mm}} * Older brothers&quot; &quot;&quot;                               &quot;&quot;                              
+ &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               &quot;&quot;                              
+ &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               &quot;&quot;                              
+ &quot;$\\bar{R}^{2}$&quot;                              &quot;0.0035&quot;                         &quot;0.4853&quot;                        
+ &quot;N: Agricultural HHs&quot;                         &quot; &quot;                              &quot;300&quot;                           
+ &quot;N&quot;                                           &quot; &quot;                              &quot;513&quot;                           
+ &quot;Mean of control in 1999&quot;                     &quot; &quot;                              &quot;0.7324&quot;                        
+ &quot;Mean of treated in 1999&quot;                     &quot; &quot;                              &quot;0.6733&quot;                        
+ &quot;Mean of control in 2002&quot;                     &quot; &quot;                              &quot;0.4413&quot;                        
+ &quot;Mean of treated in 2002&quot;                     &quot; &quot;                              &quot;0.3233&quot;                        
+ V3                                V4                                V5                               
+ &quot;-0.0911^{**\\phantom{*}}&quot;        &quot;-0.1785^{**\\phantom{*}}&quot;        &quot;-0.1820^{***}&quot;                  
+ &quot;\\mbox{\\tiny (-0.151, -0.031)}&quot; &quot;\\mbox{\\tiny (-0.297, -0.060)}&quot; &quot;\\mbox{\\tiny (-0.257, -0.107)}&quot;
+ &quot;\\mbox{\\tiny [-0.173, -0.010]}&quot; &quot;\\mbox{\\tiny [-0.328, -0.029]}&quot; &quot;\\mbox{\\tiny [-0.276, -0.088]}&quot;
+ &quot;-0.0292^{\\phantom{***}}&quot;        &quot;&quot;                                &quot;&quot;                               
+ &quot;\\mbox{\\tiny (-0.149, 0.091)}&quot;  &quot;&quot;                                &quot;&quot;                               
+ &quot;\\mbox{\\tiny [-0.198, 0.140]}&quot;  &quot;&quot;                                &quot;&quot;                               
+ &quot;-0.0690^{\\phantom{***}}&quot;        &quot;&quot;                                &quot;&quot;                               
+ &quot;\\mbox{\\tiny (-0.173, 0.035)}&quot;  &quot;&quot;                                &quot;&quot;                               
+ &quot;\\mbox{\\tiny [-0.216, 0.078]}&quot;  &quot;&quot;                                &quot;&quot;                               
+ &quot;0.5377&quot;                          &quot;0.0327&quot;                          &quot;0.4189&quot;                         
+ &quot; &quot;                               &quot; &quot;                               &quot;154&quot;                            
+ &quot; &quot;                               &quot; &quot;                               &quot;244&quot;                            
+ &quot; &quot;                               &quot; &quot;                               &quot;0.6444&quot;                         
+ &quot; &quot;                               &quot; &quot;                               &quot;0.5909&quot;                         
+ &quot; &quot;                               &quot; &quot;                               &quot;0.4333&quot;                         
+ &quot; &quot;                               &quot; &quot;                               &quot;0.2013&quot;                         
+ V6                                    V7                                    V8                              
+ &quot;-0.1514^{***}&quot;                       &quot;\\phantom{-}0.0414^{\\phantom{***}}&quot; &quot;-0.0236^{\\phantom{***}}&quot;      
+ &quot;\\mbox{\\tiny (-0.192, -0.111)}&quot;     &quot;\\mbox{\\tiny (-0.109, 0.192)}&quot;      &quot;\\mbox{\\tiny (-0.163, 0.116)}&quot;
+ &quot;\\mbox{\\tiny [-0.215, -0.088]}&quot;     &quot;\\mbox{\\tiny [-0.142, 0.224]}&quot;      &quot;\\mbox{\\tiny [-0.201, 0.154]}&quot;
+ &quot;-0.1227^{\\phantom{***}}&quot;            &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny (-0.242, -0.004)}&quot;     &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny [-0.280, 0.034]}&quot;      &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\phantom{-}0.0037^{\\phantom{***}}&quot; &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny (-0.125, 0.132)}&quot;      &quot;&quot;                                    &quot;&quot;                              
+ &quot;\\mbox{\\tiny [-0.183, 0.191]}&quot;      &quot;&quot;                                    &quot;&quot;                              
+ &quot;0.4811&quot;                              &quot;0.0017&quot;                              &quot;0.6203&quot;                        
+ &quot; &quot;                                   &quot; &quot;                                   &quot;146&quot;                           
+ &quot; &quot;                                   &quot; &quot;                                   &quot;269&quot;                           
+ &quot; &quot;                                   &quot; &quot;                                   &quot;0.7967&quot;                        
+ &quot; &quot;                                   &quot; &quot;                                   &quot;0.7603&quot;                        
+ &quot; &quot;                                   &quot; &quot;                                   &quot;0.4472&quot;                        
+ &quot; &quot;                                   &quot; &quot;                                   &quot;0.4521&quot;                        
+ V9                                   
+ &quot;-0.0417^{\\phantom{***}}&quot;           
+ &quot;\\mbox{\\tiny (-0.173, 0.090)}&quot;     
+ &quot;\\mbox{\\tiny [-0.223, 0.140]}&quot;     
+ &quot;\\phantom{-}0.0332^{\\phantom{***}}&quot;
+ &quot;\\mbox{\\tiny (-0.187, 0.253)}&quot;     
+ &quot;\\mbox{\\tiny [-0.278, 0.344]}&quot;     
+ &quot;-0.1131^{\\phantom{***}}&quot;           
+ &quot;\\mbox{\\tiny (-0.247, 0.020)}&quot;     
+ &quot;\\mbox{\\tiny [-0.298, 0.072]}&quot;     
+ &quot;0.6445&quot;                             
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  
+ &quot; &quot;                                  </code></pre>
+<pre class="SeiroLightGreen"><code>                                                                 V1                               
+                   &quot;Agricultural households * year 2002&quot;         &quot;-0.1167^{*\\phantom{**}}&quot;       
+                   &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;\\mbox{\\tiny (-0.216, -0.018)}&quot;
+                   &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;\\mbox{\\tiny [-0.239, 0.005]}&quot; 
+                   &quot;\\underline{\\phantom{mm}} * Older sisters&quot;  &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               
+                   &quot;\\underline{\\phantom{mm}} * Older brothers&quot; &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               
+                   &quot;$\\bar{R}^{2}$&quot;                              &quot;0.0141&quot;                         
+                   &quot;N: Agricultural HHs&quot;                         &quot; &quot;                              
+                   &quot;N&quot;                                           &quot; &quot;                              
+                   &quot;Mean of control in 1999&quot;                     &quot; &quot;                              
+                   &quot;Mean of treated in 1999&quot;                     &quot; &quot;                              
+                   &quot;Mean of control in 2002&quot;                     &quot; &quot;                              
+                   &quot;Mean of treated in 2002&quot;                     &quot; &quot;                              
+                   &quot;Agricultural households * year 2002&quot;         &quot;-0.0327^{\\phantom{***}}&quot;       
+                   &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;\\mbox{\\tiny (-0.103, 0.037)}&quot; 
+                   &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;\\mbox{\\tiny [-0.118, 0.053]}&quot; 
+                   &quot;\\underline{\\phantom{mm}} * Older sisters&quot;  &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               
+                   &quot;\\underline{\\phantom{mm}} * Older brothers&quot; &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (LZ)&quot;                       &quot;&quot;                               
+                   &quot;\\hspace{1em} CI (BRL)&quot;                      &quot;&quot;                               
+                   &quot;$\\bar{R}^{2}$&quot;                              &quot;0.0011&quot;                         
+                   &quot;N: Agricultural HHs&quot;                         &quot; &quot;                              
+                   &quot;N&quot;                                           &quot; &quot;                              
+                   &quot;Mean of control in 1999&quot;                     &quot; &quot;                              
+                   &quot;Mean of treated in 1999&quot;                     &quot; &quot;                              
+                   &quot;Mean of control in 2002&quot;                     &quot; &quot;                              
+                   &quot;Mean of treated in 2002&quot;                     &quot; &quot;                              
+Thana fixed trends &quot;Thana fixed trends&quot;                          &quot;&quot;                               
+HH fixed trends    &quot;HH fixed trends&quot;                             &quot;&quot;                               
+                   V2                                V3                                   
+                   &quot;-0.0816^{**\\phantom{*}}&quot;        &quot;-0.0802^{**\\phantom{*}}&quot;           
+                   &quot;\\mbox{\\tiny (-0.140, -0.023)}&quot; &quot;\\mbox{\\tiny (-0.126, -0.034)}&quot;    
+                   &quot;\\mbox{\\tiny [-0.154, -0.009]}&quot; &quot;\\mbox{\\tiny [-0.147, -0.013]}&quot;    
+                   &quot;&quot;                                &quot;-0.0199^{\\phantom{***}}&quot;           
+                   &quot;&quot;                                &quot;\\mbox{\\tiny (-0.150, 0.110)}&quot;     
+                   &quot;&quot;                                &quot;\\mbox{\\tiny [-0.188, 0.148]}&quot;     
+                   &quot;&quot;                                &quot;-0.0418^{\\phantom{***}}&quot;           
+                   &quot;&quot;                                &quot;\\mbox{\\tiny (-0.140, 0.056)}&quot;     
+                   &quot;&quot;                                &quot;\\mbox{\\tiny [-0.181, 0.097]}&quot;     
+                   &quot;0.5051&quot;                          &quot;0.5607&quot;                             
+                   &quot;237&quot;                             &quot; &quot;                                  
+                   &quot;425&quot;                             &quot; &quot;                                  
+                   &quot;0.6489&quot;                          &quot; &quot;                                  
+                   &quot;0.6667&quot;                          &quot; &quot;                                  
+                   &quot;0.3564&quot;                          &quot; &quot;                                  
+                   &quot;0.2574&quot;                          &quot; &quot;                                  
+                   &quot;-0.0574^{*\\phantom{**}}&quot;        &quot;-0.0582^{***}&quot;                      
+                   &quot;\\mbox{\\tiny (-0.110, -0.005)}&quot; &quot;\\mbox{\\tiny (-0.083, -0.033)}&quot;    
+                   &quot;\\mbox{\\tiny [-0.121, 0.006]}&quot;  &quot;\\mbox{\\tiny [-0.092, -0.025]}&quot;    
+                   &quot;&quot;                                &quot;\\phantom{-}0.0132^{\\phantom{***}}&quot;
+                   &quot;&quot;                                &quot;\\mbox{\\tiny (-0.107, 0.133)}&quot;     
+                   &quot;&quot;                                &quot;\\mbox{\\tiny [-0.142, 0.168]}&quot;     
+                   &quot;&quot;                                &quot;-0.0554^{\\phantom{***}}&quot;           
+                   &quot;&quot;                                &quot;\\mbox{\\tiny (-0.159, 0.048)}&quot;     
+                   &quot;&quot;                                &quot;\\mbox{\\tiny [-0.197, 0.086]}&quot;     
+                   &quot;0.5021&quot;                          &quot;0.5554&quot;                             
+                   &quot;228&quot;                             &quot; &quot;                                  
+                   &quot;425&quot;                             &quot; &quot;                                  
+                   &quot;0.7107&quot;                          &quot; &quot;                                  
+                   &quot;0.6140&quot;                          &quot; &quot;                                  
+                   &quot;0.3706&quot;                          &quot; &quot;                                  
+                   &quot;0.2412&quot;                          &quot; &quot;                                  
+Thana fixed trends &quot;Y&quot;                               &quot;Y&quot;                                  
+HH fixed trends    &quot;&quot;                                &quot;Y&quot;                                  
+                   V4                                V5                               
+                   &quot;-0.2798^{***}&quot;                   &quot;-0.1879^{***}&quot;                  
+                   &quot;\\mbox{\\tiny (-0.404, -0.155)}&quot; &quot;\\mbox{\\tiny (-0.287, -0.088)}&quot;
+                   &quot;\\mbox{\\tiny [-0.438, -0.122]}&quot; &quot;\\mbox{\\tiny [-0.310, -0.066]}&quot;
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;0.0827&quot;                          &quot;0.4683&quot;                         
+                   &quot; &quot;                               &quot;122&quot;                            
+                   &quot; &quot;                               &quot;208&quot;                            
+                   &quot; &quot;                               &quot;0.5116&quot;                         
+                   &quot; &quot;                               &quot;0.6148&quot;                         
+                   &quot; &quot;                               &quot;0.3488&quot;                         
+                   &quot; &quot;                               &quot;0.1721&quot;                         
+                   &quot;-0.1152^{**\\phantom{*}}&quot;        &quot;-0.1570^{**\\phantom{*}}&quot;       
+                   &quot;\\mbox{\\tiny (-0.199, -0.031)}&quot; &quot;\\mbox{\\tiny (-0.276, -0.038)}&quot;
+                   &quot;\\mbox{\\tiny [-0.221, -0.009]}&quot; &quot;\\mbox{\\tiny [-0.298, -0.016]}&quot;
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;&quot;                                &quot;&quot;                               
+                   &quot;0.0140&quot;                          &quot;0.4586&quot;                         
+                   &quot; &quot;                               &quot;123&quot;                            
+                   &quot; &quot;                               &quot;208&quot;                            
+                   &quot; &quot;                               &quot;0.6235&quot;                         
+                   &quot; &quot;                               &quot;0.5366&quot;                         
+                   &quot; &quot;                               &quot;0.3647&quot;                         
+                   &quot; &quot;                               &quot;0.1626&quot;                         
+Thana fixed trends &quot;&quot;                                &quot;Y&quot;                              
+HH fixed trends    &quot;&quot;                                &quot;&quot;                               
+                   V6                                    V7                                   
+                   &quot;-0.1694^{***}&quot;                       &quot;\\phantom{-}0.0280^{\\phantom{***}}&quot;
+                   &quot;\\mbox{\\tiny (-0.233, -0.106)}&quot;     &quot;\\mbox{\\tiny (-0.086, 0.142)}&quot;     
+                   &quot;\\mbox{\\tiny [-0.258, -0.081]}&quot;     &quot;\\mbox{\\tiny [-0.114, 0.170]}&quot;     
+                   &quot;-0.1259^{\\phantom{***}}&quot;            &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny (-0.285, 0.033)}&quot;      &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny [-0.335, 0.084]}&quot;      &quot;&quot;                                   
+                   &quot;\\phantom{-}0.0173^{\\phantom{***}}&quot; &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny (-0.064, 0.099)}&quot;      &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny [-0.086, 0.121]}&quot;      &quot;&quot;                                   
+                   &quot;0.5386&quot;                              &quot;0.0008&quot;                             
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot;-0.1245^{**\\phantom{*}}&quot;            &quot;\\phantom{-}0.0304^{\\phantom{***}}&quot;
+                   &quot;\\mbox{\\tiny (-0.206, -0.043)}&quot;     &quot;\\mbox{\\tiny (-0.107, 0.168)}&quot;     
+                   &quot;\\mbox{\\tiny [-0.234, -0.015]}&quot;     &quot;\\mbox{\\tiny [-0.141, 0.202]}&quot;     
+                   &quot;-0.0357^{\\phantom{***}}&quot;            &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny (-0.180, 0.108)}&quot;      &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny [-0.254, 0.182]}&quot;      &quot;&quot;                                   
+                   &quot;\\phantom{-}0.0213^{\\phantom{***}}&quot; &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny (-0.061, 0.103)}&quot;      &quot;&quot;                                   
+                   &quot;\\mbox{\\tiny [-0.088, 0.130]}&quot;      &quot;&quot;                                   
+                   &quot;0.5160&quot;                              &quot;0.0009&quot;                             
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+                   &quot; &quot;                                   &quot; &quot;                                  
+Thana fixed trends &quot;Y&quot;                                   &quot;&quot;                                   
+HH fixed trends    &quot;Y&quot;                                   &quot;&quot;                                   
+                   V8                               V9                                   
+                   &quot;-0.0202^{\\phantom{***}}&quot;       &quot;-0.0236^{\\phantom{***}}&quot;           
+                   &quot;\\mbox{\\tiny (-0.122, 0.081)}&quot; &quot;\\mbox{\\tiny (-0.135, 0.088)}&quot;     
+                   &quot;\\mbox{\\tiny [-0.149, 0.108]}&quot; &quot;\\mbox{\\tiny [-0.173, 0.126]}&quot;     
+                   &quot;&quot;                               &quot;\\phantom{-}0.0512^{\\phantom{***}}&quot;
+                   &quot;&quot;                               &quot;\\mbox{\\tiny (-0.177, 0.279)}&quot;     
+                   &quot;&quot;                               &quot;\\mbox{\\tiny [-0.251, 0.354]}&quot;     
+                   &quot;&quot;                               &quot;-0.1164^{\\phantom{***}}&quot;           
+                   &quot;&quot;                               &quot;\\mbox{\\tiny (-0.333, 0.101)}&quot;     
+                   &quot;&quot;                               &quot;\\mbox{\\tiny [-0.427, 0.195]}&quot;     
+                   &quot;0.6220&quot;                         &quot;0.6420&quot;                             
+                   &quot;115&quot;                            &quot; &quot;                                  
+                   &quot;217&quot;                            &quot; &quot;                                  
+                   &quot;0.7647&quot;                         &quot; &quot;                                  
+                   &quot;0.7217&quot;                         &quot; &quot;                                  
+                   &quot;0.3627&quot;                         &quot; &quot;                                  
+                   &quot;0.3478&quot;                         &quot; &quot;                                  
+                   &quot;-0.0168^{\\phantom{***}}&quot;       &quot;-0.0176^{\\phantom{***}}&quot;           
+                   &quot;\\mbox{\\tiny (-0.108, 0.074)}&quot; &quot;\\mbox{\\tiny (-0.090, 0.055)}&quot;     
+                   &quot;\\mbox{\\tiny [-0.127, 0.094]}&quot; &quot;\\mbox{\\tiny [-0.123, 0.087]}&quot;     
+                   &quot;&quot;                               &quot;\\phantom{-}0.0447^{\\phantom{***}}&quot;
+                   &quot;&quot;                               &quot;\\mbox{\\tiny (-0.146, 0.235)}&quot;     
+                   &quot;&quot;                               &quot;\\mbox{\\tiny [-0.214, 0.304]}&quot;     
+                   &quot;&quot;                               &quot;-0.1458^{\\phantom{***}}&quot;           
+                   &quot;&quot;                               &quot;\\mbox{\\tiny (-0.341, 0.050)}&quot;     
+                   &quot;&quot;                               &quot;\\mbox{\\tiny [-0.409, 0.117]}&quot;     
+                   &quot;0.6220&quot;                         &quot;0.6470&quot;                             
+                   &quot;105&quot;                            &quot; &quot;                                  
+                   &quot;217&quot;                            &quot; &quot;                                  
+                   &quot;0.7768&quot;                         &quot; &quot;                                  
+                   &quot;0.7048&quot;                         &quot; &quot;                                  
+                   &quot;0.3750&quot;                         &quot; &quot;                                  
+                   &quot;0.3333&quot;                         &quot; &quot;                                  
+Thana fixed trends &quot;Y&quot;                              &quot;Y&quot;                                  
+HH fixed trends    &quot;&quot;                               &quot;Y&quot;                                  </code></pre>
+</div>
+</div>
+<div id="by-age-group" class="section level2">
+<h2>By age group</h2>
+</div>
+<div id="placebo" class="section level2">
+<h2>Placebo</h2>
+<div id="by-gender-and-by-aghh-def-1" class="section level3">
+<h3>By gender and by aghh def</h3>
+<div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; border-bottom: 0;">
+<p><!--
+<caption>--><span class="marginnote shownote">Main results: Enrollment impacts for year 1999-2002, 10-18 years old, direct offspring, Satterthwaite correction</span><!--</caption>--></p>
+<table class="table table-condensed" style="width: auto !important; ">
+
+
+<thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;position: sticky; top:0; background-color: #FFFFFF;" colspan="1">
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; padding-right: 4px; padding-left: 4px; background-color: #ffcc99 !important;position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Boys+girls
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; padding-right: 4px; padding-left: 4px; background-color: #ffcc99 !important;position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Boys
+</div>
+</th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; padding-right: 4px; padding-left: 4px; background-color: #ffcc99 !important;position: sticky; top:0; background-color: #FFFFFF;" colspan="3">
+<div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Girls
+</div>
+</th>
+</tr>
+<tr>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+variables
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 3
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 3
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 1
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 2
+</th>
+<th style="text-align:center;position: sticky; top:0; background-color: #FFFFFF;background-color: #ffcc99 !important;text-align: ccccccccc;position: sticky; top:0; background-color: #FFFFFF;">
+Spec 3
+</th>
+</tr>
+</thead>
+<tbody>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>agHH0</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+1
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+3
+</td>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+7
+</td>
+<td style="text-align:center;">
+8
+</td>
+<td style="text-align:center;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0530
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0301
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0435
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.0036
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0196
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0286
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1057
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0371
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0493
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.116, 0.010)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.097, 0.036)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.127, 0.040)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.079, 0.086)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.086, 0.047)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.084, 0.027)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.205, -0.006)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.126, 0.052)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.173, 0.075)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.129, 0.023]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.112, 0.051]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.149, 0.062]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.098, 0.105]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.100, 0.061]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.098, 0.041]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.228, 0.016]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.147, 0.073]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.213, 0.114]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0711
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0978
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0501
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.127, -0.016)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.200, 0.005)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.114, 0.013)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.148, 0.006]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.239, 0.043]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.139, 0.039]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0123
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0768
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0437
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.049, 0.074)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.009, 0.163)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.116, 0.028)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.069, 0.094]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.033, 0.186]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.143, 0.055]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0030
+</td>
+<td style="text-align:center;">
+0.2022
+</td>
+<td style="text-align:center;">
+0.2250
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.1124
+</td>
+<td style="text-align:center;">
+0.1738
+</td>
+<td style="text-align:center;">
+0.0115
+</td>
+<td style="text-align:center;">
+0.3404
+</td>
+<td style="text-align:center;">
+0.3635
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+492
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+243
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+249
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+812
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+386
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+426
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6844
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6573
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7062
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5955
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5391
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6506
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4406
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3986
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4746
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2988
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2840
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3133
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>isagHH</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+10
+</td>
+<td style="text-align:center;">
+11
+</td>
+<td style="text-align:center;">
+12
+</td>
+<td style="text-align:center;">
+13
+</td>
+<td style="text-align:center;">
+14
+</td>
+<td style="text-align:center;">
+15
+</td>
+<td style="text-align:center;">
+16
+</td>
+<td style="text-align:center;">
+17
+</td>
+<td style="text-align:center;">
+18
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0461
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0262
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0392
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+0.0130
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0010
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0128
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.1020
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0479
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0674
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.108, 0.016)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.089, 0.037)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.109, 0.031)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.086, 0.112)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.087, 0.085)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.083, 0.058)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.195, -0.009)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.110, 0.015)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.154, 0.019)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.122, 0.030]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.102, 0.050]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.128, 0.049]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.108, 0.134]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.104, 0.102]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.105, 0.079]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.218, 0.014]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.125, 0.029]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.183, 0.048]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0700
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.1195
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0291
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.136, -0.005)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.225, -0.015)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.100, 0.042)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.158, 0.018]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.261, 0.022]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.129, 0.070]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0077
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0447
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0503
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.073, 0.057)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.036, 0.125)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.133, 0.032)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.094, 0.079]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.059, 0.149]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.159, 0.058]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0023
+</td>
+<td style="text-align:center;">
+0.2020
+</td>
+<td style="text-align:center;">
+0.2209
+</td>
+<td style="text-align:center;">
+0.0002
+</td>
+<td style="text-align:center;">
+0.1120
+</td>
+<td style="text-align:center;">
+0.1687
+</td>
+<td style="text-align:center;">
+0.0110
+</td>
+<td style="text-align:center;">
+0.3413
+</td>
+<td style="text-align:center;">
+0.3666
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+456
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+227
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+229
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+812
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+386
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+426
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6826
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6604
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7005
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5899
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5286
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6507
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4326
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3962
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4619
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2939
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2775
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3100
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>hdagHH</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+19
+</td>
+<td style="text-align:center;">
+20
+</td>
+<td style="text-align:center;">
+21
+</td>
+<td style="text-align:center;">
+22
+</td>
+<td style="text-align:center;">
+23
+</td>
+<td style="text-align:center;">
+24
+</td>
+<td style="text-align:center;">
+25
+</td>
+<td style="text-align:center;">
+26
+</td>
+<td style="text-align:center;">
+27
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0477
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0229
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0367
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0036
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0271
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0455
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0900
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0291
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0494
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.108, 0.013)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.091, 0.045)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.107, 0.033)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.105, 0.098)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.101, 0.046)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.121, 0.030)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.181, 0.001)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.101, 0.043)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.120, 0.021)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.121, 0.026]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.105, 0.060]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.125, 0.052]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.127, 0.120]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.115, 0.061]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.140, 0.049]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.204, 0.024]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.119, 0.060]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.144, 0.045]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0728
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.1016
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0457
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.142, -0.004)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.202, -0.002)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.111, 0.019)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.167, 0.021]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.234, 0.031]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.140, 0.048]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0033
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0424
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0402
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.066, 0.072)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.061, 0.146)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.127, 0.047)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.086, 0.093]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.087, 0.172]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.155, 0.074]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0025
+</td>
+<td style="text-align:center;">
+0.2019
+</td>
+<td style="text-align:center;">
+0.2197
+</td>
+<td style="text-align:center;">
+0.0000
+</td>
+<td style="text-align:center;">
+0.1128
+</td>
+<td style="text-align:center;">
+0.1631
+</td>
+<td style="text-align:center;">
+0.0086
+</td>
+<td style="text-align:center;">
+0.3399
+</td>
+<td style="text-align:center;">
+0.3688
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+440
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+217
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+223
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+812
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+386
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+426
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6747
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6331
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.7094
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5932
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5438
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6413
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4247
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3787
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4631
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2955
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2857
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3049
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="4">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>ocagHH</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;">
+28
+</td>
+<td style="text-align:center;">
+29
+</td>
+<td style="text-align:center;">
+30
+</td>
+<td style="text-align:center;">
+31
+</td>
+<td style="text-align:center;">
+32
+</td>
+<td style="text-align:center;">
+33
+</td>
+<td style="text-align:center;">
+34
+</td>
+<td style="text-align:center;">
+35
+</td>
+<td style="text-align:center;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+Agricultural households * year 2002
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0383
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0345
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0514
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0083
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0163
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0382
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0721
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0434
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+-0.0416
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.115, 0.038)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.111, 0.042)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.130, 0.027)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.098, 0.081)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.101, 0.069)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.099, 0.023)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.187, 0.043)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.139, 0.053)
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+(-0.143, 0.060)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.131, 0.054]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.128, 0.059]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.150, 0.047]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.117, 0.100]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.118, 0.085]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.118, 0.042]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.213, 0.069]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.160, 0.073]
+</td>
+<td style="text-align:center;color: black !important;background-color: #87cefa !important;">
+[-0.173, 0.090]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older sisters
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0745
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.1130
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0417
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.131, -0.018)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.206, -0.020)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.117, 0.034)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.152, 0.003]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.241, 0.015]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.140, 0.057]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+____ * Older brothers
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0081
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.0373
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+-0.0681
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.067, 0.050)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.038, 0.112)
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+(-0.131, -0.005)
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.085, 0.069]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.062, 0.137]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-0.149, 0.013]
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+R2
+</td>
+<td style="text-align:center;">
+0.0016
+</td>
+<td style="text-align:center;">
+0.2026
+</td>
+<td style="text-align:center;">
+0.2256
+</td>
+<td style="text-align:center;">
+0.0001
+</td>
+<td style="text-align:center;">
+0.1123
+</td>
+<td style="text-align:center;">
+0.1758
+</td>
+<td style="text-align:center;">
+0.0055
+</td>
+<td style="text-align:center;">
+0.3409
+</td>
+<td style="text-align:center;">
+0.3666
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N: Agricultural HHs
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+436
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+227
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+209
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+N
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+812
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+386
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+426
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6729
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6415
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6959
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2002
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5940
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.5419
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.6507
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of control in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4176
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3899
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.4378
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Mean of treated in 2006
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3005
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.2819
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+0.3206
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr grouplength="2">
+<td colspan="10" style="border-bottom: 1px solid;">
+<strong>Common specifications</strong>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+Thana fixed trends
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+Y
+</td>
+</tr>
+<tr>
+<td style="text-align:right;padding-left: 2em;" indentlevel="1">
+HH fixed trends
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+Y
+</td>
+</tr>
+</tbody>
+</table>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Sample of direct offspring of household heads.
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+</td>
+</tr>
+</tfoot>
+</div>
+</div>
 </div>
 </div>
 <div id="memo-on-fd-and-did" class="section level1">
