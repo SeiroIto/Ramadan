@@ -6892,6 +6892,7 @@ for (ii in 1:2) {
                  general = "Sample of direct offspring of household heads. ",
                  number = c(SpecMemo1, SEMemoForSelectedResults)
                  )
+      assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "L"), ltb)
       assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s]), mrtab)
       assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "H"), kt)
       qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "H.qs"))
@@ -6904,11 +6905,29 @@ M910H
 ### By different age cutoff
 
 ```{r M9 10-12}
+ii <- jj <- 1
+aghhrows <- grep("^Agri", M910L)
+tft <- c("Thana fixed trends", rep(c("", "", "Y", ""), 3))
+tft <- paste(tft[-length(tft)], collapse = "&")
+tft <- paste(tft, "\\\\")
+hft <- c("HH fixed trends", rep(c("", "", "Y", ""), 3))
+hft <- paste(hft[-length(hft)], collapse = "&")
+hft <- paste(hft, "\\\\")
+M9L <- c(M910L[1:(aghhrows[2]-3)], 
+  M911L[(aghhrows[1]-1):(aghhrows[2]-3)],
+  M912L[(aghhrows[1]-1):(aghhrows[2]-3)],
+  tft, hft,
+  M912L[(length(M912L)-1):length(M912L)])
+write.tablev(M9L
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], 
+       "ByGenderByAgeLBResults.tex")
+  ,  colnamestrue = F)
+#### HTML output
 aghhrows <- grep("^Ag", M910[, 1])
 M9L <- rbind(M910[1:(aghhrows[2]-1), ], 
   M911[aghhrows[2]:(aghhrows[3]-1), ],
   M912[c(aghhrows[3]:(aghhrows[4]-1), 
-    grep("^Tha", M9L[, 1]):grep("^HH", M9L[, 1])), ])
+    grep("^Tha", M910[, 1]):grep("^HH", M910[, 1])), ])
 nt <- ncol(M9L)-1
 colnames(M9L) <- c("variables", paste0("v", 1:nt))
 M9L <- data.table(M9L)
@@ -6942,7 +6961,6 @@ kt <- footnote(kt,
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemo1, SEMemoForSelectedResults)
            )
-ii <- jj <- 1
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], "L"), mrtab)
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], "LH"), kt)
 qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], "LH.qs"))
