@@ -40,6 +40,7 @@ gdfiles <- c("grade initial enr", "grade enr", "absent enr", "absent cross sec")
 
 
 #### ggplot theme
+library(ggplot2)
 ThisTheme <- ggplot2::theme(
    axis.text.x = element_text(size = 12, angle = 0, vjust = 1, hjust = .5), 
    axis.text.y = element_text(size = 12), 

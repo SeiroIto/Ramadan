@@ -103,7 +103,7 @@ knitr::opts_chunk$set(
   margin_references = TRUE,
   #### remove leading hashes in html output
   comment = "", 
-  echo = F, cache = F,
+  echo = F, cache = F, 
   class.source = "SeiroBenign", class.output = "SeiroLightGreen"
   )
 options(htmltools.dir.version = FALSE, width = 100)
@@ -6701,7 +6701,6 @@ NR <- qread("../save/TabulatedAllResultsNR.qs")
 #### Res <- qread("save/TabulatedAllResults.qs")
 #### Enr <- qread("save/TabulatedAllResultsEnr.qs")
 #### NR <- qread("save/TabulatedAllResultsNR.qs")
-
 for (ii in 1:2) {
   agyr <- paste0("^agHH.yr|Sib.*H.*", (2:3)[ii], "$")
   resl <- Res[grepl(agyr, Coef) & grepl(c("main", "placebo")[ii], objective) 
@@ -6906,10 +6905,48 @@ M910H
 
 ```{r M9 10-12}
 aghhrows <- grep("^Ag", M910[, 1])
-M910[1:(aghhrows[2]-1), ]
-M911[aghhrows[2]:(aghhrows[3]-1), ]
-M912[aghhrows[3]:(grep("^HH", M912[, 1])), ]
-
+M9L <- rbind(M910[1:(aghhrows[2]-1), ], 
+  M911[aghhrows[2]:(aghhrows[3]-1), ],
+  M912[c(aghhrows[3]:(aghhrows[4]-1), 
+    grep("^Tha", M9L[, 1]):grep("^HH", M9L[, 1])), ])
+nt <- ncol(M9L)-1
+colnames(M9L) <- c("variables", paste0("v", 1:nt))
+M9L <- data.table(M9L)
+M9L <- lapply(M9L, function(x) gsub("\\\\mbox\\{\\\\tiny(.*)\\}", "\\1", x))
+M9L <- lapply(M9L, function(x) gsub("\\^.*", "", x))
+M9L <- lapply(M9L, function(x) gsub("\\\\phantom\\{-\\}", " ", x))
+M9L <- lapply(M9L, function(x) gsub("\\\\hspace\\{.*\\}", " ", x))
+M9L <- lapply(M9L, function(x) gsub(" *CI *\\(.*", " ", x))
+M9L <- lapply(M9L, function(x) gsub("\\\\underline\\{.*\\}", "____", x))
+M9L <- lapply(M9L, function(x) gsub("^.*bar.R.*", "R2", x))
+M9L <- do.call(cbind, M9L)
+colnames(M9L) <- c("variables", rep(paste("Spec", 1:3), 3))
+bgcolor <- "#ffcc99"
+kt <- kbl(M9L, align = paste0("r", paste0(rep("c", ncol(M9L)-1), collapse = "")), 
+  row.names = F, caption = 
+  "Main results: Enrollment impacts for year 1999-2002, different age lowerbound, direct offspring, Satterthwaite correction")
+kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T, 
+  bootstrap_options = c("condensed"))
+kt <- add_header_above(kt, c(" " = 1, "Boys+girls" = 3, "Boys" = 3, "Girls" = 3),
+  background = bgcolor)
+kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(M9L)-1), collapse = ""), 
+  background = bgcolor)
+aghhrows <- grep("^Ag", M9L[, "variables"])
+kt <- row_spec(kt, rep(aghhrows, each = 3)+0:2, bold = F, 
+  color = "black", background = "#87cefa")
+for (iii in 1:length(aghhrows)) 
+  kt <- pack_rows(kt, group_label=paste("Age lowerbound:", c(10:12)[iii]), aghhrows[iii], aghhrows[iii]+15)
+kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", M9L[, 1]), grep("^HH", M9L[, 1]))
+kt <- scroll_box(kt, height = "800px")
+kt <- footnote(kt, 
+           general = "Sample of direct offspring of household heads. ",
+           number = c(SpecMemo1, SEMemoForSelectedResults)
+           )
+ii <- jj <- 1
+assign(paste0(c("M", "P")[ii], c(9, 2)[jj], "L"), mrtab)
+assign(paste0(c("M", "P")[ii], c(9, 2)[jj], "LH"), kt)
+qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], "LH.qs"))
+kt
 ```
 
 ## By age group
@@ -7087,13 +7124,13 @@ for (mm in 1:8)
       paste("\\\\multicolumn{3}{c}{\\\\scriptsize", N3[[mm]][nn], "}"), ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 write.tablev(ltb
-  ,  "../save/MainGenderAgeGroup2WithInteractionsResults.tex")
+  ,  "../save/MainGenderAgeGroup2WithInteractionsResults.tex"
   ,  colnamestrue = F)
 #### for compact tables without triple interactions
 ninter <- length(grep("Older", ltb))
 ltb2 <- ltb[-(grep("Older", ltb)+rep(0:2, ninter))]
 write.tablev(ltb2
-  ,  "MainGenderAgeGroup2Results.tex")
+  ,  "MainGenderAgeGroup2Results.tex"
   ,  colnamestrue = F)
 #### HTML outputs
 mrtab <- rbind(mrtab, 
@@ -7133,7 +7170,7 @@ kt <- add_header_above(kt, c(" " = 1, "Boys+girls" = 3, "Boys" = 3, "Girls" = 3)
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
   background = bgcolor)
 aghhrows <- grep("^Ag", Tab[, "variables"])
-kt <- row_spec(kt, rep(aghhrows, each = 3)+0:2, bold = F, 
+kt <- row_spec(kt, rep(aghhrows, each = 3)+0:1, bold = F, 
   color = "black", background = "#87cefa")
 for (iii in 1:length(aghhrows)) 
   kt <- pack_rows(kt, group_label=c("A. Primary school ages", "B. Secondary school ages")[iii], 
@@ -7144,9 +7181,11 @@ kt <- footnote(kt,
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemo1, SEMemoForSelectedResults)
            )
-assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s]), mrtab)
-assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "H"), kt)
-qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "H.qs"))
+ii <- jj <- s <- 1
+assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "AgeGroup2"), mrtab)
+assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "AgeGroup2H"), kt)
+qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "AgeGroup2H.qs"))
+kt
 ```
 ```{r plot gender AgeGroup2 for paper, eval = T}
 library(ggplot2)
@@ -7183,8 +7222,17 @@ g
 ## Placebo
 
 ### By gender and by aghh def
+
+2002 cohort
+
 ```{r P210H}
 P210H
+```
+
+1999 cohort
+
+```{r P910H}
+P910H
 ```
 
 # Memo on FD and DID
