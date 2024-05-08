@@ -39,9 +39,9 @@ TabFoot2 <- "\\end{table}"
 TabFilePathF <- function(
   FolderPath = pathsave, 
   Sample = "zEm1999",
-  Estimator = "FD",
+  Estimator = "",
   AgeCutoff = "Older10",
-  HHType = "Nuclear",
+  HHType = "",
   AgHHDef = "",
   CRSEMethod = "Satterthwaite", ...
   ) {
@@ -111,7 +111,10 @@ ArrayStrech = NULL, ...)
       "\\addtocounter{table}{-1}",
       DisplayEstTable0(OmitFootnote = F, TABFilePath=TABFilePath2, 
         TABTitle=paste0(TABTitle, " (continued)"), ARRAYStrech=ArrayStrech)
-    ) else DisplayEstTable0(TABFilePath=TABFilePath1, ARRAYStrech=ArrayStrech)
+    ) else 
+    DisplayEstTable0(TABTitle=TABTitle,
+    TABFilePath=TABFilePath1, 
+    ARRAYStrech=ArrayStrech)
 }
 
 disp <- function(A="a", B="b")

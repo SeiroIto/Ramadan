@@ -1,0 +1,185 @@
+%  setwd("c:/data/ramadan/Submit2024/program"); library(knitr); library(data.table); knit("OnlyTablesAndFigures.rnw", "OnlyTablesAndFigures.tex"); system("platex OnlyTablesAndFigures"); system("pbibtex OnlyTablesAndFigures"); system("dvipdfmx OnlyTablesAndFigures")
+
+% : cannot coerce type 'closure' to vector of type 'character': This error shows up 
+% when nonexisting column name was specified in 
+% Enr.Agewise[grepl("zEm.1999", sample) & grepl("wise", AgeGrouping) & grepl("1", agHH) & 
+%  Age>=8 & Age<=18 & survey == 1, rate] 
+% When an error ``zEm1'' not found happens, check all estimation is OK to produce \textsf{FD\_sameN\_results.rds} and the chunk \textsf{main sample size check} does not produce null results.
+% zmobj2 <- c("zEm", "zSm"); zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")
+
+
+\input{c:/migrate/R/knitrPreamble/knitr_preamble.rnw}
+
+\usepackage{url}
+\renewcommand\Routcolor{\color{gray30}}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+\setlength{\topmargin}{-.5in}
+\setlength{\oddsidemargin}{-10pt}
+\setlength{\evensidemargin}{-10pt}
+\setlength{\textheight}{.875\paperheight}
+\setlength{\textwidth}{.8\paperwidth}
+\setlength{\baselineskip}{15pt}
+\setlength{\footskip}{-10pt}
+\setlength{\parindent}{0pt}
+\AtBeginDvi{\special{pdf:tounicode 90ms-RKSJ-UCS2}}
+\special{papersize= 209.9mm, 297.04mm}
+\renewcommand{\labelenumii}{\theenumii.}
+\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\usepackage{tikz}
+\usetikzlibrary{calc, arrows, decorations, decorations.pathreplacing, backgrounds}
+\usepackage{adjustbox}
+\usepackage[linesnumbered, ruled, lined]{algorithm2e}
+\normalem % disable auto underline
+
+\tikzstyle{toprow} =
+[
+top color = gray!20, bottom color = gray!50, thick
+]
+\tikzstyle{maintable} =
+[
+top color = blue!1, bottom color = blue!10, draw = white
+%top color = green!1, bottom color = green!20, draw = white
+]
+\tikzset{
+%Define standard arrow tip
+>=stealth',
+%Define style for different line styles
+help lines/.style={dashed, thick},
+axis/.style={<->},
+important line/.style={thick},
+connection/.style={thick, dotted},
+}
+
+\begin{document}
+\setlength{\baselineskip}{12pt}
+
+\hfil Tables for 2024 submission\\
+\hfil\MonthDY\\
+\hfil{\footnotesize\currenttime}\\
+\hfil Seiro Ito
+
+\tableofcontents 
+
+\setlength{\baselineskip}{12pt}
+
+<<option setting 1, cache = F, child='c:/migrate/R/knitrPreamble/knitr_initial_option_setting_chunk.rnw'>>=
+<<set-options2, source = T, echo = F, cache = F, inline = T, warning = F, tidy = T, message = F, include = F>>=
+opts_knit$set(base.dir = 'c:/data/ramadan/program/program/')
+## Important switch: Demeaning level ##
+DemeanAtIndividualLevel <- F
+if (DemeanAtIndividualLevel)
+  dir.create(pathsaveThisVer <- paste0(pathsaveThisVer, "IndivDemeaned/"))
+opts_chunk$set(
+  fig.path='figure/', 
+  cache.path='OnlyTablesAndFigures/cache/', 
+  cache = F, echo = T, results = 'markup', 
+  par=TRUE, 'reindent.spaces' = 0,
+  tidy.opts=list(blank=FALSE, width.cutoff=40)
+)
+file.remove(list.files("c:/data/ramadan/Submit2024/program/OnlyTablesAndFigures/cache", full.names = T))
+options(digits = 6, width = 80)
+color_block = function(color) {
+  function(x, options) sprintf(
+  '{\\color{%s}\\begin{verbatim}%s\\end{verbatim}}', 
+  color, x)
+}
+render_listings()	#	it changes "<-" to real arrows, etc., prettifying
+knit_hooks$set(
+#  warning = color_block('magenta'),
+#  error = color_block('red'),
+  par = function(before, options, envir){if (before) par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)})
+@
+<<paths functions>>=
+# below gives substitution table sbt
+source(paste0(pathprogram, "substitution_table.R"))
+# agHH defs, minAge, maxAge
+source(paste0(pathprogram, "DefinitionsAndParameters.R")) 
+dropunbalanced <- function(Z, idcol = "uniquid", returnDT = F) {
+#	drop unbalanced obs (fast operation using data.table)
+  require(data.table)
+  dZ <- data.table(Z)
+  setkeyv(dZ, idcol)
+  dZ[, period := .N, by = idcol]
+  # keep only individuals with largest round numbers
+  dZ <- dZ[period == max(period), ]
+  dZ <- dZ[, period := NULL]
+  if (returnDT) dZ else data.frame(dZ)
+}
+source(paste0(pathprogram, "tabulate_est.R"))
+source(paste0(pathprogram, "EstimatorFunctions.R"))
+#source("c:/seiro/settings/Rsetting/functions.R")
+@
+
+<<results = "hide">>=
+source("TabGeneric.R")
+#DisplayEstTable()
+TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A first-difference estimator with standard errors clustered at \\textit{thana} level. Standard errors with are clusterd at thana level. $P$ values are shown in the parentheses. Enrollment rates in 1999, 2002 are"
+@
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = T,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main1999", 
+    CRSEMethod = "ByGenderByAgHHdefResults1")
+  ,
+  TABFilePath2 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main1999", 
+    CRSEMethod = "ByGenderByAgHHdefResults2")
+  ,
+  TABTitle="Main results 1999-2002")
+}
+<<>>=
+TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A DID estimator with standard errors clustered at \\textit{thana} level with bias reduced linearization to adjust for a small number of clusters. $P$ values are shown in the parentheses. $95\\%$ confidence intervals are shown in square brackets. Enrollment rates in 1999, 2002 are"
+@
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = T,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderByAgHHdefResults1")
+  ,
+  TABFilePath2 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderByAgHHdefResults2")
+  ,
+  TABTitle="Placebo estimation 2002-2006")
+}
+\addtocounter{table}{-1}
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderByAgHHdefResults3")
+  ,
+  TABTitle="Placebo estimation 2002-2006 (continued)")
+}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "ByAgHHdefResultsConcise")
+  ,
+  TABTitle="Main estimation results 1999-2002")
+}
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderByAgHHdefResultsConcise")
+  ,
+  TABTitle="Placebo estimation 2002-2006, 1999 and 2002 cohorts")
+}
+
+\end{document}

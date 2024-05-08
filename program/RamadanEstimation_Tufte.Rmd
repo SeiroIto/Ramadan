@@ -1956,7 +1956,7 @@ for (rrr in c("", "j")) {
 ```
 
 ```{r agewise subsample by gender, eval = F, results = 'hide', message = F, warning = F, cache = F}
-#### Age groups tried. Bigger grouping is more efficient.
+#### Age groups tried. Broader grouping is more efficient.
 #### AgeGroup1 <- list(pri=6:10, jsec=11:13, sec=14:15, hsec=16:17, coll=18)
 #### AgeGroup2 <- list(pri=6:10, sec=11:17, coll=18)
 #### AgeGroup3 <- list(young=6:9, junior=10:15, senior=16:18)
@@ -3050,7 +3050,7 @@ for (ge in c(3, 1, 2)){
      dm
      })
     tab0 <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
-      UseHTML = T)
+      CIIntinysize = T, UseHTML = T)
     tab0 <- tab0[grepl("^agHH.yr\\d|\\{agHH.yr\\d|Sib..a", rownames(tab0)), ]
     vs <- c("^agHH.yr\\d", "^OldSibF.a.*$", "^OldSibM.a.*$")
     nums <- NULL
@@ -3066,7 +3066,7 @@ for (ge in c(3, 1, 2)){
     )
     enr <- matrix(
      enr0[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
-       order(agHH, tee), EnRate], byrow = F, nrow = 4)
+       order(tee, agHH), EnRate], byrow = F, nrow = 4)
     enr <- data.table(enr[, rep(1, 3)])
     nr <- data.table(nr)
     nr[2:3, c(1, 3) := ""]
@@ -3081,23 +3081,92 @@ for (ge in c(3, 1, 2)){
   Tab <- rbind(Tab, Tab0)
 }
 rn <- rownames(tab0)
-rn[grepl("^CI|^p", rn)] <- ""
+#rn[grepl("^CI|^p", rn)] <- ""
 rn2 <- c("R2", "N: agHH", "N", 
-  paste0("mean of ", rep(c("control in ", "treated in "), each = 2), rep(c(1999, 2002), 2)))
+  paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
 rnm <- rep(c(" ", rn, rn2), 3)
 ####  replace variable names, deleting std error names
 for (k in 1:nrow(sbt)){
   if (any(grepl(sbt[k, "org"], rnm))) 
     rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
 }
+rnm <- gsub("Number of ol", "Ol", rnm)
 Tab <- cbind(covariates = rnm, Tab)
 Tab <- rbind(Tab, 
-  "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 2)),
-  "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 2)))
+  "Covariates, thana trends" = c("\\hspace{.5em}Covariates, thana trends", rep(c("", "Y", "Y"), 2)),
+  "HH trends" = c("\\hspace{.5em}HH trends", rep(c("", "", "Y"), 2)))
+#### LaTeX output
+SepCols <- c(3) 
+ltb <- latextab(Tab, delimiterline = NULL, 
+    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
+    hright = c("\\hfill", rep("$", ncol(Tab)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-1ex", 
+    adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, 1), 
+    separatingcoltitle = c("\\textsf{Agricultural households}", 
+      "\\textsf{Agricultural households (head)}")
+  ) 
+aghhrows <- grep("em.Agricultural h", ltb)
+ltb <- c(
+  ltb[1:grep("cline", ltb)],
+  "&\\multicolumn{7}{c}{\\scriptsize A. Boys+Girls}\\\\",
+  ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
+  "&\\multicolumn{7}{c}{\\scriptsize B. Boys}\\\\",
+  ltb[(aghhrows[2]-1):(aghhrows[3]-2)],
+  "&\\multicolumn{7}{c}{\\scriptsize C. Girls}\\\\",
+  ltb[(aghhrows[3]-1):(length(ltb)-3)],
+  "\\multicolumn{8}{l}{\\scriptsize Common specifications}\\\\",
+  ltb[(length(ltb)-2):length(ltb)]
+  )
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+aghhrows <- grep("Agricultural hou", ltb)
+ltb1 <- c(ltb[1:(aghhrows[3]-3)],   ltb[grep("cline", ltb)],  ltb[length(ltb)-(2:0)])
+ltb2 <- c(ltb[1:grep("cline", ltb)], ltb[(aghhrows[3]-2):length(ltb)])
+write.tablev(ltb1
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "ByGenderByAgHHdefResults1.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb2
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "ByGenderByAgHHdefResults2.tex")
+  ,  colnamestrue = F)
+#### Concise table (dropping estimates on siblings) with A. BG, B. Boys, C. Girls
+sibrows <- grep("Old.*ib", ltb)
+ltbshort <- ltb[-(sibrows+rep(0:2, length(sibrows)))]
+othrows <- grep("ea.*rol.*02|ea.*tre", ltbshort)
+ltbshort <- ltbshort[-othrows]
+write.tablev(ltbshort
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "ByGenderByAgHHdefResults.tex")
+  ,  colnamestrue = F)
+#### More concise table for main text
+r2rows <- grep("R2", ltb)
+ltb4 <- ltb[
+    c(1:(aghhrows[1]+2), r2rows[1]+c(0, 2, 3, 5), length(ltb)-2:0)
+    ]
+ltb4 <- gsub(".*Boys.Gi.*", "", ltb4)
+ltb4 <- gsub(".* 1 .* 3 .* 5 .* 6.*", "&(1)&(2)&(3)&&(4)&(5)&(6)\\\\\\\\", ltb4)
+write.tablev(ltb4
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByAgHHdefResultsConcise.tex")
+  ,  colnamestrue = F)
+#### HTML output
 library(kableExtra)
 colnames(Tab) <- c("variables", rep(c("raw DID", 
   "+covariates+Thana trends", "+HH trends"), 2))
 #Tab <- rbind(c(" ", 1:3), Tab)
+Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("\\\\hspace\\{.5em\\}", "    ", Tab[, 1])
+for (iii in 2:ncol(Tab)) 
+  Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
 bgcolor <- "#ffcc99"
 kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")), 
   row.names = F, caption = 
@@ -3113,7 +3182,7 @@ kt <- row_spec(kt, rep(grep("Agri", Tab[, "variables"]), each = 3)+0:2, bold = T
 kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rnm)[1]-1, grep("Agri", rnm)[1]+2)
 kt <- pack_rows(kt, group_label="Boys", grep("Agri", rnm)[2]-1, grep("Agri", rnm)[2]+2)
 kt <- pack_rows(kt, group_label="Girls", grep("Agri", rnm)[3]-1, grep("Agri", rnm)[3]+2)
-kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
+kt <- pack_rows(kt, group_label="Common specifications", grep("Co.*ana", Tab[, 1]), grep("HH tre", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
@@ -3131,14 +3200,14 @@ kt
 
 ```{r show age group table, eval = T}
 resultsag <- qread("../save/DID2024_SubsampleAgeGroupGenderResults.qs")
-Enr <- qread("../save/TabulatedAllResultsEnr.qs")
-NR <- qread("../save/TabulatedAllResultsNR.qs")
+Enrag <- qread("../save/TabulatedAllResultsEnr.qs")
+NRag <- qread("../save/TabulatedAllResultsNR.qs")
 #### resultsag <- qread("save/DID2024_SubsampleAgeGroupGenderResults.qs")
-#### Enr <- qread("save/TabulatedAllResultsEnr.qs")
-#### NR <- qread("save/TabulatedAllResultsNR.qs")
-nR <- NR[grepl("A.*2", agegroup) & grepl(aghh.defs[1], agdef) & grepl("m", data) & 
+#### Enrag <- qread("save/TabulatedAllResultsEnr.qs")
+#### NRag <- qread("save/TabulatedAllResultsNR.qs")
+nR <- NRag[grepl("A.*2", agegroup) & grepl(aghh.defs[1], agdef) & grepl("m", data) & 
   grepl("^B", inference) & grepl("^d", HHtype), ]
-enr0 <- Enr[grepl("A.*2", agegroup) & grepl(aghh.defs[1], agdef) & grepl("m", data) & 
+enr0 <- Enrag[grepl("A.*2", agegroup) & grepl(aghh.defs[1], agdef) & grepl("m", data) & 
   grepl("B", inference) & grepl("^d", HHtype), ]
 enr0[, EnRate := formatC(EnRate, digits = 4, format = "f")]
 ii <- jj <-   s <- de <- m <- gg <- 1
@@ -3158,7 +3227,7 @@ for (ag in 1:2){
      dm
      })
     tab0 <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
-      UseHTML = T)
+      CIIntinysize = T, UseHTML = T)
     tab0 <- tab0[grepl("^agHH.yr\\d|\\{agHH.yr\\d|Sib..a", rownames(tab0)), ]
     vs <- c("^agHH.yr\\d", "^OldSibF.a.*yr.$", "^OldSibM.a.*yr.$")
     nums <- NULL
@@ -3174,7 +3243,7 @@ for (ag in 1:2){
     )
     enr <- matrix(
      enr0[grepl(genderregexpr[ge], gender) & grepl(agitems[ag], group), ][
-       order(agHH, tee), EnRate], byrow = F, nrow = 4)
+       order(tee, agHH), EnRate], byrow = F, nrow = 4)
     enr <- data.table(formatC(enr, digits = 4, format = "f")[, rep(1, 3)])
     nr <- data.table(nr)
     nr[2:3, c(1, 3) := ""]
@@ -3190,21 +3259,67 @@ for (ag in 1:2){
 rn <- rownames(tab0)
 rn[grepl("^CI|^p", rn)] <- ""
 rn2 <- c("R2", "N: agHH", "N", 
-  paste0("mean of ", rep(c("control in ", "treated in "), each = 2), rep(c(1999, 2002), 2)))
+  paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
 rnm <- rep(c(" ", rn, rn2), 2)
 ####  replace variable names, deleting std error names
 for (k in 1:nrow(sbt)){
   if (any(grepl(sbt[k, "org"], rnm))) 
     rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
 }
-rnm <- gsub("\\\\hspace\\{.5em\\}", "    ",
-####  "<span><span style=\"margin-left: 1em\" />", 
-####  "<img src=\"transparent.png\" height=\".1px\" width=\".5em\">", rnm)
-rnm)
+rnm <- gsub("Number of ol", "Ol", rnm)
 Tab <- cbind(covariates = rnm, Tab)
 Tab <- rbind(Tab, 
-  "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
-  "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 3)))
+  "Covariates, thana trends" = c("Covariates, thana trends", rep(c("", "Y", "Y"), 3)),
+  "HH trends" = c("HH trends", rep(c("", "", "Y"), 3)))
+#### LaTeX output
+SepCols <- c(3, 6) 
+ltb <- latextab(Tab, delimiterline = NULL, 
+    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
+    hright = c("\\hfill", rep("$", ncol(Tab)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-1ex", 
+    adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
+    separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
+  ) 
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+write.tablev(ltb
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "ByGenderByAgeGroup2Results.tex")
+  ,  colnamestrue = F)
+aghhrows <- grep("Agricultural h", ltb)
+ltb <- c(
+  ltb[1:grep("cline", ltb)],
+  "&\\multicolumn{11}{c}{\\scriptsize A. Primary school ages}\\\\",
+  ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
+  "&\\multicolumn{11}{c}{\\scriptsize B. Secondary school ages}\\\\",
+  ltb[(aghhrows[2]-1):(length(ltb)-3)],
+  "\\multicolumn{11}{l}{\\scriptsize Common specifications}\\\\",
+  ltb[(length(ltb)-2):length(ltb)]
+  )
+ltb1 <- c(ltb[1:(aghhrows[2]-2)], ltb[length(ltb)-2:0])
+ltb2 <- c(ltb[1:grep("cline", ltb)], ltb[(aghhrows[2]-1):length(ltb)])
+write.tablev(ltb1
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "ByGenderByAgeGroup2Results1.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb2
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "ByGenderByAgeGroup2Results2.tex")
+  ,  colnamestrue = F)
+#### HTML output
+Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("\\\\hspace\\{.5em\\}", "    ",
+####  "<span><span style=\"margin-left: 1em\" />", 
+####  "<img src=\"transparent.png\" height=\".1px\" width=\".5em\">", rnm)
+Tab[, 1])
 library(kableExtra)
 colnames(Tab) <- c("variables", rep(c("raw DID", 
   "+covariates+Thana trends", "+HH trends"), 3))
@@ -3223,7 +3338,7 @@ kt <- row_spec(kt, rep(grep("Agri", Tab[, "variables"]), each = 3)+0:2, bold = F
   color = "black", background = "#87cefa")
 kt <- pack_rows(kt, group_label="Primary", grep("Agri", rnm)[1]-1, grep("Agri", rnm)[2]-2)
 kt <- pack_rows(kt, group_label="Secondary", grep("Agri", rnm)[2]-1, grep("mean.*2002", rnm)[2])
-kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
+kt <- pack_rows(kt, group_label="Common specifications", grep("Cov.*ana", Tab[, 1]), grep("HH tr", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
@@ -3234,6 +3349,7 @@ kt
 
 * Results show that main effects are found among secondary school goers, mostly boys.  
 * Primary school aged children may be too young to get affected.  
+* Looking from a different subsample, results by different age lowerbound in the appendix show impacts to be larger among the sample with older boys.  
 
 ## Placebo estimation results
 
@@ -3264,7 +3380,7 @@ for (jj in 1:2) {
        dm
        })
       tab0 <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
-        UseHTML = T)
+        CIIntinysize = T, UseHTML = T)
       tab0 <- tab0[grepl("^agHH.yr\\d|\\{agHH.yr\\d|Sib..a", rownames(tab0)), ]
       vs <- c("^agHH.yr\\d", "^OldSibF.a.*$", "^OldSibM.a.*$")
       nums <- NULL
@@ -3299,24 +3415,108 @@ for (jj in 1:2) {
     Tab0 <- rbind(Tab0, Tab00)
   }
   rn <- rownames(tab0)
-  rn[grepl("^CI|^p", rn)] <- ""
+  #rn[grepl("^CI|^p", rn)] <- ""
   rn2 <- c("R2", "N: agHH", "N", 
-    paste0("mean of ", rep(c("control in ", "treated in "), each = 2), rep(c(2002, 2006), 2)))
+    paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(2002, 2006), each = 2)))
   rnm <- rep(c(" ", rn, rn2), 3)
   ####  replace variable names, deleting std error names
   for (k in 1:nrow(sbt)){
     if (any(grepl(sbt[k, "org"], rnm))) 
       rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
   }
+  rnm <- gsub("Number of ol", "Ol", rnm)
   Tab0 <- cbind(covariates = rnm, Tab0)
   Tab0 <- rbind(Tab0, 
-    "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 2)),
-    "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 2)))
+    "Covariates, thana trends" = c("\\hspace{.5em}Covariates, thana trends", rep(c("", "Y", "Y"), 2)),
+    "HH trends" = c("\\hspace{.5em}HH trends", rep(c("", "", "Y"), 2)))
   Tab <- rbind(Tab, Tab0)
 }
+#### LaTeX output
+SepCols <- c(3) 
+ltb <- latextab(Tab, delimiterline = NULL, 
+    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
+    hright = c("\\hfill", rep("$", ncol(Tab)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-1ex", 
+    adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
+    separatingcoltitle = c("\\textsf{Agricultural households}", 
+      "\\textsf{Agricultural households (head)}")
+  ) 
+aghhrows <- grep("em.Agricultural h", ltb)
+ltb <- c(
+  ltb[1:grep("cline", ltb)],
+  "&\\multicolumn{7}{l}{\\scriptsize 2002 cohort}\\\\",
+  "&\\multicolumn{7}{c}{\\scriptsize A. Boys+Girls}\\\\",
+  ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
+  "&\\multicolumn{7}{c}{\\scriptsize B. Boys}\\\\",
+  ltb[(aghhrows[2]-1):(aghhrows[3]-2)],
+  "&\\multicolumn{7}{c}{\\scriptsize C. Girls}\\\\",
+  ltb[(aghhrows[3]-1):(aghhrows[4]-2)],
+  "&\\multicolumn{7}{l}{\\scriptsize 1999 cohort}\\\\",
+  "&\\multicolumn{7}{c}{\\scriptsize A. Boys+Girls}\\\\",
+  ltb[(aghhrows[4]-1):(aghhrows[5]-2)],
+  "&\\multicolumn{7}{c}{\\scriptsize B. Boys}\\\\",
+  ltb[(aghhrows[5]-1):(aghhrows[6]-2)],
+  "&\\multicolumn{7}{c}{\\scriptsize C. Girls}\\\\",
+  ltb[(aghhrows[6]-1):(length(ltb)-3)],
+  "\\multicolumn{8}{l}{\\scriptsize Common specifications}\\\\",
+  ltb[(length(ltb)-2):length(ltb)]
+  )
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+write.tablev(ltb
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderByAgHHdefResults.tex")
+  ,  colnamestrue = F)
+aghhrows <- grep("Agricultural hou", ltb)
+ltb1 <- c(ltb[1:(aghhrows[3]-3)],   ltb[grep("cline", ltb)], ltb[length(ltb)-(2:0)])
+ltb2 <- ltb[c(1:grep("cline", ltb), (aghhrows[3]-1):(aghhrows[5]-3), grep("cline", ltb), length(ltb)-(2:0))]
+ltb3 <- c(ltb[1:grep("cline", ltb)], ltb[(aghhrows[5]-2):length(ltb)])
+write.tablev(ltb1
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderByAgHHdefResults1.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb2
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderByAgHHdefResults2.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb3
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderByAgHHdefResults3.tex")
+  ,  colnamestrue = F)
+#### More concise table for main text
+r2rows <- grep("R2", ltb)
+ltb4 <- ltb[
+    c(
+      1:(aghhrows[1]+2), r2rows[1]+c(0, 2, 3, 5),
+      aghhrows[4]+(-3:2), r2rows[4]+c(0, 2, 3, 5), length(ltb)-2:0
+      )
+    ]
+ltb4 <- gsub(".*Boys.Gi.*", "", ltb4)
+ltb4 <- gsub(".*2002 co.*", "&\\\\multicolumn{7}{c}{\\\\scriptsize A. 2002 cohort: Boys+girls}\\\\\\\\", ltb4)
+ltb4 <- gsub(".*1999 co.*", "&\\\\multicolumn{7}{c}{\\\\scriptsize B. 1999 cohort: Boys+girls}\\\\\\\\", ltb4)
+ltb4 <- gsub(".* 1 .* 3 .* 5 .* 6.*", "&(1)&(2)&(3)&&(4)&(5)&(6)\\\\\\\\", ltb4)
+ltb4 <- gsub(".* 19 .* 23 .*", "&(7)&(8)&(9)&&(10)&(11)&(12)\\\\\\\\", ltb4)
+#ltb4 <- gsub("^(.*Agricultural h.*)\\\\\\\\", "\\1\\\\\\\\[-1ex]", ltb4)
+write.tablev(ltb4
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByAgHHdefResultsConcise.tex")
+  ,  colnamestrue = F)
+#### HTML output
 library(kableExtra)
 colnames(Tab) <- c("variables", 
   rep(c("raw DID", "+covariates+Thana trends", "+HH trends"), 2))
+Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("\\\\hspace\\{.5em\\}", "    ", Tab[, 1])
+for (iii in 2:ncol(Tab)) 
+  Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
 bgcolor <- "#ffcc99"
 kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")), 
   row.names = F, caption = 
@@ -3338,9 +3538,11 @@ kt <- pack_rows(kt, group_label="2002 cohort: Boys", aghhrows[2]-1, aghhrows[3]-
 kt <- pack_rows(kt, group_label="2002 cohort: Girls", aghhrows[3]-1, aghhrows[4]-2)
 kt <- pack_rows(kt, group_label="1999 cohort: Boys+girls", aghhrows[4]-1, aghhrows[5]-2)
 kt <- pack_rows(kt, group_label="1999 cohort: Boys", aghhrows[5]-1, aghhrows[6]-2)
-kt <- pack_rows(kt, group_label="1999 cohort: Girls", aghhrows[6]-1, grep("^Tha", Tab[, 1])[2]-2)
-kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1])[1], grep("^HH", Tab[, 1])[1])
-kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1])[2], grep("^HH", Tab[, 1])[2])
+kt <- pack_rows(kt, group_label="1999 cohort: Girls", aghhrows[6]-1, grep("Co.*ana", Tab[, 1])[2]-2)
+#kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1])[1], grep("^HH", Tab[, 1])[1])
+#kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1])[2], grep("^HH", Tab[, 1])[2])
+kt <- pack_rows(kt, group_label="Common specifications", grep("Co.*ana", Tab[, 1])[1], grep("HH tre", Tab[, 1])[1])
+kt <- pack_rows(kt, group_label="Common specifications", grep("Co.*ana", Tab[, 1])[2], grep("HH tre", Tab[, 1])[2])
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
@@ -4741,6 +4943,8 @@ floodftnote <- "A first-difference estimator with standard errors clustered at \
 ```{r read nonmuslim flood results, eval = T}
 resultsM <- qread("../save/DID2024_NonMuslimGenderResults.qs")
 resultsF <- qread("../save/DID2024_FloodGenderResults.qs")
+EnrFM <- qread("../save/TabulatedFloodMuslimResultsEnr2024.qs")
+NRFM <- qread("../save/TabulatedFloodMuslimResultsNR2024.qs")
 ```
 Results for non Muslims.
 ```{r show nonmuslim results, eval = T}
@@ -4784,6 +4988,7 @@ Tab <- cbind(covariates = rn, Tab)
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", "", "Y", "Y"),
   "HH fixed trends" = c("HH fixed trends", "", "", "Y"))
+#### HTML output
 library(kableExtra)
 colnames(Tab) <- c("variables", "raw DID", "+covariates+Thana trends", "+HH trends")
 Tab <- rbind(c(" ", 1:3), Tab)
@@ -4866,6 +5071,168 @@ kt <- footnote(kt,
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemo1, SEMemoForSelectedResults)
            )
+kt
+```
+
+```{r show nonmuslim flooded results, eval = T}
+#### results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]] 
+nR0 <- unique(NRFM[agelb == (10:12)[1] & grepl("0", agdef) & grepl("^d", HHtype), ])
+enr00 <- EnrFM[agelb == (10:12)[1] & grepl("B", inference) & 
+  grepl("0", agdef) & grepl("^d", HHtype), ]
+enr00[, EnRate := formatC(EnRate, digits = 4, format = "f")]
+ii <- jj <- s <- m <- 1
+j <- clnum <- 2
+Tab <- rnames <- NULL
+for (fm in 1:2) {   # flood or muslim
+  nR <- nR0[grepl(c("mu", "fl")[fm], file), ]
+  enr0 <- enr00[grepl(c("mu", "fl")[fm], file), ]
+  if (fm == 1) {
+    rFM <- resultsM 
+    pickstr <- "^agHH.yr\\d|\\{agHH.yr\\d|nonm"
+    vs <- c("^agHH.yr\\d", "n.*m.yr.$", "^no.*ag")
+  } else {
+    rFM <- resultsF
+    pickstr <- "^agHH.yr\\d|\\{agHH.yr\\d|floo"
+    vs <- c("^agHH.yr\\d", "flooded$", "^fl.*ag")
+  }
+  for (ge in 1:3) {
+    cis0 <- lapply(rFM[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
+    cis0 <- lapply(cis0, data.table)
+    cis <- lapply(cis0, function(x) x[, df := NULL])
+    cis <- lapply(cis, function(x) {
+     dm <- data.frame(x[, -1])
+     rownames(dm) <- as.character(unlist(x[, 1]))
+     dm
+     })
+    tab0 <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
+      CIIntinysize = T, UseHTML = T)
+    tab0 <- tab0[grepl(pickstr, rownames(tab0)), ]
+    nums <- NULL
+    for (vv in vs) nums <- c(nums, grep(vv, rownames(tab0))+0:2)
+    tab0 <- tab0[nums, ]
+    nr <- rbind(
+      formatC(nR[grepl(genderregexpr[ge], gender), ][
+        order(spec), R], digits = 4, format = "f")
+    , formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
+        order(spec), Yes], digits = 0, format = "f")
+    , formatC(nR[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
+        order(spec), n], digits = 0, format = "f")
+    )
+    enr <- matrix(
+     enr0[grepl(aghh.defs[m], agdef) & grepl(genderregexpr[ge], gender), ][
+       order(tee, agHH), EnRate], byrow = F, nrow = 4)
+    enr <- data.table(enr[, rep(1, 3)])
+    nr <- data.table(nr)
+    nr[2:3, c(1, 3) := ""]
+    enr[, c(1, 3) := ""]
+    rn <- c(rownames(tab0), "R2", "N: agHH", "N", 
+      paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
+    tab <- rbindlist(list(tab0, rbind(nr, enr)), use.names = F)
+    tabmat <- as.matrix(tab)
+    assign(paste0("t", fm, ge), tab)
+    assign(paste0("t", ge), tab)
+  }
+  Tab0 <- cbind(t3, t1, t2)
+  rnames <- c(rnames, rn)
+  Tab <- rbind(Tab, Tab0)
+}
+rn <- rnames
+####  replace variable names, deleting std error names
+for (k in 1:nrow(sbt)){
+  if (any(grepl(sbt[k, "org"], rnames))) 
+    rnames[grep(sbt[k, "org"], rnames)] <- sbt[k, "changedto"]
+}
+rnames <- gsub("\\\\hspace\\{.5em\\}", "    ", rnames)
+Tab <- as.matrix(cbind(covariates = rnames, Tab))
+Tab <- rbind(Tab, 
+  "Covariates, thana trends" = c("Covariates, thana trends", rep(c("", "", "Y"), 3)),
+  "HH trends" = c("HH trends", rep(c("", "", "Y"), 3)))
+#### LaTeX output
+SepCols <- c(3, 6) 
+ltb <- latextab(Tab, delimiterline = NULL, 
+    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
+    hright = c("\\hfill", rep("$", ncol(Tab)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-1ex", 
+    adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
+    separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
+  ) 
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+aghhrows <- grep(" Agri", ltb)
+ltb <- c(
+  ltb[1:(aghhrows[1]-2)],
+  "&\\multicolumn{11}{c}{A. Non Muslims}\\\\",
+  ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
+  "&\\multicolumn{11}{c}{B. Flooded}\\\\",
+  ltb[(aghhrows[2]-1):(length(ltb)-3)],
+  "\\multicolumn{11}{l}{\\scriptsize Common specifications}\\\\",
+  ltb[(length(ltb)-2):length(ltb)]
+  )
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+write.tablev(ltb
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "MuslimFloodResults.tex")
+  ,  colnamestrue = F)
+aghhrows <- grep("[A-Z]\\. ", ltb)
+ltb1 <- c(ltb[1:(aghhrows[2]-2)], ltb[length(ltb)-1:0])
+ltb2 <- c(ltb[1:grep("cline", ltb)], ltb[(aghhrows[2]-1):length(ltb)])
+write.tablev(ltb1
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "MuslimFloodResults1.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb2
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "MuslimFloodResults2.tex")
+  ,  colnamestrue = F)
+#### HTML output
+Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("\\\\hspace\\{.5em\\}", "    ", Tab[, 1])
+Tab[, 1] <- gsub("1$", "", Tab[, 1])
+Tab[, 1] <- gsub("22$", "2", Tab[, 1])
+Tab[, 1] <- gsub("m2$", "m", Tab[, 1])
+colnames(Tab) <- c("variables", rep(c("raw DID", "+covariates+Thana trends", "+HH trends"), 3))
+for (iii in 2:ncol(Tab)) 
+  Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
+aghhrows <- grep(" Agri", Tab[, 1])
+Tab <- rbind(
+  t(c("", 1:(ncol(Tab)-1))), Tab[1:(aghhrows[2]-1), ],
+  c("", ncol(Tab)+1:(ncol(Tab)-1)), Tab[aghhrows[2]:nrow(Tab), ]
+  )
+library(kableExtra)
+bgcolor <- "#ffcc99"
+aghhrows <- grep("Agri", Tab[, 1])
+kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")), 
+  row.names = F, caption = 
+  "Enrollment impacts with non Muslims and flood: Year 1999-2002, 10-18 years old, direct offspring, Satterthwaite correction")
+kt <- add_header_above(kt, c(" " = 1, "Boys+girls" = 3, "Boys" = 3, "Girls" = 3),
+  background = bgcolor)
+kt <- kable_styling(kt, full_width = F, position = "left", fixed_thead = T, 
+  bootstrap_options = c("condensed"))
+kt <- row_spec(kt, 0:1, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
+  background = bgcolor)
+kt <- row_spec(kt, rep(grep("Agri", Tab[, 1]), each = 3)+0:2, bold = F, 
+  color = "black", background = "#87cefa")
+kt <- pack_rows(kt, group_label="Non Muslims", aghhrows[1]-1, aghhrows[2]-2)
+kt <- pack_rows(kt, group_label="Flooded", aghhrows[2]-1, grep("^Co", Tab[, 1])-1)
+kt <- pack_rows(kt, group_label="Common specifications", grep("^Co", Tab[, 1]), grep("HH tr", Tab[, 1]))
+kt <- scroll_box(kt, height = "800px")
+kt <- footnote(kt, 
+           general = "Sample of direct offspring of household heads. ",
+           number = c(SpecMemo1, SEMemoForSelectedResults)
+           )
+qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "MuslimFloodH.qs"))
 kt
 ```
 
@@ -6459,20 +6826,22 @@ resultsC <- qread("../save/DID2024_DaysAbsentCrossSectionResults.qs")
 ```
 
 
-```{r show num grades results, eval = T}
+```{r show num grades days absent results, eval = T}
 ####resultsG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 ####resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 #### resultsC[[ii]][[jj]][[yy]][[rr]][[s]][[j]][[ge]][[m]], rr, yy = 1, 2
 #### resultsG <- qread("save/DID2024_NumGradesEnrollersGenderResults.qs")
 #### resultsD <- qread("save/DID2024_DaysAbsentEnrollersGenderResults.qs")
 #### resultsC <- qread("save/DID2024_DaysAbsentCrossSectionResults.qs")
-#### NR <- qread("save/GenderGradeDaysAbsentTabulatedNR2024.qs")
-#### Enr <- qread("save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
-NR <- qread("../save/GenderGradeDaysAbsentTabulatedNR2024.qs")
-Enr <- qread("../save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
-nR0 <- unique(NR[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ])
-Enr0 <- unique(Enr[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ])
+#### NRGD <- qread("save/GenderGradeDaysAbsentTabulatedNR2024.qs")
+#### EnrGD <- qread("save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
+NRGD <- qread("../save/GenderGradeDaysAbsentTabulatedNR2024.qs")
+EnrGD <- qread("../save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
+nR0 <- unique(NRGD[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ])
+Enr0 <- unique(EnrGD[agelb == (10:12)[1] & grepl(0, agdef) & grepl("^d", HHtype), ])
 Enr0[, EnRate := formatC(EnRate, digits = 4, format = "f")]
+setorder(nR0, agdef)
+setorder(Enr0, tee, agdef)
 ii <- jj <- en <- s <- m <-  1
 j <- clnum <- rr <- 2
 #### enrs <- c("initial", "all time", "others")[en]
@@ -6480,17 +6849,18 @@ j <- clnum <- rr <- 2
 rylast <- c(1, 1, 1, 2)
 Tab <- NULL
 for (ii in 1:2) {
+  Tab0 <- NULL
   for (gd in 1:4) {
     #gd 1: NumGrade 1999 enrollers, 2: NumGrade complete panel enrollers, 
     #    3: DaysAbsent 1999 enrollers, 4: DaysAbsent 2002 cross sectional OLS
-    Tab0 <- NULL
+    Tab00 <- NULL
     # Placebo is estimated only for NumGrades. No DaysAbsent data collected in 2006.
     if (gd > 2 & ii == 2) next
     for (yy in 1:2) { 
     # For gd == 4, yy = 2 (2002, July-August, asked in Sep-Oct) covers 
     # 2 months of planting season absenteeism in a 3 month recall question.
       if (gd < 4 & yy == 2) next
-      Tab00 <- NULL
+      Tab000 <- NULL
       for (ge in c(3, 1, 2)) {
         if (gd < 3) 
           cis0 <- lapply(resultsG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
@@ -6505,14 +6875,14 @@ for (ii in 1:2) {
          dm
          })
         tab <- tabs2latex4(cis, informat = "sattCI", outformat = "epc", xx.yyy = T,
-          UseHTML = T)
+          CIIntinysize = T, UseHTML = T)
         tab <- tab[grepl("^agHH.yr\\d|\\{agHH.yr\\d|^agHH$|\\{agHH\\}|Prog", rownames(tab)), ]
         vs <- c("^agHH", "^Sti", "^NonS")
         nums <- NULL
         for (vv in vs) nums <- c(nums, grep(vv, rownames(tab))+0:2)
         tab0 <- tab[nums, ]
         rn <- rownames(tab0)
-        rn[grepl("^CI|^p", rn)] <- ""
+        #rn[grepl("^CI|^p", rn)] <- ""
         assign(paste0("rn", gd, ii),  rn)
         if (gd == 4) {
           nR <- nR0[CrossSecEnrollers == c("AtLeastOnce", "BothPeriods")[rr], ] 
@@ -6536,24 +6906,40 @@ for (ii in 1:2) {
         enr <- matrix(
          enr0[file == gdfiles[gd] & grepl(genderregexpr[ge], gender) &
             CrossSecYear == c(1999, 2002)[yy], ][
-           order(agHH, tee), EnRate], byrow = F, nrow = enronumrows)
+           order(tee, agHH), EnRate], byrow = F, nrow = enronumrows)
         enr <- data.table(enr[, rep(1, 3)])
         nr <- data.table(nr)
         nr[2:3, c(1, 3) := ""]
         enr[, c(1, 3) := ""]
         tab2 <- rbindlist(list(tab0, rbind(nr, enr)), use.names = F)
-        Tab00 <- cbind(Tab00, tab2)
+        assign(
+            paste0(c("M", "P")[ii], c("NIP", "NCP", "DCP", "DCC")[gd], c("b", "g", "bg")[ge], c(9, 2)[yy]) 
+          # N: NumGrade, D: DaysAbsent
+          # IP: incomplete panel (1999 enrollers), CP: complete panel (1999 and 2002 enrollers)
+          # CC: cross section
+          , tab2)
+        Tab000 <- cbind(Tab000, tab2)
       } # ge
-      Tab00 <- rbind(t(matrix((gd-1)*9+(yy-1)*9+(ii-1)*45+1:ncol(Tab00))), Tab00, use.names = F) 
-      Tab0 <- rbind(Tab0, Tab00)
+      Tab000 <- rbind(t(matrix((gd-1)*9+(yy-1)*9+(ii-1)*45+1:ncol(Tab000))), Tab000, use.names = F) 
+      assign(
+          paste0(c("M", "P")[ii], c("NIP", "NCP", "DCP", "DCC")[gd], c(9, 2)[yy]) 
+        , Tab000)
+      Tab00 <- rbind(Tab00, Tab000)
     } # yy
-    Tab <- rbind(Tab, Tab0)
+    assign(
+        paste0(c("M", "P")[ii], c("NIP", "NCP", "DCP", "DCC")[gd]) 
+      , Tab00)
+    Tab0 <- rbind(Tab0, Tab00)
   } # gd
+  assign(
+      paste0("ND", c("M", "P")[ii]) 
+    , Tab0)
+  Tab <- rbind(Tab, Tab0)
 } # ii
 r2n1 <- c("R2", "N: agHH", "N", 
-  paste0("mean of ", rep(c("control in ", "treated in "), each = 2), rep(c(1999, 2002), 2)))
+  paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
 r2n2 <- c("R2", "N: agHH", "N", 
-  paste0("mean of ", rep(c("control in ", "treated in "), each = 2), rep(c(2002, 2006), 2)))
+  paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(2002, 2006), each = 2)))
 r2ncross9 <- c("R2", "N: agHH", "N", paste0("mean of ", c("control in ", "treated in "), 1999))
 r2ncross2 <- c("R2", "N: agHH", "N", paste0("mean of ", c("control in ", "treated in "), 2002))
 rnm11 <- c(" ", rn11, r2n1)
@@ -6574,8 +6960,118 @@ Tab <- as.matrix(cbind(covariates = rnm, Tab))
 Tab <- rbind(Tab, 
   "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
   "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 3)))
+#### LaTeX output
+SepCols <- c(3, 6) 
+ltb <- latextab(Tab, delimiterline = NULL, 
+    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
+    hright = c("\\hfill", rep("$", ncol(Tab)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-1ex", 
+    adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
+    separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
+  ) 
+paneltitles <- c(
+  "Grade progression: Students enrolled in 1999", 
+  "Grade progression: Students enrolled in 1999 and 2002", 
+  "Days absent: Students enrolled in 1999 and 2002", 
+  "Days absent: Students enrolled in 1999 and 2002, cross section OLS of 2000", 
+  "Days absent: Students enrolled in 1999 and 2002, cross section OLS of 2003", 
+  "Grade progression: Placebo estimation of 2002 cohort enrolled in 2002", 
+  "Grade progression: Placebo estimation of 1999 cohort enrolled in 2002", 
+  "Common specifications")
+for (iii in 1:(length(paneltitles)-1)) {
+  aghhrows <- grep("Agri", ltb)
+  ltb <- c(
+      ltb[1:(aghhrows[iii]-2)],
+      paste0("&\\multicolumn{11}{c}{", LETTERS[iii], ". ", paneltitles[iii], "}\\\\"),
+      ltb[(aghhrows[iii]-1):length(ltb)]
+    )
+}
+ltb <- c(
+    ltb[1:(grep("^Than", ltb)-2)],
+    "&\\multicolumn{11}{l}{Common specifications}\\\\",
+    ltb[(grep("^Than", ltb)-1):length(ltb)]
+  )
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+write.tablev(ltb
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "NumGradeDaysAbsentAllResults.tex")
+  ,  colnamestrue = F)
+#### LaTeX output: Results shown in main texts
+#### paste0(c("M", "P")[ii], c("NIP", "NCP", "DCP", "DCC")[gd], c("b", "g", "bg")[ge], c(9, 2)[yy]) 
+row1 <- MNIPbg9 # NumGrade panel 1999
+setnames(row1, as.character(1:ncol(row1)))
+row1 <- data.table(rbind(1:3, as.matrix(row1)))
+row2 <- cbind(MNCPbg9, MDCPbg9) # NumGrade DaysAbsent comp panel 1999, 2002
+setnames(row2, as.character(1:ncol(row2)))
+row2 <- data.table(rbind(3+1:ncol(row2), as.matrix(row2)))
+row3 <- MDCCbg2 # DaysAbsent cross section 2002
+setnames(row3, as.character(3+1:ncol(row3)))
+row3 <- data.table(rbind(9+1:ncol(row3), as.matrix(row3)))
+MNDbg9 <- rbindlist(list(row1, row2, row3), use.names = T, fill = T)
+rnm <- c("", rn11, r2n1, "", rn11, r2n1, "", rn41, r2ncross2)
+####  replace variable names, deleting std error names
+for (k in 1:nrow(sbt)){
+  if (any(grepl(sbt[k, "org"], rnm))) 
+    rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
+}
+rnm <- gsub("Number of ol", "Ol", rnm)
+MNDbg9 <- as.matrix(cbind(rnm, MNDbg9))
+MNDbg9 <- rbind(MNDbg9, 
+  "Thana fixed trends" = c("Thana fixed trends", rep(c("", "", "Y"), 2)),
+  "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 2)))
+SepCols <- c(3) 
+ltb <- latextab(MNDbg9, delimiterline = NULL, 
+    hcenter = c(3, rep(1.3, ncol(MNDbg9)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(MNDbg9)-1)), 
+    hright = c("\\hfill", rep("$", ncol(MNDbg9)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-1ex", adjlskiprows = grep("CI", MNDbg9[, 1])-1,
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
+    separatingcoltitle = c("\\textsf{Grade progression}", "\\textsf{Days absent}")
+  ) 
+paneltitles <- c(
+  "Students enrolled in 1999", 
+  "Students enrolled in 1999 and 2002", 
+  "Students enrolled in 1999 and 2002, cross section OLS of 2000", 
+  "Common specifications")
+for (iii in 1:(length(paneltitles)-1)) {
+  aghhrows <- grep("Agri", ltb)
+  ltb <- c(
+      ltb[1:(aghhrows[iii]-2)],
+      paste0("&\\multicolumn{7}{c}{", LETTERS[iii], ". ", paneltitles[iii], "}\\\\"),
+      ltb[(aghhrows[iii]-1):length(ltb)]
+    )
+}
+ltb <- c(
+    ltb[1:(grep("^Than", ltb)-2)],
+    "&\\multicolumn{11}{l}{Common specifications}\\\\",
+    ltb[(grep("^Than", ltb)-1):length(ltb)]
+  )
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+write.tablev(ltb
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "NumGradeDaysAbsentResults.tex")
+  ,  colnamestrue = F)
+#### HTML output
 library(kableExtra)
 colnames(Tab) <- c("variables", rep(c("raw DID", "+covariates+Thana trends", "+HH trends"), 3))
+Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", Tab[, 1])
+Tab[, 1] <- gsub("households", "HHs", Tab[, 1])
+Tab[, 1] <- Tab[, 1][!grepl("Raw", Tab[, 1])]
 bgcolor <- "#ffcc99"
 kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")),
   row.names = F, caption = 
@@ -6621,13 +7117,19 @@ kt
 * Absence increases for about 2-3 days per month among boys. It also increases among girls but the estimates are noisy.  
 * A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors.  
 * Stipend and non-stipend programs help reduce the absence for 4-6 days per month among boys, but not among girls.  
-* Stipend and non-stipend programs may improve grade progression among girls, and they may improve daily attendance among boys. While it is unclear why they only affect atendance but not progression among boys, girls may attend schools constantly with or without them because they are less engaged in remunerative work. Lower opportunity costs of schooling among girls may also allow a stronger responce to programs in terms of progression.  
-* One possible interpretation is: Boys respond in terms of daily attendance/absence, but not in terms of progression. Opposite is true for girls.  
+* Boys respond in terms of daily attendance/absence, but not in terms of progression. Opposite is true for girls.  
+* Stipend and non-stipend programs may improve grade progression among girls, and they may improve daily attendance among boys. Girls may attend schools constantly with or without them because they are less engaged in remunerative work. Lower opportunity costs of schooling among girls may also allow a stronger responce to programs in terms of progression. It is unclear why they only affect atendance but not progression among boys.  
 * Cross sectional estimates in 2003 (using enrollers of 1999 and 2002) show a monthly 1.0 - 1.2 day increase for children of agricultural households. This reflects that the survey asks days absent of June - August of 2003, which coincide with July-August planting period.  
 * In contrast to this, cross sectional estimates in 2000 (using enrollers of 1999 and 2002) show a zero increase for children of agricultural households. In 1999, children from agricultural households benefited from the exam preponement.  
-* While we do not have information to support the claim, it is possible that these children who progressed to the next grade may have opted not to work in the field during the planting period of 2000.   
+* While we do not have information to support the claim, it is possible that these children of agricultural households who progressed to the next grade may have opted not to work in the field during the planting period of 2000.   
 * Placebo estimation using 2002 cohort shows the children from agricultural households tend to progress more slowly by `r round(c(.17, .23)/4, 2)` year per annum (`r round((c(.17, .23)/4)*12, 2)` months), which are roughly half the size of 1999 impacts, although the $p$ values for placebo estimation are around 10% and are not as small as the 1999 impact estimates.  
 * Placebo estimation using 1999 cohort shows statistically zero impacts of grade progression, consistent with our maintained hypothesis.  
+
+```{r child = paste0("../save/", c("Main", "Placebo")[1], c(1999, 2002)[1], "Older", (10:12)[1], 
+       "NumGradeDaysAbsentResults.tex")
+}
+
+```
 
 ```{r show days absent results, eval = F}
 ####resultsG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
@@ -6661,12 +7163,59 @@ rn <- rownames(Tab)
 rn[grepl("^p|^CI", rn)] <- ""
 rn <- gsub("22$", "2", rn)
 rn <- gsub("m2$", "m", rn)
+rn <- gsub("\\\\hspace\\{.5em\\}", "    ", rn)
 Tab <- cbind(covariates = rn, Tab)
 Tab <- rbind(Tab, 
-  "Thana fixed trends" = c("Thana fixed trends", "", "Y", "Y"),
-  "HH fixed trends" = c("HH fixed trends", "", "", "Y"))
+  "Covariates, thana trends" = c("Covariates, thana trends", "", "Y", "Y"),
+  "HH trends" = c("HH trends", "", "", "Y"))
+#### LaTeX output
+SepCols <- c(3, 6) 
+ltb <- latextab(Tab, delimiterline = NULL, 
+    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
+    hright = c("\\hfill", rep("$", ncol(Tab)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-1ex", adjlskiprows = grep("CI", Tab[, 1])-1,
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
+    separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
+  ) 
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+aghhrows <- grep(" Agri", ltb)
+ltb <- c(
+  ltb[1:(aghhrows[1]-2)],
+  "&\\multicolumn{11}{c}{A. Non Muslims}\\\\",
+  ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
+  "&\\multicolumn{11}{c}{B. Flooded}\\\\",
+  ltb[(aghhrows[2]-1):(length(ltb)-3)],
+  "\\multicolumn{11}{l}{\\scriptsize Common specifications}\\\\",
+  ltb[(length(ltb)-2):length(ltb)]
+  )
+ltb <- gsub("CI\\$.*\\$", "", ltb)
+ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
+ltb <- gsub("households", "HHs", ltb)
+ltb <- ltb[!grepl("Raw", ltb)]
+write.tablev(ltb
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "NumGradeDaysAbsent.tex")
+  ,  colnamestrue = F)
+#### HTML output
+####colnames(Tab) <- c("variables", "raw DID", "+covariates+Thana trends", "+HH trends")
+aghhrows <- grep(" Agri", Tab[, 1])
+Tab <- rbind(
+  t(c("", 1:(ncol(Tab)-1))), Tab[1:(aghhrows[2]-1), ],
+  c("", ncol(Tab)+1:(ncol(Tab)-1)), Tab[aghhrows[2]:nrow(Tab), ]
+  )
 library(kableExtra)
 colnames(Tab) <- c("variables", "raw DID", "+covariates+Thana trends", "+HH trends")
+Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
+Tab[, 1] <- gsub("\\\\hspace\\{.5em\\}", "    ", Tab[, 1])
+for (iii in 2:ncol(Tab)) 
+  Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
 Tab <- rbind(c(" ", 1:3), Tab)
 kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")), 
   row.names = F, caption = 
@@ -6686,6 +7235,7 @@ kt <- footnote(kt,
            )
 kt
 ```
+
 
 # Appendix tables
 
@@ -7148,7 +7698,7 @@ write.tablev(ltb
 ninter <- length(grep("Older", ltb))
 ltb2 <- ltb[-(grep("Older", ltb)+rep(0:2, ninter))]
 write.tablev(ltb2
-  ,  "MainGenderAgeGroup2Results.tex"
+  ,  "../save/MainGenderAgeGroup2Results.tex"
   ,  colnamestrue = F)
 #### HTML outputs
 mrtab <- rbind(mrtab, 
