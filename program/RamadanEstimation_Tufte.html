@@ -329,7 +329,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年05月08日 15:14</h4>
+<h4 class="date">2024年05月16日 16:48</h4>
 
 
 <div id="TOC">
@@ -407,9 +407,12 @@ pre[class] {
   background-color: inherit;
 }
 </style>
+<pre><code>## Warning: パッケージ &#39;knitr&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
+<pre><code>## Warning: パッケージ &#39;tufte&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
 <pre class="r SeiroBenign"><code>library(data.table)
-library(qs)
-pathprogram &lt;- paste0(path, &quot;program/&quot;);  
+library(qs)</code></pre>
+<pre><code>qs 0.25.5</code></pre>
+<pre class="r SeiroBenign"><code>pathprogram &lt;- paste0(path, &quot;program/&quot;);  
 pathprogram0 &lt;- paste0(path0, &quot;program/program/&quot;);  
 pathsource &lt;- paste0(path0, &quot;source/&quot;)
 pathsave &lt;- paste0(path, &quot;save/&quot;)
@@ -434,6 +437,41 @@ source(paste0(pathprogram, &quot;EstimatorFunctions.R&quot;))</code></pre>
 <h1>Read and format data</h1>
 <div id="define-samples" class="section level2">
 <h2>Define samples</h2>
+<pre><code> 要求されたパッケージ bit をロード中です </code></pre>
+<pre><code>Warning: パッケージ &#39;bit&#39; はバージョン 4.2.2 の R の下で造られました</code></pre>
+<pre><code>
+ 次のパッケージを付け加えます: &#39;bit&#39; </code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:data.table&#39; からマスクされています:
+
+    setattr</code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
+
+    xor</code></pre>
+<pre><code>Attaching package bit64</code></pre>
+<pre><code>package:bit64 (c) 2011-2017 Jens Oehlschlaegel</code></pre>
+<pre><code>creators: integer64 runif64 seq :</code></pre>
+<pre><code>coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bitstring</code></pre>
+<pre><code>logical operator: ! &amp; | xor != == &lt; &lt;= &gt;= &gt;</code></pre>
+<pre><code>arithmetic operator: + - * / %/% %% ^</code></pre>
+<pre><code>math: sign abs sqrt log log2 log10</code></pre>
+<pre><code>math: floor ceiling trunc round</code></pre>
+<pre><code>querying: is.integer64 is.vector [is.atomic} [length] format print str</code></pre>
+<pre><code>values: is.na is.nan is.finite is.infinite</code></pre>
+<pre><code>aggregation: any all min max range sum prod</code></pre>
+<pre><code>cumulation: diff cummin cummax cumsum cumprod</code></pre>
+<pre><code>access: length&lt;- [ [&lt;- [[ [[&lt;-</code></pre>
+<pre><code>combine: c rep cbind rbind as.data.frame</code></pre>
+<pre><code>WARNING don&#39;t use as subscripts</code></pre>
+<pre><code>WARNING semantics differ from integer</code></pre>
+<pre><code>for more help type ?bit64</code></pre>
+<pre><code>
+ 次のパッケージを付け加えます: &#39;bit64&#39; </code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:utils&#39; からマスクされています:
+
+    hashtab</code></pre>
+<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
+
+    %in%, :, is.double, match, order, rank</code></pre>
 <pre class="SeiroLightGreen"><code>  [1] &quot;district&quot;                   &quot;thana&quot;                      &quot;survey&quot;                    
   [4] &quot;highMeanY&quot;                  &quot;lowMeanY&quot;                   &quot;rainfallMeanY&quot;             
   [7] &quot;regions&quot;                    &quot;i.district&quot;                 &quot;gps north&quot;                 
@@ -583,6 +621,9 @@ where <span class="math inline">\(\tilde{x}_{it}=x_{it}-\bar{x}_{i}\)</span>. Al
 </div>
 <div id="plain-did" class="section level2">
 <h2>Plain DID</h2>
+<pre><code>Registered S3 method overwritten by &#39;clubSandwich&#39;:
+  method    from    
+  bread.mlm sandwich</code></pre>
 <pre class="SeiroLightGreen"><code>[[1]]
        Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI p-value Sig.
  (Intercept)   0.4753 0.0254 5.57       0.4118      0.53875  &lt;0.001  ***
@@ -824,6 +865,8 @@ for (kk in c(&quot;t&quot;, &quot;Satterthwaite&quot;))
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = &quot;f&quot;)
     , &quot;]&quot;)</code></pre>
 </details>
+<pre><code>Warning in !is.null(rmarkdown::metadata$output) &amp;&amp; rmarkdown::metadata$output %in% : &#39;length(x) = 2
+&gt; 1&#39; in coercion to &#39;logical(1)&#39;</code></pre>
 <table style="NAborder-bottom: 0; margin-left: auto; margin-right: auto; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;" class="table lightable-classic">
 <caption>Differences between agricultural and non-agricultural households in main data (ref:SDiffTable)</caption>
 
@@ -3704,12 +3747,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -4797,12 +4840,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -5890,12 +5933,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -6338,12 +6381,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana fixed trends that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -7483,12 +7526,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana fixed trends that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -7505,7 +7548,6 @@ Y
 </div>
 <div id="age-group-wise-estimation-results" class="section level2">
 <h2>Age group wise estimation results</h2>
-<pre><code>Warning in max(adjlskiprows): max の引数に有限な値がありません: -Inf を返します</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; border-bottom: 0;">
 <p><!--
 <caption>--><span class="marginnote shownote">Main results: Enrollment impacts for year 1999-2002 by school age group, direct offspring, Satterthwaite correction</span><!--</caption>--></p>
@@ -7669,31 +7711,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.119, 0.109]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.064, 0.084]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.105, 0.105]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.155, 0.343]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.093, 0.196]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.096, 0.249]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.153, -0.035]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.159, 0.080]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.228, 0.064]
 </td>
 </tr>
 <tr>
@@ -7755,21 +7797,21 @@ Older female siblings
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.101, 0.201]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.138, 0.206]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.166, 0.320]
 </td>
 </tr>
 <tr>
@@ -7831,21 +7873,21 @@ Older male siblings
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.163, 0.049]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.191, -0.003]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.160, 0.138]
 </td>
 </tr>
 <tr>
@@ -8139,31 +8181,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.160, 0.038]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.165, -0.000]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.163, -0.017]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.290, -0.015]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.260, -0.086]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.234, -0.050]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.153, 0.180]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.205, 0.148]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.225, 0.052]
 </td>
 </tr>
 <tr>
@@ -8225,21 +8267,21 @@ Older female siblings
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.186, 0.130]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.278, 0.032]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.247, 0.327]
 </td>
 </tr>
 <tr>
@@ -8301,21 +8343,21 @@ Older male siblings
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.217, 0.076]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.153, 0.172]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-0.318, 0.080]
 </td>
 </tr>
 <tr>
@@ -8581,12 +8623,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first, fourth, and seventh columns are raw DID. Second, fifth, and eith columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana fixed trends that are interactions of year 2002 dummy with Thana fixed effects. Third, sixth, and ninth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -10798,12 +10840,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana fixed trends that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -11257,12 +11299,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -11707,12 +11749,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -12834,12 +12876,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -13026,31 +13068,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.634, -0.077]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.723, -0.046]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.770, -0.011]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.260, 0.089]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.415, 0.300]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.449, 0.422]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.772, 0.522]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.906, 0.395]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.957, 0.374]
 </td>
 </tr>
 <tr>
@@ -13116,26 +13158,26 @@ Stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[0.573, 1.433]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[0.616, 1.491]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-1.868, 1.309]
 </td>
 <td style="text-align:center;">
-
+[-1.994, 0.952]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[0.698, 1.991]
+</td>
+<td style="text-align:center;">
+[0.977, 1.829]
 </td>
 </tr>
 <tr>
@@ -13201,26 +13243,26 @@ Non-stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[0.514, 1.634]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[0.573, 1.772]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-2.327, 1.871]
 </td>
 <td style="text-align:center;">
-
+[-2.298, 1.601]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[1.025, 1.977]
+</td>
+<td style="text-align:center;">
+[1.216, 1.830]
 </td>
 </tr>
 <tr>
@@ -13514,31 +13556,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.386, 0.143]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.518, 0.175]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.457, 0.031]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.913, 0.521]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.961, 0.720]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.092, 1.057]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.614, 0.409]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.706, 0.390]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.973, 0.623]
 </td>
 </tr>
 <tr>
@@ -13604,26 +13646,26 @@ Stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[0.150, 1.230]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[0.295, 1.379]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-2.120, 1.871]
 </td>
 <td style="text-align:center;">
-
+[-2.548, 2.092]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[0.387, 1.971]
+</td>
+<td style="text-align:center;">
+[0.538, 2.005]
 </td>
 </tr>
 <tr>
@@ -13689,26 +13731,26 @@ Non-stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[0.405, 1.600]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[0.484, 1.802]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-2.144, 2.537]
 </td>
 <td style="text-align:center;">
-
+[-2.845, 3.048]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[0.877, 2.027]
+</td>
+<td style="text-align:center;">
+[0.939, 2.170]
 </td>
 </tr>
 <tr>
@@ -14002,31 +14044,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.009, 1.922]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.538, 2.183]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.419, 2.066]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.022, 3.663]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[1.067, 3.863]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[1.786, 4.651]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.639, 1.300]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.052, 1.751]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.679, 2.295]
 </td>
 </tr>
 <tr>
@@ -14092,26 +14134,26 @@ Stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-1.787, 0.769]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[-2.527, -0.103]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-7.991, -3.625]
 </td>
 <td style="text-align:center;">
-
+[-8.117, -3.945]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-1.564, 1.157]
+</td>
+<td style="text-align:center;">
+[-1.666, 1.075]
 </td>
 </tr>
 <tr>
@@ -14177,26 +14219,26 @@ Non-stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-2.211, 2.741]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[-3.169, 1.532]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-8.279, -1.086]
 </td>
 <td style="text-align:center;">
-
+[-9.465, -0.826]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-1.834, 2.201]
+</td>
+<td style="text-align:center;">
+[-2.004, 2.099]
 </td>
 </tr>
 <tr>
@@ -14490,31 +14532,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.715, 0.730]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.112, 0.710]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.014, 0.635]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.900, 1.527]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.994, 1.684]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.966, 1.185]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.277, 0.627]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.761, 0.298]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.291, 0.019]
 </td>
 </tr>
 <tr>
@@ -14580,26 +14622,26 @@ Stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-2.503, 0.883]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[-2.256, 0.840]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-2.145, 0.557]
 </td>
 <td style="text-align:center;">
-
+[-2.346, 0.902]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-2.714, 1.565]
+</td>
+<td style="text-align:center;">
+[-2.654, 1.066]
 </td>
 </tr>
 <tr>
@@ -14841,31 +14883,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.310, 1.618]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.328, 2.035]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.040, 2.078]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.396, 2.872]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.494, 4.426]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.238, 4.970]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.283, 1.294]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[0.133, 1.341]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.968, 1.694]
 </td>
 </tr>
 <tr>
@@ -14931,26 +14973,26 @@ Stipend program
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-1.972, 0.611]
 </td>
 <td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-</td>
-<td style="text-align:center;">
-
-</td>
-<td style="text-align:center;">
-
+[-2.961, 0.689]
 </td>
 <td style="text-align:center;">
 </td>
 <td style="text-align:center;">
-
+[-5.945, 0.979]
 </td>
 <td style="text-align:center;">
-
+[-9.285, 2.522]
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+[-2.845, 1.032]
+</td>
+<td style="text-align:center;">
+[-2.683, 1.266]
 </td>
 </tr>
 <tr>
@@ -15192,31 +15234,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.517, 0.042]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.389, 0.043]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.499, 0.161]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.615, 0.165]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.563, 0.170]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.787, 0.377]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.630, 0.139]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.424, 0.130]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.545, 0.231]
 </td>
 </tr>
 <tr>
@@ -15510,31 +15552,31 @@ Agricultural household
 <td style="text-align:right;color: black !important;background-color: #87cefa !important;padding-left: 2em;" indentlevel="1">
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.440, 0.149]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.452, 0.105]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.593, 0.186]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.615, 0.103]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.718, 0.145]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-1.221, 0.493]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.359, 0.267]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.373, 0.276]
 </td>
 <td style="text-align:center;color: black !important;background-color: #87cefa !important;">
-
+[-0.441, 0.288]
 </td>
 </tr>
 <tr>
@@ -15732,7 +15774,7 @@ mean of treated in 2006
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-Thana fixed trends
+Covariates, thana trends
 </td>
 <td style="text-align:center;">
 </td>
@@ -15761,7 +15803,7 @@ Y
 </tr>
 <tr>
 <td style="text-align:right;padding-left: 2em;" indentlevel="1">
-HH fixed trends
+HH trends
 </td>
 <td style="text-align:center;">
 </td>
@@ -15800,12 +15842,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -17868,12 +17910,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -19333,12 +19375,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -20260,12 +20302,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -22292,12 +22334,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -24318,12 +24360,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Columns  use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of basline individual and demographic characterstics (sex of individual, household head’s education, number of older male/female siblings) with year 2002 dummy <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and with year 2002 * agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Columns  add  that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns  add  which allow heterogenous trends at Thana level.
+<sup>1</sup> For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and  that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level. 95% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>

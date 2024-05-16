@@ -95,6 +95,8 @@ pre[class] {
 ```
 ```{r setup, echo = F} 
 #### include = F <==> echo=F & results = F
+#### renv::init()
+#### library(renv)
 library(knitr)
 library(tufte)
 #### invalidate cache when the tufte version changes
@@ -156,18 +158,20 @@ source(paste0(pathprogram, "DefinitionsAndParameters.R"))
 source(paste0(pathprogram, "tabulate_est.R"))
 source(paste0(pathprogram, "EstimatorFunctions.R"))
 ```
-```{r SpecMemo SEMemoForSelectedResults, echo = F}
+```{r SpecMemo SEMemoForSelectedResults for tex, echo = F}
 CovariatesMemoWithInteractions <- "\\textsf{Agricultural households * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. \\textsf{$\\underline{\\phantom{mm}}$ * Older sisters} and \\textsf{$\\underline{\\phantom{mm}}$ * Older brothers} are triple interaction terms of agricultural household dummy, year 2002 dummy, and number of older sisters/brother in a household. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. All the interaction terms are demeaned."
 CovariatesMemo <- "\\textsf{Agricultural households * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned."
 SpecMemo <- "\\textsf{Specification 1} uses time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and interaction terms of \\textsf{Demographic fixed trends} that are interactions of baseline individual and demographic characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings). \\textsf{Specification 2} adds \\textsf{Other household fixed trends} that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). \\textsf{Specification 3} adds \\textsf{Thana fixed trends} which allow heterogenous trends at Thana level. "
 SpecMemo0 <- "\\textsf{Specification 1} uses time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \\textsf{Demographic fixed trends} that are interactions of baseline individual and demographic characterstics (sex of individual, household head's education, number of older male/female siblings) with year 2002 dummy $\\bfx_{i}r_{t}$, and with year 2002 * agricultural household dummy $\\bfx_{i}r_{t}D_{i}$. \\textsf{Specification 2} adds \\textsf{other household fixed trends} that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). \\textsf{Specification 3} adds \\textsf{Thana fixed trends} which allow heterogenous trends at Thana level. "
 SpecMemo1 <- "Columns \\textsf{(1), (4)} use time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \\textsf{Demographic fixed trends} that are interactions of basline individual and demographic characterstics (sex of individual, household head's education, number of older male/female siblings) with year 2002 dummy $\\bfx_{i}r_{t}$, and with year 2002 * agricultural household dummy $\\bfx_{i}r_{t}D_{i}$. Columns \\textsf{(2), (5)} add \\textsf{other household fixed trends} that are interactions of other baseline household characteristics (per member land holding, per member nonland assets, own piped water, structured toilet). Columns \\textsf{(3), (6)} add \\textsf{Thana fixed trends} which allow heterogenous trends at Thana level. "
-SpecMemo2 <- 
-  gsub(".3., .6.", "(3), (6), (9), (12)", 
-  gsub(".2., .5.", "(2), (5), (8), (11)", 
-  gsub(".1., .4.", "(1), (4), (7), (10)", SpecMemo1)))
-SEMemoForSelectedResults <- "Standard errors are clusterd at thana level. 95\\% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters are shown in square brackets. $*$, $**$, $***$ indicate significance levels at 10\\%, 5\\%, 1\\% under BRL cluster robust standard errors, respectively." #, rows under \\textsf{CI (WCB)} shows 95\\% confidence intervals using wild cluster bootstrap
-SEMemoForSelectedResultsNoStar <- "Standard errors are clusterd at thana level with a correction for small number of clusters. 95\\% confidence intervals of cluster robust standard errors using Liang and Zeger are shown in parenthesis, bias reduced linearization (Satterthwaite correction) are shown in square brackets. "
+SpecMemo1 <- "For each panel, first and fourth columns are raw DID. Second and fifth columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \\textsf{Thana fixed trends} that are interactions of year 2002 dummy with Thana fixed effects. Third and sixth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\\bfx_{i}r_{t}D_{i}$.  "
+SpecMemoAgewise <- "For each panel, first, fourth, and seventh columns are raw DID. Second, fifth, and eith columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \\textsf{Thana fixed trends} that are interactions of year 2002 dummy with Thana fixed effects. Third, sixth, and ninth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\\bfx_{i}r_{t}D_{i}$.  "
+SEMemoForSelectedResults <- "Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. $P$ values in percentages are shown in parethenses. 95\\% confidence intervals are shown in square brackets. $*$, $**$, $***$ indicate significance levels at 10\\%, 5\\%, 1\\% under BRL cluster robust standard errors, respectively." #, rows under \\textsf{CI (WCB)} shows 95\\% confidence intervals using wild cluster bootstrap
+SEMemoForSelectedResultsNoStar <- "Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). $P$ values in percentages are shown in parethenses. 95\\% confidence intervals are shown in square brackets. "
+SpecMemo1html <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemo1)
+SpecMemoAgewisehtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemoAgewise)
+SEMemoForSelectedResultshtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SEMemoForSelectedResults)
+SEMemoForSelectedResultsNoStarhtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SEMemoForSelectedResultsNoStar)
 ```
 
 # Read and format data
@@ -3015,7 +3019,7 @@ kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]),
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
-           number = c(SpecMemo1, SEMemoForSelectedResults)
+           number = c(SpecMemo1html, SEMemoForSelectedResultsNoStarhtml)
            )
 kt
 ```
@@ -3126,6 +3130,10 @@ ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("households", "HHs", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
+for (iii in 1:18) {
+  ltb <- gsub(paste("\\&", iii, "\\&"), paste0("& (", iii, ") &"), ltb)
+  ltb <- gsub(paste0("\\& ", iii, "\\\\\\\\"), paste0("& (", iii, ") \\\\\\\\"), ltb)
+}
 aghhrows <- grep("Agricultural hou", ltb)
 ltb1 <- c(ltb[1:(aghhrows[3]-3)],   ltb[grep("cline", ltb)],  ltb[length(ltb)-(2:0)])
 ltb2 <- c(ltb[1:grep("cline", ltb)], ltb[(aghhrows[3]-2):length(ltb)])
@@ -3152,7 +3160,6 @@ ltb4 <- ltb[
     c(1:(aghhrows[1]+2), r2rows[1]+c(0, 2, 3, 5), length(ltb)-2:0)
     ]
 ltb4 <- gsub(".*Boys.Gi.*", "", ltb4)
-ltb4 <- gsub(".* 1 .* 3 .* 5 .* 6.*", "&(1)&(2)&(3)&&(4)&(5)&(6)\\\\\\\\", ltb4)
 write.tablev(ltb4
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByAgHHdefResultsConcise.tex")
@@ -3186,7 +3193,7 @@ kt <- pack_rows(kt, group_label="Common specifications", grep("Co.*ana", Tab[, 1
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
-           number = c(SpecMemo1, SEMemoForSelectedResults)
+           number = c(SpecMemo1html, SEMemoForSelectedResultshtml)
            )
 kt
 ```
@@ -3257,7 +3264,6 @@ for (ag in 1:2){
   Tab <- rbind(Tab, Tab0)
 }
 rn <- rownames(tab0)
-rn[grepl("^CI|^p", rn)] <- ""
 rn2 <- c("R2", "N: agHH", "N", 
   paste0("mean of ", rep(c("control in ", "treated in "), 2), rep(c(1999, 2002), each = 2)))
 rnm <- rep(c(" ", rn, rn2), 2)
@@ -3272,7 +3278,7 @@ Tab <- rbind(Tab,
   "Covariates, thana trends" = c("Covariates, thana trends", rep(c("", "Y", "Y"), 3)),
   "HH trends" = c("HH trends", rep(c("", "", "Y"), 3)))
 #### LaTeX output
-SepCols <- c(3, 6) 
+SepCols <- c(3, 6)
 ltb <- latextab(Tab, delimiterline = NULL, 
     hcenter = c(3, rep(1.3, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
@@ -3281,28 +3287,26 @@ ltb <- latextab(Tab, delimiterline = NULL,
     adjustlineskip = "-1ex", 
     adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
-    separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
+    separatingcoltitle = c("\\textsf{Boys+Girls}", "\\textsf{Boys}", "\\textsf{Girls}")
   ) 
+aghhrows <- grep("Agricultural h", ltb)
+ltb <- c(
+  ltb[1:grep("cline", ltb)],
+  "&\\multicolumn{11}{c}{\\scriptsize A. Primary school ages}\\\\",
+  ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
+  "&\\multicolumn{11}{c}{\\scriptsize B. Secodary school ages}\\\\",
+  ltb[(aghhrows[2]-1):(length(ltb)-3)],
+  "\\multicolumn{8}{l}{\\scriptsize Common specifications}\\\\",
+  ltb[(length(ltb)-2):length(ltb)]
+  )
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("households", "HHs", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
-write.tablev(ltb
-  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
-       "ByGenderByAgeGroup2Results.tex")
-  ,  colnamestrue = F)
-aghhrows <- grep("Agricultural h", ltb)
-ltb <- c(
-  ltb[1:grep("cline", ltb)],
-  "&\\multicolumn{11}{c}{\\scriptsize A. Primary school ages}\\\\",
-  ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
-  "&\\multicolumn{11}{c}{\\scriptsize B. Secondary school ages}\\\\",
-  ltb[(aghhrows[2]-1):(length(ltb)-3)],
-  "\\multicolumn{11}{l}{\\scriptsize Common specifications}\\\\",
-  ltb[(length(ltb)-2):length(ltb)]
-  )
+ltb <- gsub(".* 1 .* 3 .* 5 .* 6.*", "&(1)&(2)&(3)&&(4)&(5)&(6)&&(7)&(8)&(9)\\\\\\\\", ltb)
+ltb <- gsub(".* 10 .* 13 .* 15 .*", "&(10)&(11)&(12)&&(13)&(14)&(15)&&(16)&(17)&(18)\\\\\\\\", ltb)
 ltb1 <- c(ltb[1:(aghhrows[2]-2)], ltb[length(ltb)-2:0])
 ltb2 <- c(ltb[1:grep("cline", ltb)], ltb[(aghhrows[2]-1):length(ltb)])
 write.tablev(ltb1
@@ -3313,6 +3317,26 @@ write.tablev(ltb2
   ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
        "ByGenderByAgeGroup2Results2.tex")
   ,  colnamestrue = F)
+#### Concise table (dropping estimates on siblings) with A. BG, B. Boys, C. Girls
+sibrows <- grep("Old.*ib", ltb)
+ltbshort <- ltb[-(sibrows+rep(0:2, length(sibrows)))]
+othrows <- grep("ea.*tre", ltbshort)
+ltbshort <- ltbshort[-othrows]
+write.tablev(ltbshort
+  ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+       "ByGenderByAgeGroup2Results.tex")
+  ,  colnamestrue = F)
+#### More concise table for main text
+aghhrows <- grep("Agricultural h", ltb)
+r2rows <- grep("R2", ltb)
+ltb4 <- ltb[
+    c(1:(aghhrows[1]+2), r2rows[1]+c(0, 2, 3, 5),
+       aghhrows[2]+(-2:2), r2rows[1]+c(0, 2, 3, 5), length(ltb)-2:0)
+    ]
+write.tablev(ltb4
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderByAgeGroup2ResultsConcise.tex")
+  ,  colnamestrue = F)
 #### HTML output
 Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
@@ -3320,6 +3344,8 @@ Tab[, 1] <- gsub("\\\\hspace\\{.5em\\}", "    ",
 ####  "<span><span style=\"margin-left: 1em\" />", 
 ####  "<img src=\"transparent.png\" height=\".1px\" width=\".5em\">", rnm)
 Tab[, 1])
+for (iii in 2:ncol(Tab)) 
+  Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
 library(kableExtra)
 colnames(Tab) <- c("variables", rep(c("raw DID", 
   "+covariates+Thana trends", "+HH trends"), 3))
@@ -3342,7 +3368,7 @@ kt <- pack_rows(kt, group_label="Common specifications", grep("Cov.*ana", Tab[, 
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
-           number = c(SpecMemo1, SEMemoForSelectedResults)
+           number = c(SpecMemoAgewisehtml, SEMemoForSelectedResultsNoStarhtml)
            )
 kt
 ```
@@ -3470,6 +3496,10 @@ ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("households", "HHs", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
+for (iii in 1:36) {
+  ltb <- gsub(paste("\\&", iii, "\\&"), paste0("& (", iii, ") &"), ltb)
+  ltb <- gsub(paste0("\\& ", iii, "\\\\\\\\"), paste0("& (", iii, ") \\\\\\\\"), ltb)
+}
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByGenderByAgHHdefResults.tex")
@@ -3501,9 +3531,9 @@ ltb4 <- ltb[
 ltb4 <- gsub(".*Boys.Gi.*", "", ltb4)
 ltb4 <- gsub(".*2002 co.*", "&\\\\multicolumn{7}{c}{\\\\scriptsize A. 2002 cohort: Boys+girls}\\\\\\\\", ltb4)
 ltb4 <- gsub(".*1999 co.*", "&\\\\multicolumn{7}{c}{\\\\scriptsize B. 1999 cohort: Boys+girls}\\\\\\\\", ltb4)
-ltb4 <- gsub(".* 1 .* 3 .* 5 .* 6.*", "&(1)&(2)&(3)&&(4)&(5)&(6)\\\\\\\\", ltb4)
-ltb4 <- gsub(".* 19 .* 23 .*", "&(7)&(8)&(9)&&(10)&(11)&(12)\\\\\\\\", ltb4)
-#ltb4 <- gsub("^(.*Agricultural h.*)\\\\\\\\", "\\1\\\\\\\\[-1ex]", ltb4)
+#### ltb4 <- gsub(".* 1 .* 3 .* 5 .* 6.*", "&(1)&(2)&(3)&&(4)&(5)&(6)\\\\\\\\", ltb4)
+ltb4 <- gsub(".* .19. .* .23. .*", "&(7)&(8)&(9)&&(10)&(11)&(12)\\\\\\\\", ltb4)
+####ltb4 <- gsub("^(.*Agricultural h.*)\\\\\\\\", "\\1\\\\\\\\[-1ex]", ltb4)
 write.tablev(ltb4
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByAgHHdefResultsConcise.tex")
@@ -3546,7 +3576,7 @@ kt <- pack_rows(kt, group_label="Common specifications", grep("Co.*ana", Tab[, 1
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
-           number = c(SpecMemo1, SEMemoForSelectedResults)
+           number = c(SpecMemo1html, SEMemoForSelectedResultsNoStarhtml)
            )
 kt
 ```
@@ -5167,9 +5197,9 @@ ltb <- ltb[!grepl("Raw", ltb)]
 aghhrows <- grep(" Agri", ltb)
 ltb <- c(
   ltb[1:(aghhrows[1]-2)],
-  "&\\multicolumn{11}{c}{A. Non Muslims}\\\\",
+  "&\\multicolumn{11}{c}{\\scriptsize A. Non Muslims}\\\\",
   ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
-  "&\\multicolumn{11}{c}{B. Flooded}\\\\",
+  "&\\multicolumn{11}{c}{\\scriptsize B. Flooded}\\\\",
   ltb[(aghhrows[2]-1):(length(ltb)-3)],
   "\\multicolumn{11}{l}{\\scriptsize Common specifications}\\\\",
   ltb[(length(ltb)-2):length(ltb)]
@@ -5194,6 +5224,17 @@ write.tablev(ltb1
 write.tablev(ltb2
   ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
        "MuslimFloodResults2.tex")
+  ,  colnamestrue = F)
+#### More concise table for main text
+aghhrows <- grep("Agricultural h", ltb)
+r2rows <- grep("R2", ltb)
+ltb4 <- ltb[
+    c(1:(aghhrows[1]+8), r2rows[1]+c(0, 2, 3, 5),
+       aghhrows[2]+(-2:8), r2rows[1]+c(0, 2, 3, 5), length(ltb)-2:0)
+    ]
+write.tablev(ltb4
+  ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "MuslimFloodResultsConcise.tex")
   ,  colnamestrue = F)
 #### HTML output
 Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
@@ -6958,12 +6999,12 @@ for (k in 1:nrow(sbt)){
 rnm <- gsub("\\\\hspace\\{.5em\\}", "    ", rnm)
 Tab <- as.matrix(cbind(covariates = rnm, Tab))
 Tab <- rbind(Tab, 
-  "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
-  "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 3)))
+  "Covariates, thana trends" = c("Covariates, thana trends", rep(c("", "Y", "Y"), 3)),
+  "HH trends" = c("HH trends", rep(c("", "", "Y"), 3)))
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hcenter = c(4.0, rep(1.3, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
@@ -6985,14 +7026,14 @@ for (iii in 1:(length(paneltitles)-1)) {
   aghhrows <- grep("Agri", ltb)
   ltb <- c(
       ltb[1:(aghhrows[iii]-2)],
-      paste0("&\\multicolumn{11}{c}{", LETTERS[iii], ". ", paneltitles[iii], "}\\\\"),
+      paste0("&\\multicolumn{11}{c}{\\scriptsize  ", LETTERS[iii], ". ", paneltitles[iii], "}\\\\"),
       ltb[(aghhrows[iii]-1):length(ltb)]
     )
 }
 ltb <- c(
-    ltb[1:(grep("^Than", ltb)-2)],
-    "&\\multicolumn{11}{l}{Common specifications}\\\\",
-    ltb[(grep("^Than", ltb)-1):length(ltb)]
+    ltb[1:(grep("Cov.*ana", ltb)-1)],
+    "\\multicolumn{12}{l}{\\scriptsize Common specifications}\\\\",
+    ltb[(grep("Cov.*ana", ltb)):length(ltb)]
   )
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
@@ -7000,6 +7041,16 @@ ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("households", "HHs", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
+ltb <- ltb[!grepl("NA", ltb)]
+ltb <- gsub(".* 1 .* 3 .* 5 .* 6.*", "&(1)&(2)&(3)&&(4)&(5)&(6)&&(7)&(8)&(9)\\\\\\\\", ltb)
+ltb <- gsub(".* 10 .* 13 .* 15 .* 16.*", "&(10)&(11)&(12)&&(13)&(14)&(15)&&(16)&(17)&(18)\\\\\\\\", ltb)
+ltb <- gsub(".* 19 .* 20 .* 21 .* 23.*", "&(19)&(20)&(21)&&(22)&(23)&(24)&&(25)&(26)&(27)\\\\\\\\", ltb)
+ltb <- gsub(".* 28 .* 29 .* 31 .* 33.*", "&(28)&(29)&(30)&&(31)&(32)&(33)&&(34)&(35)&(36)\\\\\\\\", ltb)
+ltb <- gsub(".* 37 .* 39 .* 41 .* 43.*", "&(37)&(38)&(39)&&(40)&(41)&(42)&&(43)&(44)&(45)\\\\\\\\", ltb)
+ltb <- gsub(".* 46 * 49 .* 51 .* 53 .*", "&(46)&(47)&(48)&&(49)&(50)&(51)&&(52)&(53)&(54)\\\\\\\\", ltb)
+ltb <- gsub(".* 56 * 59 .* 61 .* 63 .*", "&(55)&(56)&(57)&&(58)&(59)&(60)&&(61)&(62)&(63)\\\\\\\\", ltb)
+ii <- jj <- en <- s <- m <-  1
+j <- clnum <- rr <- 2
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
        "NumGradeDaysAbsentAllResults.tex")
@@ -7025,18 +7076,20 @@ for (k in 1:nrow(sbt)){
 rnm <- gsub("Number of ol", "Ol", rnm)
 MNDbg9 <- as.matrix(cbind(rnm, MNDbg9))
 MNDbg9 <- rbind(MNDbg9, 
-  "Thana fixed trends" = c("Thana fixed trends", rep(c("", "", "Y"), 2)),
-  "HH fixed trends" = c("HH fixed trends", rep(c("", "", "Y"), 2)))
+  "Covariates, thana trends" = c("Covariates, thana trends", rep(c("", "", "Y"), 2)),
+  "HH trends" = c("HH trends", rep(c("", "", "Y"), 2)))
 SepCols <- c(3) 
 ltb <- latextab(MNDbg9, delimiterline = NULL, 
-    hcenter = c(3, rep(1.3, ncol(MNDbg9)-1)),
+    hcenter = c(4, rep(1.3, ncol(MNDbg9)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(MNDbg9)-1)), 
     hright = c("\\hfill", rep("$", ncol(MNDbg9)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", adjlskiprows = grep("CI", MNDbg9[, 1])-1,
+    adjustlineskip = "-1ex", 
+    adjlskiprows = rep(grep("CI", MNDbg9[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Grade progression}", "\\textsf{Days absent}")
   ) 
+ltb <- ltb[!grepl("rnm", ltb)]
 paneltitles <- c(
   "Students enrolled in 1999", 
   "Students enrolled in 1999 and 2002", 
@@ -7046,20 +7099,29 @@ for (iii in 1:(length(paneltitles)-1)) {
   aghhrows <- grep("Agri", ltb)
   ltb <- c(
       ltb[1:(aghhrows[iii]-2)],
-      paste0("&\\multicolumn{7}{c}{", LETTERS[iii], ". ", paneltitles[iii], "}\\\\"),
+      paste0("&\\multicolumn{7}{c}{\\scriptsize ", LETTERS[iii], ". ", paneltitles[iii], "}\\\\"),
       ltb[(aghhrows[iii]-1):length(ltb)]
     )
 }
 ltb <- c(
-    ltb[1:(grep("^Than", ltb)-2)],
-    "&\\multicolumn{11}{l}{Common specifications}\\\\",
-    ltb[(grep("^Than", ltb)-1):length(ltb)]
+    ltb[1:(grep("Cov.*ana", ltb)-1)],
+    "\\multicolumn{8}{l}{\\scriptsize Common specifications}\\\\",
+    ltb[(grep("Cov.*ana", ltb)):length(ltb)]
   )
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
+ltb <- gsub("NA", "", ltb)
+ltb <- gsub("(Cov.*ana trend)", "\\\\hspace{.5em}\\1", ltb)
+ltb <- gsub("(HH trend)", "\\\\hspace{.5em}\\1", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
+ltb <- gsub(".* 1 .* 2 .* 3.*", "&(1)&(2)&(3)&&&&\\\\\\\\", ltb)
+ltb <- gsub(".* 4 .* 5 .* 6 .* 7 .*", "&(4)&(5)&(6)&&(7)&(8)&(9)\\\\\\\\", ltb)
+ltb <- gsub(".* 10 .* 11 .* 12.*", "&&&&&(10)&(11)&(12)\\\\\\\\", ltb)
+ii <- jj <- en <- s <- m <-  1
+j <- clnum <- rr <- 2
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
        "NumGradeDaysAbsentResults.tex")
@@ -7072,6 +7134,8 @@ Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", Tab[, 1])
 Tab[, 1] <- gsub("households", "HHs", Tab[, 1])
 Tab[, 1] <- Tab[, 1][!grepl("Raw", Tab[, 1])]
+for (iii in 2:ncol(Tab)) 
+  Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
 bgcolor <- "#ffcc99"
 kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")),
   row.names = F, caption = 
@@ -7098,9 +7162,9 @@ kt <- pack_rows(kt, group_label="Days absent: Students enrolled in 1999 and 2002
 kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 2002 cohort enrolled in 2002", 
   aghhrows[6]-1, aghhrows[7]-1)
 kt <- pack_rows(kt, group_label="Grade progression: Placebo estimation of 1999 cohort enrolled in 2002", 
-  aghhrows[7]-1, grep("^Tha", Tab[, 1])-1)
+  aghhrows[7]-1, grep("Cov.*ana", Tab[, 1])-1)
 kt <- pack_rows(kt, group_label="Common specifications", 
-  grep("^Tha", Tab[, 1]), grep("^HH", Tab[, 1]))
+  grep("Cov.*ana", Tab[, 1]), grep("HH tr", Tab[, 1]))
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",

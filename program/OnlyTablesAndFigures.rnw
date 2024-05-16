@@ -118,8 +118,7 @@ source(paste0(pathprogram, "EstimatorFunctions.R"))
 
 <<results = "hide">>=
 source("TabGeneric.R")
-#DisplayEstTable()
-TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A first-difference estimator with standard errors clustered at \\textit{thana} level. Standard errors with are clusterd at thana level. $P$ values are shown in the parentheses. Enrollment rates in 1999, 2002 are"
+TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A first-difference estimator with standard errors clustered at \\textit{thana} level. Standard errors are clusterd at thana level with Satterthwaite degrees of freedom adjusted for a small number of clusters. $P$ values are shown in the parentheses. 95\\% confidence intervals are shown in square brackets. "
 @
 
 \Sexpr{
@@ -180,6 +179,36 @@ DisplayEstTable(
     CRSEMethod = "ByGenderByAgHHdefResultsConcise")
   ,
   TABTitle="Placebo estimation 2002-2006, 1999 and 2002 cohorts")
+}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "ByGenderByAgeGroup2ResultsConcise")
+  ,
+  TABTitle="Main estimation results 1999-2002, by school level")
+}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "MuslimFloodResultsConcise")
+  ,
+  TABTitle="Alternative mechanisms, flood and non-Muslims")
+}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main1999", 
+    CRSEMethod = "NumGradeDaysAbsentResults")
+  ,
+  TABTitle="Other schooling outcomes, grade progression and days absent")
 }
 
 \end{document}

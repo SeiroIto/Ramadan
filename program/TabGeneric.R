@@ -21,7 +21,8 @@ TabHeadLabelPost <- "}}"
 TabHead2 <- "\\\\\\setlength{\\tabcolsep}{1pt}\\renewcommand{\\arraystretch}{.675}\\hspace{-2em}\\hfil\\begin{tikzpicture}\\node (tbl) {\\input{"
 TabFoot1 <- "}};\\input{c:/data/ramadan/save/tablecolortemplate.tex}\\end{tikzpicture}\\\\\\renewcommand{\\arraystretch}{1}"
 TabFNTHeader <- "\\hfil\\begin{tabular}{>{\\hfill\\scriptsize}p{1cm}<{}>{\\scriptsize}p{12cm}<{\\hfill}} Source:& Compiled from IFPRI data. "
-AddToTabFNT <- "Cohort of 10 - 18 year olds in 1999. Only direct offspring of household head are used." 
+#AddToTabFNT <- "Cohort of 10 - 18 year olds in 1999. Only direct offspring of household head are used." 
+AddToTabFNT <- "Cohort of 10 - 18 year olds in 1999." 
 TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A first-difference estimator with standard errors clustered at \\textit{thana} level. Standard errors are clusterd at thana level with Satterthwaite degrees of freedom adjusted for a small number of clusters. $P$ values are shown in the parentheses. Satterthwaite degrees of freedom adjusted for a small number of clusters are shown in square brackets. $*$, $**$, $***$ indicate significance levels at 10\\%, 5\\%, 1\\%, respectively. Enrollment rates in 1999, 2002 are"
 
 # EnrNote1 <- Enr.Base[grepl("zEm.1999", sample) & grepl("10", age)  & grepl("all", HHtype) & grepl("def", agHHdef) & grepl("1", agHH), rate]
