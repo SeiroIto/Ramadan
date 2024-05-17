@@ -7328,6 +7328,7 @@ for (ii in 1:2) {
   resl[grepl("^L", inference), ci := paste0("\\mbox{\\tiny (", 
     formatC(CI_L, digits = 3, format = "f"), ", ", 
     formatC(CI_U, digits = 3, format = "f"), ")}")]
+  resl[, pv := paste0("(", formatC(p*100, digits = 1, format = "f"), ")")]
   NR0 <- NR[grepl("di", HHtype) & grepl("^B", inference), ]
   Enr0 <- Enr[grepl("di", HHtype) & grepl("B", inference), ]
   AddStar <- T
@@ -7357,20 +7358,20 @@ for (ii in 1:2) {
         main <- rbind(
           mr[grepl(aghh.defs[m], agdef) & grepl("^ag", Coef) & grepl("^B", inference), Estimate]
           ,
-          unlist(mr[grepl(aghh.defs[m], agdef) & grepl("^ag", Coef) & grepl("Z", inference), ci])
+          mr[grepl(aghh.defs[m], agdef) & grepl("^ag", Coef) & grepl("^B", inference), pv]
           ,
           unlist(mr[grepl(aghh.defs[m], agdef) & grepl("^ag", Coef) & grepl("B", inference), ci])
         )
         sib <-  rbind(
            mr[grepl(aghh.defs[m], agdef)  & grepl("SibF.*H.*yr", Coef) & grepl("BR", inference), Estimate]
            , 
-           mr[grepl(aghh.defs[m], agdef) & grepl("SibF.*H.*yr", Coef) & grepl("Z", inference), ci]
+           mr[grepl(aghh.defs[m], agdef) & grepl("SibF.*H.*yr", Coef) & grepl("B", inference), pv]
            ,
            mr[grepl(aghh.defs[m], agdef) & grepl("SibF.*H.*yr", Coef) & grepl("B", inference), ci]
            ,
            mr[grepl(aghh.defs[m], agdef) & grepl("SibM.*H.*yr", Coef) & grepl("BR", inference), Estimate]
            , 
-           mr[grepl(aghh.defs[m], agdef) & grepl("SibM.*H.*yr", Coef) & grepl("Z", inference), ci]
+           mr[grepl(aghh.defs[m], agdef) & grepl("SibM.*H.*yr", Coef) & grepl("B", inference), pv]
            ,
            mr[grepl(aghh.defs[m], agdef) & grepl("SibM.*H.*yr", Coef) & grepl("B", inference), ci]
          )
@@ -7398,11 +7399,11 @@ for (ii in 1:2) {
         cbind(
             rep(c(
               "Agricultural households * year 2002", 
-              "\\hspace{1em} CI (LZ)", "\\hspace{1em} CI (BRL)", 
+              "\\hspace{1em} $p$ value", "\\hspace{1em} CI (BRL)", 
               "\\underline{\\phantom{mm}} * Older sisters",
-              "\\hspace{1em} CI (LZ)", "\\hspace{1em} CI (BRL)", 
+              "\\hspace{1em} $p$ value", "\\hspace{1em} CI (BRL)", 
               "\\underline{\\phantom{mm}} * Older brothers",
-              "\\hspace{1em} CI (LZ)", "\\hspace{1em} CI (BRL)", 
+              "\\hspace{1em} $p$ value", "\\hspace{1em} CI (BRL)", 
               "$\\bar{R}^{2}$", "N: Agricultural HHs", "N",
               paste0("Mean of ", rep(c("control", "treated"), 2), " in ", 
                 list(rep(c(1999, 2002), each = 2), rep(c(2002, 2006), each = 2))[[ii]])
@@ -7416,7 +7417,7 @@ for (ii in 1:2) {
           hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(mrtab)-1)), 
           hright = c("\\hfill", rep("$", ncol(mrtab)-1)),
           headercolor = NULL, 
-          adjustlineskip = "-1ex", adjlskiprows = grep("CI", mrtab[, 1])-1,
+          adjustlineskip = "-1ex", adjlskiprows = grep("CI|p..val", mrtab[, 1])-1,
           addseparatingcols = SepCols, separatingcolwidth = rep(.1, 2), 
           separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
         ) 
@@ -7449,7 +7450,7 @@ for (ii in 1:2) {
         ltb[(grep("^Ag", ltb)[4]):(grep("M.*ed in 2", ltb)[4]), ], "\\hline",
           ltb[nrow(ltb), ]
         ) 
-      ltb <- gsub("CI \\(.*?\\)", "", ltb)
+      ltb <- gsub("CI \\(.*?\\)|.p..value", "", ltb)
       ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
       ltb <- gsub("households", "HHs", ltb)
       ltb <- gsub("Number of ol", "Ol", ltb)
@@ -7481,6 +7482,7 @@ for (ii in 1:2) {
       Tab <- lapply(Tab, function(x) gsub("\\\\phantom\\{-\\}", " ", x))
       Tab <- lapply(Tab, function(x) gsub("\\\\hspace\\{.*\\}", " ", x))
       Tab <- lapply(Tab, function(x) gsub(" *CI *\\(.*", " ", x))
+      Tab <- lapply(Tab, function(x) gsub(" .p. value", " ", x))
       Tab <- lapply(Tab, function(x) gsub("\\\\underline\\{.*\\}", "____", x))
       Tab <- lapply(Tab, function(x) gsub("^.*bar.R.*", "R2", x))
       Tab <- do.call(cbind, Tab)
@@ -7504,7 +7506,7 @@ for (ii in 1:2) {
       kt <- scroll_box(kt, height = "800px")
       kt <- footnote(kt, 
                  general = "Sample of direct offspring of household heads. ",
-                 number = c(SpecMemo1, SEMemoForSelectedResults)
+                 number = c(SpecMemo1html, SEMemoForSelectedResultshtml)
                  )
       assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "L"), ltb)
       assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s]), mrtab)
@@ -7550,6 +7552,7 @@ M9L <- lapply(M9L, function(x) gsub("\\^.*", "", x))
 M9L <- lapply(M9L, function(x) gsub("\\\\phantom\\{-\\}", " ", x))
 M9L <- lapply(M9L, function(x) gsub("\\\\hspace\\{.*\\}", " ", x))
 M9L <- lapply(M9L, function(x) gsub(" *CI *\\(.*", " ", x))
+M9L <- lapply(M9L, function(x) gsub(" .p. value", " ", x))
 M9L <- lapply(M9L, function(x) gsub("\\\\underline\\{.*\\}", "____", x))
 M9L <- lapply(M9L, function(x) gsub("^.*bar.R.*", "R2", x))
 M9L <- do.call(cbind, M9L)
@@ -7573,7 +7576,7 @@ kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", M9L[, 1]),
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
-           number = c(SpecMemo1, SEMemoForSelectedResults)
+           number = c(SpecMemo1html, SEMemoForSelectedResultshtml)
            )
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], "L"), mrtab)
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], "LH"), kt)
@@ -7604,6 +7607,7 @@ res2[grepl("^L", inference), ci := paste0("\\mbox{\\tiny (",
   formatC(CI_L, digits = 2, format = "f"), ", ", 
   formatC(CI_U, digits = 2, format = "f"), ")}")]
 setnames(res2, "p_val", "p")
+res2[, pv := paste0("(", formatC(p*100, digits = 1, format = "f"), ")")]
 AddStar <- T
 if (AddStar) {
   res2[, est := Estimate]
@@ -7629,20 +7633,20 @@ for (s in c("pri", "sec")) {
   main <- rbind(
     res2[grepl(s, group) & grepl("^agH", Coef) & grepl("^B", inference), Estimate]
     ,
-    res2[grepl(s, group) & grepl("^agH", Coef) & grepl("Z", inference), ci]
+    res2[grepl(s, group) & grepl("^agH", Coef) & grepl("B", inference), pv]
     ,
     res2[grepl(s, group) & grepl("^agH", Coef) & grepl("B", inference), ci]
   )
   sib <-  rbind(
      res2[grepl(s, group) & grepl("SibF.*H.*yr", Coef) & grepl("BR", inference), Estimate]
      , 
-     res2[grepl(s, group) & grepl("SibF.*H.*yr", Coef) & grepl("Z", inference), ci]
+     res2[grepl(s, group) & grepl("SibF.*H.*yr", Coef) & grepl("B", inference), pv]
      ,
      res2[grepl(s, group) & grepl("SibF.*H.*yr", Coef) & grepl("B", inference), ci]
      ,
      res2[grepl(s, group) & grepl("SibM.*H.*yr", Coef) & grepl("BR", inference), Estimate]
      , 
-     res2[grepl(s, group) & grepl("SibM.*H.*yr", Coef) & grepl("Z", inference), ci]
+     res2[grepl(s, group) & grepl("SibM.*H.*yr", Coef) & grepl("B", inference), pv]
      ,
      res2[grepl(s, group) & grepl("SibM.*H.*yr", Coef) & grepl("B", inference), ci]
    )
@@ -7668,14 +7672,14 @@ mrtab <- rbind(mainpri, mainsec)
 mrtab <- cbind(
     rep(c(
       "Agricultural households * year 2002", 
-      #"\\hspace{1em} CI (LZ)", 
-      "\\hspace{1em} CI (BRL)", 
+      "\\hspace{1em} $p$ value", 
+      "\\hspace{1em} CI", 
       "\\underline{\\phantom{mm}} * Older sisters",
-      #"\\hspace{1em} CI (LZ)", 
-      "\\hspace{1em} CI (BRL)", 
+      "\\hspace{1em} $p$ value", 
+      "\\hspace{1em} CI", 
       "\\underline{\\phantom{mm}} * Older brothers",
-      #"\\hspace{1em} CI (LZ)", 
-      "\\hspace{1em} CI (BRL)", 
+      "\\hspace{1em} $p$ value", 
+      "\\hspace{1em} CI", 
       "$\\bar{R}^{2}$", "N: Agricultural HHs", "N",
       paste0("Mean of ", rep(c("treated", "control"), 2), " in ", 
         list(rep(c(1999, 2002), each = 2), rep(c(2002, 2006), each = 2))[[1]])
@@ -7689,7 +7693,7 @@ ltb <- latextab(mrtab, delimiterline = NULL,
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(mrtab)-1)), 
     hright = c("\\hfill", rep("$", ncol(mrtab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", adjlskiprows = grep("CI", mrtab[, 1])-1,
+    adjustlineskip = "-1ex", adjlskiprows = grep("CI|.p. val", mrtab[, 1])-1,
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+Girls}", "\\textsf{Boys}", "\\textsf{Girls}")
   ) 
@@ -7700,7 +7704,7 @@ ltb <- c(
   "&\\multicolumn{11}{c}{\\scriptsize A. Primary school ages}\\\\",
   paste("&",
     gsub("6\\)", "6)&", gsub("3\\)", "3)&", paste(paste0("(", 1:9, ")", collapse = "&")))), "\\\\"),
-  ltb[(grep("cline", ltb)+2):(grep("BRL", ltb)[3]), ], 
+  ltb[(grep("cline", ltb)+2):(grep("CI", ltb)[3]), ], 
   paste("Demographic fixed trends", 
     gsub("\\&$", "\\\\\\\\", 
     paste(rep(paste(paste(rep("& \\mbox{\\scriptsize Yes}", 3), collapse = ""), "&"), 3), collapse = ""))
@@ -7711,7 +7715,7 @@ ltb <- c(
   paste("Thana fixed trends&",
     paste(rep("&&\\mbox{\\scriptsize Yes}", 3), collapse = "&&"),
     "\\\\"),
-  ltb[(grep("BRL", ltb)[3]+1):(grep("M.*rol in 2", ltb)[1]), ],
+  ltb[(grep("CI", ltb)[3]+1):(grep("M.*rol in 2", ltb)[1]), ],
   "&\\multicolumn{11}{c}{\\scriptsize B. Secodary school ages}\\\\",
   paste("&",
     gsub("5\\)", "5)&", gsub("2\\)", "2)&", paste(paste0("(", 1:9+9, ")", collapse = "&")))), "\\\\"),
@@ -7719,7 +7723,7 @@ ltb <- c(
   "\\hline",
     ltb[nrow(ltb), ]
   )
-ltb <- gsub("CI \\(.*?\\)", "", ltb)
+ltb <- gsub("CI|.p. value", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("households", "HHs", ltb)
 ltb <- gsub("Number of ol", "Ol", ltb)
@@ -7786,7 +7790,7 @@ Tab <- lapply(Tab, function(x) gsub("\\\\mbox\\{\\\\tiny(.*)\\}", "\\1", x))
 Tab <- lapply(Tab, function(x) gsub("\\^.*", "", x))
 Tab <- lapply(Tab, function(x) gsub("\\\\phantom\\{-\\}", " ", x))
 Tab <- lapply(Tab, function(x) gsub("\\\\hspace\\{.*\\}", " ", x))
-Tab <- lapply(Tab, function(x) gsub(" *CI *\\(.*", " ", x))
+Tab <- lapply(Tab, function(x) gsub(" *CI.*|.*p. value", " ", x))
 Tab <- lapply(Tab, function(x) gsub("\\\\underline\\{.*\\}", "____", x))
 Tab <- lapply(Tab, function(x) gsub("^.*bar.R.*", "R2", x))
 Tab <- do.call(cbind, Tab)
@@ -7811,7 +7815,7 @@ kt <- pack_rows(kt, group_label="Common specifications", grep("^Tha", Tab[, 1]),
 kt <- scroll_box(kt, height = "800px")
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
-           number = c(SpecMemo1, SEMemoForSelectedResults)
+           number = c(SpecMemo1html, SEMemoForSelectedResultshtml)
            )
 ii <- jj <- s <- 1
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "AgeGroup2"), mrtab)
