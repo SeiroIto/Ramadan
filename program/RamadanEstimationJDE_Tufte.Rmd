@@ -2188,7 +2188,8 @@ ltb <- gsub("R2", "$\\\\bar{R}^{2}$", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 ltb <- ltb[!grepl("1 \\& 2 \\& 3 ", ltb)]
 ltb <- c(
-  ltb[1:3],
+  ltb[1], "\\hline",
+  ltb[2:3],
   paste0("\\makebox[3.25cm]{Covariates}",
     paste0("&\\makebox[1.3cm]{(", 1:3, ")}", collapse = ""),
     "&",
@@ -2196,7 +2197,8 @@ ltb <- c(
     "&",
     paste0("&\\makebox[1.3cm]{(", 6+1:3, ")}", collapse = ""),
     "\\\\"),
-  ltb[5:length(ltb)]
+  ltb[5:(length(ltb)-1)], "\\hline",
+  ltb[length(ltb)]
   )
 #### for (iii in 1:18) {
 ####   ltb <- gsub(paste("\\&", iii, "\\&"), paste0("& (", iii, ") &"), ltb)
@@ -2348,13 +2350,15 @@ ltb <- latextab(Tab, delimiterline = NULL,
   ) 
 aghhrows <- grep("Agricultural h", ltb)
 ltb <- c(
-  ltb[1:grep("cline", ltb)],
+  ltb[1], "\\hline",
+  ltb[2:grep("cline", ltb)],
   "&\\multicolumn{11}{c}{\\scriptsize A. Primary school ages}\\\\",
   ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
   "&\\multicolumn{11}{c}{\\scriptsize B. Secodary school ages}\\\\",
   ltb[(aghhrows[2]-1):(length(ltb)-3)],
   "\\multicolumn{8}{l}{\\scriptsize Common specifications}\\\\",
-  ltb[(length(ltb)-2):length(ltb)]
+  ltb[(length(ltb)-2):(length(ltb)-1)], 
+  "\\hline", ltb[length(ltb)]
   )
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
@@ -2458,7 +2462,7 @@ for (jj in 1:2) {
   Tab0 <- NULL
   for (ge in c(3, 1, 2)) {
     Tab00 <- NULL
-    for (m in c(2)) {
+    for (m in c(2:4, 1)) {
       cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
       cis0 <- lapply(cis0, data.table)
       cis <- lapply(cis0, function(x) x[, df := NULL])
@@ -2513,7 +2517,7 @@ for (jj in 1:2) {
       rnm[grep(sbt[k, "org"], rnm)] <- sbt[k, "changedto"]
   }
   rnm <- gsub("^\\\\hspace\\{.*\\}", "", rnm)
-  rnm <- gsub("^Agricultural household", "Agricultural household * year 2002", rnm)
+  rnm <- gsub("^Agricultural household", "Agricultural household * year 2006", rnm)
   rnm <- gsub("Number of ol", "Ol", rnm)
   rnm <- gsub("female siblings", "sisters", rnm)
   rnm <- gsub("male siblings", "brothers", rnm)
@@ -2538,19 +2542,22 @@ ltb <- latextab(Tab, delimiterline = NULL,
   ) 
 aghhrows <- grep("Agricultural h", ltb)
 ltb <- c(
-  ltb[1:grep("cline", ltb)],
+  ltb[1], "\\hline", 
+  ltb[2:grep("cline", ltb)],
   "&\\multicolumn{7}{l}{\\scriptsize 2002 cohort}\\\\",
   ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
   "&\\multicolumn{7}{l}{\\scriptsize 1999 cohort}\\\\",
   ltb[(aghhrows[2]-1):(length(ltb)-3)],
   "\\multicolumn{8}{l}{\\scriptsize Common specifications}\\\\",
-  ltb[(length(ltb)-2):length(ltb)]
+  ltb[(length(ltb)-2):(length(ltb)-1)],
+  "\\hline", ltb[length(ltb)]
   )
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- gsub("R2", "$\\\\bar{R}^{2}$", ltb)
+ltb <- gsub("household", "HH", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 for (iii in 1:18) {
   ltb <- gsub(paste("\\&", iii, "\\&"), paste0("& (", iii, ") &"), ltb)
@@ -2560,17 +2567,12 @@ write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByGenderResults.tex")
   ,  colnamestrue = F)
-#### More concise table for main text
-r2rows <- grep("R2", ltb)
-ltb4 <- ltb[
-    c(
-      1:(aghhrows[1]+2), r2rows[1]+c(0, 2, 3, 5),
-      aghhrows[2]+(-3:2), r2rows[2]+c(0, 2, 3, 5), length(ltb)-2:0
-      )
-    ]
-write.tablev(ltb4
+#### concise table for main text
+iii <- grep("\\* Older", ltb)
+ltb2 <- ltb[-(rep(iii, each = 3)+0:2)]
+write.tablev(ltb2
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
-       "ByResultsConcise.tex")
+       "ByGenderResultsConcise.tex")
   ,  colnamestrue = F)
 #### HTML output
 library(kableExtra)
@@ -2581,7 +2583,7 @@ Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("\\\\hspace\\{.5em\\}", "    ", Tab[, 1])
 for (iii in 2:ncol(Tab)) 
   Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
-bgcolor <- "#ffcc99"
+bgcolor <- "#ffcc99"		
 kt <- kbl(Tab, align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")), 
   row.names = F, caption = 
   "Enrollment placebo impacts: Year 2002-2006, 10-18 years old, direct offspring, Satterthwaite correction")
@@ -2861,11 +2863,12 @@ ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("household", "HH", ltb)
-ltb <- gsub("R2", "$\\bar{R}^{2}$", ltb)
+ltb <- gsub("R2", "$\\\\bar{R}^{2}$", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 aghhrows <- grep("Agricu", ltb)
 ltb <- c(
-  ltb[1:(aghhrows[1]-2)],
+  ltb[1], "\\hline", 
+  ltb[2:(aghhrows[1]-2)],
   "&\\multicolumn{11}{c}{\\scriptsize A. Non Muslims}\\\\",
   paste0("\\makebox[3.25cm]{Covariates}",
     paste0("&\\makebox[1.3cm]{(", 1:3, ")}", collapse = ""),
@@ -2885,7 +2888,8 @@ ltb <- c(
     "\\\\"),
   ltb[aghhrows[2]:(length(ltb)-3)],
   "\\multicolumn{11}{l}{\\scriptsize Common specifications}\\\\",
-  ltb[(length(ltb)-2):length(ltb)]
+  ltb[(length(ltb)-2):(length(ltb)-1)],
+  "\\hline", ltb[length(ltb)]
   )
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
@@ -3190,6 +3194,8 @@ for (k in 1:nrow(sbt)){
 }
 rnm <- gsub("Number of ol", "Ol", rnm)
 MNDbg <- as.matrix(cbind(rnm, MNDbg))
+iii <- grep("^Stipend|^Non", MNDbg)
+MNDbg <- MNDbg[-(rep(iii, each = 3)+0:2), ]
 MNDbg <- rbind(MNDbg, 
   "Covariates, thana trends" = c("Covariates, thana trends", rep(c("", "", "Y"), 2)),
   "HH trends" = c("HH trends", rep(c("", "", "Y"), 2)))
@@ -3209,6 +3215,7 @@ paneltitles <- c(
   "Students enrolled in 1999", 
   "Students enrolled in 1999 and 2002", 
   "Students enrolled in 1999 and 2002, cross section OLS of 2000", 
+  "Students enrolled in 1999 and 2002, cross section OLS of 2003", 
   "Common specifications")
 for (iii in 1:(length(paneltitles)-1)) {
   aghhrows <- grep("Agri", ltb)
@@ -3219,12 +3226,15 @@ for (iii in 1:(length(paneltitles)-1)) {
     )
 }
 ltb <- c(
-    ltb[1:(grep("Cov.*ana", ltb)-1)],
+    ltb[1], "\\hline", 
+    ltb[2:(grep("Cov.*ana", ltb)-1)],
     "\\multicolumn{8}{l}{\\scriptsize Common specifications}\\\\",
-    ltb[(grep("Cov.*ana", ltb)):length(ltb)]
+    ltb[(grep("Cov.*ana", ltb)):(length(ltb)-1)],
+    "\\hline", ltb[length(ltb)]
   )
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
+ltb <- gsub("R2", "$\\\\bar{R}^{2}$", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("households", "HHs", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
@@ -3235,18 +3245,17 @@ ltb <- ltb[!grepl("Raw", ltb)]
 ltb <- gsub(".* 1 .* 2 .* 3.*", "&(1)&(2)&(3)&&&&\\\\\\\\", ltb)
 ltb <- gsub(".* 4 .* 5 .* 6 .* 7 .*", "&(4)&(5)&(6)&&(7)&(8)&(9)\\\\\\\\", ltb)
 ltb <- gsub(".* 10 .* 11 .* 12.*", "&&&&&(10)&(11)&(12)\\\\\\\\", ltb)
+ltb <- gsub(".* 13 .* 14 .* 15.*", "&&&&&(13)&(14)&(15)\\\\\\\\", ltb)
 ii <- jj <- en <- s <- m <-  1
 j <- clnum <- rr <- 2
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
-       "NumGradeDaysAbsentResultsConcise.tex")
+       "NumGradeDaysAbsentResults.tex")
   ,  colnamestrue = F)
 #### HTML output
 library(kableExtra)
 #### Tab <- TabGD
 Tab <- MNDbg
-iii <- grep("^Stipend|^Non", Tab[, 1])
-Tab <- Tab[-(rep(iii, each = 3)+0:2), ]
 colnames(Tab) <- c("variables", rep(c("raw DID", "+covariates", "+HH trends"), 2))
 Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
@@ -4362,13 +4371,15 @@ ltb <- gsub("households", "HHs", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 aghhrows <- grep(" Agri", ltb)
 ltb <- c(
-  ltb[1:(aghhrows[1]-2)],
+  ltb[1], "\\hline", 
+  ltb[2:(aghhrows[1]-2)],
   "&\\multicolumn{11}{c}{A. Non Muslims}\\\\",
   ltb[(aghhrows[1]-1):(aghhrows[2]-2)],
   "&\\multicolumn{11}{c}{B. Flooded}\\\\",
   ltb[(aghhrows[2]-1):(length(ltb)-3)],
   "\\multicolumn{11}{l}{\\scriptsize Common specifications}\\\\",
-  ltb[(length(ltb)-2):length(ltb)]
+  ltb[(length(ltb)-2):(length(ltb)-1)],
+  "\\hline", ltb[length(ltb)]
   )
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)

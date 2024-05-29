@@ -131,6 +131,8 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
     CRSEMethod = "ByGenderResults")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Main estimation results 1999-2002")
 }
 
@@ -140,8 +142,10 @@ DisplayEstTable(
   TwoContinuedTables = F,
   TABFilePath1 = TabFilePathF(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
-    CRSEMethod = "ByGenderByAgeGroup2Results")
+    CRSEMethod = "ByGenderByAgeGroup2ResultsConcise")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Main estimation results 1999-2002, by school level")
 }
 
@@ -152,6 +156,8 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
     CRSEMethod = "MuslimFloodResultsConcise")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Alternative mechanisms, flood and non-Muslims")
 }
 
@@ -162,6 +168,8 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
     CRSEMethod = "NumGradeDaysAbsentResults")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Other schooling outcomes, grade progression and days absent")
 }
 
@@ -179,6 +187,8 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main1999", 
     CRSEMethod = "ByGenderByAgHHdefResultsConcise")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Main results 1999-2002")
 }
 
@@ -193,6 +203,8 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main1999", 
     CRSEMethod = "ByGenderByAgHHdefResults2")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Main results 1999-2002")
 }
 
@@ -204,6 +216,21 @@ TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A DID estimator with standard errors cluste
 \clearpage
 \subsection{Robustness}
 
+\subsubsection{Placebo}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderResultsConcise")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Placebo estimation 2002-2006, 1999 and 2002 cohorts")
+}
+
+
 \subsubsection{Age group}
 
 \Sexpr{
@@ -211,8 +238,10 @@ DisplayEstTable(
   TwoContinuedTables = F,
   TABFilePath1 = TabFilePathF(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
-    CRSEMethod = "ByGenderByAgeGroup2Results")
+    CRSEMethod = "ByGenderByAgeGroup2ResultsConcise")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Estimation results 1999-2002, by school level")
 }
 
@@ -230,6 +259,8 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
     CRSEMethod = "MuslimFloodResults2")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Alternative mechanisms, flood and non-Muslims")
 }
 
@@ -243,6 +274,8 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
     CRSEMethod = "NumGradeDaysAbsentResults")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Other schooling outcomes, grade progression and days absent")
 }
 
@@ -250,7 +283,7 @@ DisplayEstTable(
 \clearpage
 \subsection{Placebo}
 
-\Sexpr{
+%\Sexpr{
 DisplayEstTable(
   TwoContinuedTables = T,
   TABFilePath1 = TabFilePathF(
@@ -261,16 +294,20 @@ DisplayEstTable(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
     CRSEMethod = "ByGenderByAgHHdefResults2")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Placebo estimation 2002-2006")
 }
-\addtocounter{table}{-1}
-\Sexpr{
+%\addtocounter{table}{-1}
+%\Sexpr{
 DisplayEstTable(
   TwoContinuedTables = F,
   TABFilePath1 = TabFilePathF(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
     CRSEMethod = "ByGenderByAgHHdefResults3")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Placebo estimation 2002-2006 (continued)")
 }
 
@@ -280,8 +317,10 @@ DisplayEstTable(
   TwoContinuedTables = F,
   TABFilePath1 = TabFilePathF(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
-    CRSEMethod = "ByGenderByAgHHdefResultsConcise")
+    CRSEMethod = "ByGenderResults")
   ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Placebo estimation 2002-2006, 1999 and 2002 cohorts")
 }
 

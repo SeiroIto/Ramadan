@@ -20,6 +20,8 @@ TabHeadLabel <- "zEm.1999.10.sameN"
 TabHeadLabelPost <- "}}"
 TabHead2 <- "\\\\\\setlength{\\tabcolsep}{.5pt}\\renewcommand{\\arraystretch}{.675}\\hspace{-2em}\\hfil\\begin{tikzpicture}\\node (tbl) {\\input{"
 TabFoot1 <- "}};\\input{c:/data/ramadan/save/tablecolortemplate.tex}\\end{tikzpicture}\\\\\\renewcommand{\\arraystretch}{1}"
+TabHead2NoTIKZ <- "\\\\\\setlength{\\tabcolsep}{.5pt}\\renewcommand{\\arraystretch}{.675}\\hspace{-2em}\\hfil\\input{"
+TabFoot1NoTIKZ <- "}\\\\\\renewcommand{\\arraystretch}{1}"
 TabFNTHeader <- "\\hfil\\begin{tabular}{>{\\hfill\\scriptsize}p{1cm}<{}>{\\scriptsize}p{12cm}<{\\hfill}} Source:& Compiled from IFPRI data. "
 #AddToTabFNT <- "Cohort of 10 - 18 year olds in 1999. Only direct offspring of household head are used." 
 AddToTabFNT <- "Cohort of 10 - 18 year olds in 1999." 
@@ -110,16 +112,16 @@ ArrayStrech = NULL, ...)
   if (TwoContinuedTables) 
     c(
       DisplayEstTable0(OmitFootnote = T, 
-      TABHead1 = TABHead1, TABTitle=TABTitle,
-      TABFilePath=TABFilePath1, ARRAYStrech=ArrayStrech),
+      TABHead1 = TABHead1, TABTitle=TABTitle, TABHead2 = TABHead2, 
+      TABFilePath=TABFilePath1, TABFoot1=TABFoot1, ARRAYStrech=ArrayStrech),
       "\\addtocounter{table}{-1}",
       DisplayEstTable0(OmitFootnote = F, TABFilePath=TABFilePath2, 
         TABTitle=paste0(TABTitle, " (continued)"), ARRAYStrech=ArrayStrech)
     ) else 
     DisplayEstTable0(
       TABHead1 = TABHead1, TABTitle=TABTitle,
-      TABFilePath=TABFilePath1, 
-      ARRAYStrech=ArrayStrech)
+      TABHead2 = TABHead2, TABFilePath=TABFilePath1, 
+      TABFoot1=TABFoot1, ARRAYStrech=ArrayStrech)
 }
 
 disp <- function(A="a", B="b")

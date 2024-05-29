@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.3-191112-2.6 (utf8.sjis) (TeX Live 2020/W32TeX) (preloaded format=platex 2020.6.19)  29 MAY 2024 10:23
+This is e-pTeX, Version 3.14159265-p3.8.3-191112-2.6 (utf8.sjis) (TeX Live 2020/W32TeX) (preloaded format=platex 2020.6.19)  29 MAY 2024 17:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -985,12 +985,6 @@ LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
 
 LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
 
-
-LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
-
-
-LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
-
 )
 \openout1 = `OnlyTablesAndFigures.aux'.
 
@@ -1142,21 +1136,20 @@ LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
 
 (../save/MainOlder10ByGenderResults.tex
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 2.
+(Font)              scaled to size 6.72699pt on input line 3.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 2.
+(Font)              scaled to size 6.72699pt on input line 3.
 LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 2.
+(Font)              scaled to size 6.72699pt on input line 3.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 2.
+(Font)              scaled to size 6.72699pt on input line 3.
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
-(Font)              scaled to size 6.64998pt on input line 2.
+(Font)              scaled to size 6.64998pt on input line 3.
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 4.805pt on input line 7.
+(Font)              scaled to size 4.805pt on input line 8.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 4.805pt on input line 7.
+(Font)              scaled to size 4.805pt on input line 8.
 )
-(c:/data/Ramadan/save/tablecolortemplate.tex)
 LaTeX Font Info:    Font shape `JT1/mc/m/it' in size <7> not available
 (Font)              Font shape `JT1/mc/m/n' tried instead on input line 81.
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
@@ -1166,31 +1159,33 @@ LaTeX Font Info:    Font shape `JY1/mc/m/it' in size <7> not available
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
 (Font)              scaled to size 6.72699pt on input line 81.
 
-Overfull \hbox (31.3886pt too wide) in paragraph at lines 81--81
+Overfull \hbox (24.72264pt too wide) in paragraph at lines 81--81
 []  [] 
  []
 
-(../save/MainOlder10ByGenderByAgeGroup2Results.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex)
+(../save/MainOlder10ByGenderByAgeGroup2ResultsConcise.tex)
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 84--84
+[]  [] 
+ []
+
 (../save/MainOlder10MuslimFloodResultsConcise.tex
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 5--5
+Overfull \hbox (7.11319pt too wide) in paragraph at lines 6--6
 []|[]| 
  []
 
 
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 22--22
+Overfull \hbox (7.11319pt too wide) in paragraph at lines 23--23
 []|[]| 
  []
 
-) (c:/data/Ramadan/save/tablecolortemplate.tex)
-Overfull \hbox (24.2754pt too wide) in paragraph at lines 86--86
+)
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 86--86
 []  [] 
  []
 
-(../save/MainOlder10NumGradeDaysAbsentResults.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex) [1
+(../save/MainOlder10NumGradeDaysAbsentResults.tex) [1
 
-] [2] [3]
+] [2] [3] [4]
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
 (Font)              scaled to size 11.53198pt on input line 94.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
@@ -1203,14 +1198,12 @@ LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
 (Font)              scaled to size 11.39996pt on input line 94.
 
 (../save/Main1999Older10ByGenderByAgHHdefResultsConcise.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex)
-Overfull \hbox (24.2754pt too wide) in paragraph at lines 97--97
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 97--97
 []  [] 
  []
 
 (../save/Main1999Older10ByGenderByAgHHdefResults1.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex)
-Overfull \hbox (24.2754pt too wide) in paragraph at lines 99--99
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 99--99
 []  [] 
  []
 
@@ -1255,69 +1248,73 @@ Overfull \hbox (1191.6769pt too wide) in paragraph at lines 104--105
 ][][][][][] 
  []
 
-[4
+[5
 
-] [5] [6] [7] (../save/MainOlder10ByGenderByAgeGroup2Results.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex) [8
-
-]
-(../save/MainOlder10MuslimFloodResults1.tex
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 5--5
-[]|[]| 
- []
-
-) (c:/data/Ramadan/save/tablecolortemplate.tex)
-Overfull \hbox (24.2754pt too wide) in paragraph at lines 118--118
+] [6] [7] [8] (../save/PlaceboOlder10ByGenderResultsConcise.tex)
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 113--113
 []  [] 
  []
 
-(../save/MainOlder10MuslimFloodResults2.tex
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 5--5
-[]|[]| 
- []
-
-) (c:/data/Ramadan/save/tablecolortemplate.tex)
-Overfull \hbox (24.2754pt too wide) in paragraph at lines 118--118
+(../save/MainOlder10ByGenderByAgeGroup2ResultsConcise.tex)
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 118--118
 []  [] 
  []
 
 [9
 
-] [10] (../save/MainOlder10NumGradeDaysAbsentResults.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex) [11
+] [10] (../save/MainOlder10MuslimFloodResults1.tex
+Overfull \hbox (7.11319pt too wide) in paragraph at lines 6--6
+[]|[]| 
+ []
 
-] [12]
-(../save/PlaceboOlder10ByGenderByAgHHdefResults1.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex)
-(../save/PlaceboOlder10ByGenderByAgHHdefResults2.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex)
-(../save/PlaceboOlder10ByGenderByAgHHdefResults3.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex)
-(../save/PlaceboOlder10ByGenderByAgHHdefResultsConcise.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex) [13
+)
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 123--123
+[]  [] 
+ []
 
-] [14] [15] [16]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 136.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 136.
+(../save/MainOlder10MuslimFloodResults2.tex
+Overfull \hbox (7.11319pt too wide) in paragraph at lines 6--6
+[]|[]| 
+ []
 
-(./OnlyTablesAndFigures.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 136.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 136.
+) (c:/data/Ramadan/save/tablecolortemplate.tex)
+Overfull \hbox (24.2754pt too wide) in paragraph at lines 123--123
+[]  [] 
+ []
+
+[11
+
+] [12] (../save/MainOlder10NumGradeDaysAbsentResults.tex) [13
+
+] [14]
+(../save/PlaceboOlder10ByGenderResults.tex)
+Overfull \hbox (17.60945pt too wide) in paragraph at lines 139--139
+[]  [] 
+ []
+
+[15
+
+]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 141.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 141.
+ (./OnlyTablesAndFigures.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 141.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 141.
 Package rerunfilecheck Info: File `OnlyTablesAndFigures.out' has not changed.
-(rerunfilecheck)             Checksum: 166F5F706B264B63FA9FF96A04A1E2CD;265.
+(rerunfilecheck)             Checksum: 43F0D994B09E376EA30045E4C65557AC;265.
 
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 136.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 141.
  ) 
 Here is how much of TeX's memory you used:
- 25134 strings out of 481140
- 442002 string characters out of 5924191
- 967450 words of memory out of 5000000
- 40550 multiletter control sequences out of 15000+600000
+ 25100 strings out of 481140
+ 440466 string characters out of 5924191
+ 964811 words of memory out of 5000000
+ 40548 multiletter control sequences out of 15000+600000
  567095 words of font info for 139 fonts, out of 8000000 for 9000
  934 hyphenation exceptions out of 8191
- 67i,21n,95p,1901b,2196s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 67i,21n,95p,1799b,2196s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on OnlyTablesAndFigures.dvi (16 pages, 108136 bytes).
+Output written on OnlyTablesAndFigures.dvi (15 pages, 79984 bytes).
