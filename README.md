@@ -5,3 +5,4 @@
 ## Effects are mostly derived from boys of secondary school age.
 
 [Estimation file with R code](https://seiroito.github.io/Ramadan/program/RamadanEstimation_Tufte.html)
+[Estimation file with R code for JDE](https://seiroito.github.io/Ramadan/program/RamadanEstimationJDE_Tufte.html)
