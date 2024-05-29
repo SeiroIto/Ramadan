@@ -315,6 +315,28 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+/* for pandoc --citeproc since 2.11 */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
 
 
 
@@ -329,7 +351,7 @@ if (window.hljs) {
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年05月29日 14:09</h4>
+<h4 class="date">2024年05月29日 15:30</h4>
 
 
 <div id="TOC">
@@ -349,6 +371,7 @@ if (window.hljs) {
 <ul>
 <li><a href="#estimating-equation">Estimating equation</a></li>
 <li><a href="#main-and-placebo-estimation">Main and placebo estimation</a></li>
+<li><a href="#standard-errors">Standard errors</a></li>
 <li><a href="#age-group-wise">Age group wise</a></li>
 <li><a href="#non-muslims-flood">Non-Muslims, flood</a></li>
 <li><a href="#other-schooling-outcomes">Other schooling outcomes</a></li>
@@ -377,6 +400,7 @@ if (window.hljs) {
 </ul></li>
 </ul></li>
 <li><a href="#memo-on-fd-and-did">Memo on FD and DID</a></li>
+<li><a href="#references">References</a></li>
 </ul>
 </div>
 
@@ -408,12 +432,9 @@ pre[class] {
   background-color: inherit;
 }
 </style>
-<pre><code>## Warning: パッケージ &#39;knitr&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
-<pre><code>## Warning: パッケージ &#39;tufte&#39; はバージョン 4.2.3 の R の下で造られました</code></pre>
 <pre class="r SeiroBenign"><code>library(data.table)
-library(qs)</code></pre>
-<pre><code>qs 0.25.5</code></pre>
-<pre class="r SeiroBenign"><code>pathprogram &lt;- paste0(path, &quot;program/&quot;);  
+library(qs)
+pathprogram &lt;- paste0(path, &quot;program/&quot;);  
 pathprogram0 &lt;- paste0(path0, &quot;program/program/&quot;);  
 pathsource &lt;- paste0(path0, &quot;source/&quot;)
 pathsave &lt;- paste0(path, &quot;save/&quot;)
@@ -438,41 +459,6 @@ source(paste0(pathprogram, &quot;EstimatorFunctions.R&quot;))</code></pre>
 <h1>Read and format data</h1>
 <div id="define-samples" class="section level2">
 <h2>Define samples</h2>
-<pre><code> 要求されたパッケージ bit をロード中です </code></pre>
-<pre><code>Warning: パッケージ &#39;bit&#39; はバージョン 4.2.2 の R の下で造られました</code></pre>
-<pre><code>
- 次のパッケージを付け加えます: &#39;bit&#39; </code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:data.table&#39; からマスクされています:
-
-    setattr</code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
-
-    xor</code></pre>
-<pre><code>Attaching package bit64</code></pre>
-<pre><code>package:bit64 (c) 2011-2017 Jens Oehlschlaegel</code></pre>
-<pre><code>creators: integer64 runif64 seq :</code></pre>
-<pre><code>coercion: as.integer64 as.vector as.logical as.integer as.double as.character as.bitstring</code></pre>
-<pre><code>logical operator: ! &amp; | xor != == &lt; &lt;= &gt;= &gt;</code></pre>
-<pre><code>arithmetic operator: + - * / %/% %% ^</code></pre>
-<pre><code>math: sign abs sqrt log log2 log10</code></pre>
-<pre><code>math: floor ceiling trunc round</code></pre>
-<pre><code>querying: is.integer64 is.vector [is.atomic} [length] format print str</code></pre>
-<pre><code>values: is.na is.nan is.finite is.infinite</code></pre>
-<pre><code>aggregation: any all min max range sum prod</code></pre>
-<pre><code>cumulation: diff cummin cummax cumsum cumprod</code></pre>
-<pre><code>access: length&lt;- [ [&lt;- [[ [[&lt;-</code></pre>
-<pre><code>combine: c rep cbind rbind as.data.frame</code></pre>
-<pre><code>WARNING don&#39;t use as subscripts</code></pre>
-<pre><code>WARNING semantics differ from integer</code></pre>
-<pre><code>for more help type ?bit64</code></pre>
-<pre><code>
- 次のパッケージを付け加えます: &#39;bit64&#39; </code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:utils&#39; からマスクされています:
-
-    hashtab</code></pre>
-<pre><code> 以下のオブジェクトは &#39;package:base&#39; からマスクされています:
-
-    %in%, :, is.double, match, order, rank</code></pre>
 <pre class="SeiroLightGreen"><code>  [1] &quot;district&quot;                   &quot;thana&quot;                      &quot;survey&quot;                    
   [4] &quot;highMeanY&quot;                  &quot;lowMeanY&quot;                   &quot;rainfallMeanY&quot;             
   [7] &quot;regions&quot;                    &quot;i.district&quot;                 &quot;gps north&quot;                 
@@ -622,9 +608,6 @@ where <span class="math inline">\(\tilde{x}_{it}=x_{it}-\bar{x}_{i}\)</span>. Al
 </div>
 <div id="plain-did" class="section level2">
 <h2>Plain DID</h2>
-<pre><code>Registered S3 method overwritten by &#39;clubSandwich&#39;:
-  method    from    
-  bread.mlm sandwich</code></pre>
 <pre class="SeiroLightGreen"><code>[[1]]
        Coef. Estimate     SE d.f. Lower 95% CI Upper 95% CI p-value Sig.
  (Intercept)   0.4753 0.0254 5.57       0.4118      0.53875  &lt;0.001  ***
@@ -864,10 +847,9 @@ for (kk in c(&quot;t&quot;, &quot;Satterthwaite&quot;))
   SDiff.print[iispace, kk] &lt;- 
     paste0(&quot;[&quot;, 
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = &quot;f&quot;)
-    , &quot;]&quot;)</code></pre>
+    , &quot;]&quot;)
+rm(zi00)</code></pre>
 </details>
-<pre><code>Warning in !is.null(rmarkdown::metadata$output) &amp;&amp; rmarkdown::metadata$output %in% : &#39;length(x) = 2
-&gt; 1&#39; in coercion to &#39;logical(1)&#39;</code></pre>
 <table style="NAborder-bottom: 0; margin-left: auto; margin-right: auto; font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;" class="table lightable-classic">
 <caption>Differences between agricultural and non-agricultural households in main data (ref:SDiffTable)</caption>
 
@@ -2139,10 +2121,11 @@ k: specification</p>
 </li>
 <li>Use <code>DID2</code> with the first-differenced estimation data.</li>
 </ol>
-<pre class="SeiroLightGreen"><code>Previous and new estimates</code></pre>
-<!-- Common previous and current covariates: (Intercept), highMeanY, lowMeanY, rainfallMeanY, yield, age2, agHH.yr2, sex.yr2, hd.edulevel.primary.yr2, hd.edulevel.secondary.yr2, sp.edulevel.primary.yr2, sp.edulevel.secondary.yr2, pcnlasset.yr2, pcland.yr2, ownwater.yr2, kutchalatrine.yr2, OldSibF.yr2, OldSibM.yr2, dummyAailjhar.yr2, dummyChokoria.yr2, dummyHaziganj.yr2, sex.agHH.yr2, pcnlasset.agHH.yr2, pcland.agHH.yr2, ownwater.agHH.yr2, kutchalatrine.agHH.yr2, OldSibF.agHH.yr2, OldSibM.agHH.yr2  -->
-<!-- Covariates only in previous spec 7: program  -->
-<!-- Covariates only in current spec 4: StipendProgram, NonStipendProgram  -->
+<p>Placebo estimation tests a non-existing 2002-2006 shock on the outcomes. To align with the main estimation, we primarily rely on 2002 cohort of 10-18 years old in 2002. In addition, we also use 1999 cohort of 13-21 years old in 2002. Both cohorts show similar results, as there is a significant sample overlap between them.</p>
+</div>
+<div id="standard-errors" class="section level2">
+<h2>Standard errors</h2>
+<p>We need to cluster the standard errors to account for unobservable correlations within a cluster. Following the conventional wisdom, we cluster at the highest level of cluster sampling <span class="citation">(<label for="tufte-mn-1" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-1" class="margin-toggle">Abadie et al. 2022<span class="marginnote">Abadie, Alberto, Susan Athey, Guido W. Imbens, and Jeffrey M. Wooldridge. 2022. <span>“When Should You Adjust Standard Errors for Clustering?”</span> 1. <em>Quarterly Journal of Economics</em>. Vol. 138. <a href="https://doi.org/10.1093/qje/qjac038">https://doi.org/10.1093/qje/qjac038</a>.</span>)</span>, which is Thana in our data.</p>
 <details>
 <summary>
 Click here to see the R script of main and placebo estimation.
@@ -10880,7 +10863,9 @@ Y
 </li>
 <li>One year impact: As the calendar was favorable in 1999-2001, we consider these estimates as a one year impact because the negative effects were realised only in the academic year of 2002 which were captured in the survey in 2003.<br />
 </li>
-<li>What this means: Even when the children of agricultural households are not dropping out of school, at least a third of them lag behind in one grade progression relative to the children of non-agricultural households.<br />
+<li>What this means: Even when the children of agricultural households are not dropping out of school, at least a quarter of them lag behind in one grade progression relative to the children of non-agricultural households.<br />
+</li>
+<li>Point estimates are larger in magnitude for boys (see <a href="#NumGradeDaysAbsentResults">Appendix table</a>).<br />
 </li>
 <li>Absence increases for about .68-.98 day per month.<br />
 </li>
@@ -25170,6 +25155,7 @@ Y
 <li>Never enrollers: ss1 (schoolp in 1999) = 0, ss2 (schoolp in 2002) = 0</li>
 </ul>
 <p><code>{r , child = paste0(&quot;../save/&quot;, c(&quot;Main&quot;, &quot;Placebo&quot;)[1], c(1999, 2002)[1], &quot;Older&quot;, (10:12)[1],         &quot;NumGradeDaysAbsentResults.tex&quot;) }</code></p>
+<p><a name="NumGradeDaysAbsentResults">Boys+girls and boys and girls subsamples.</a></p>
 <pre class="SeiroLightGreen"><code>[1] 1</code></pre>
 <div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:800px; border-bottom: 0;">
 <p><!--
@@ -32212,6 +32198,20 @@ Y
 <div id="memo-on-fd-and-did" class="section level1">
 <h1>Memo on FD and DID</h1>
 <p>FD and raw DID are numerically identical in a two-period panel. If we add covariates, FD automatically controls for individual FEs while DID needs explicit inclusion of individual dummy variables. Without including individual dummy variables, correlations of individual FEs with other covariates affect the value of estimates thus FD and DID estimates will differ. Unfortunately, adding FEs at the individual level, with the order of hundreds to thousands, is practically infeasible to implement in estimation. So most econometric and statistical programs use FE implementation.</p>
+<pre class="SeiroLightGreen"><code> objectName memorySize
+    results    2.45 GB
+   resultsM  770.87 MB
+   resultsF  762.97 MB
+   resultsG  387.87 MB
+  resultsag  112.88 MB
+   resultsC   76.13 MB
+   resultsD    75.5 MB
+        yzw   17.16 MB
+         zF   17.16 MB
+         zE   14.13 MB</code></pre>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
 </div>
 
 

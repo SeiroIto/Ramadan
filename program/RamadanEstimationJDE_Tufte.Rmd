@@ -747,6 +747,7 @@ for (kk in c("t", "Satterthwaite"))
     paste0("[", 
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = "f")
     , "]")
+rm(zi00)
 ```
 </details>
 
@@ -1107,6 +1108,13 @@ Estimation steps:
 1. Use `DID1` to try all specifications and pick the data matrix with all non-NA covariates. We retrieve the first-differenced estimation data. This data is the estimation data to be used for the all specifications so we get the same number of observations for all specifications.   
 1. Use `DID2` with the first-differenced estimation data.  
 
+Placebo estimation tests a non-existing 2002-2006 shock on the outcomes. To align with the main estimation, we primarily rely on 2002 cohort of 10-18 years old in 2002. In addition, we also use 1999 cohort of 13-21 years old in 2002. Both cohorts show similar results, as there is a significant sample overlap between them.  
+
+## Standard errors
+
+We need to cluster the standard errors to account for unobservable correlations within a cluster.  Following the conventional wisdom, we cluster at the highest level of cluster sampling [@AbadieAtheyImbensWooldridge2022], which is Thana in our data.  
+
+
 ```{r read 2024 main and JHR main results, eval = T}
 ####Res <- qread("../save/TabulatedAllResults.qs")
 ####re <- Res[grepl("Em", data) & grepl("dir", HHtype) & grepl("main", coeff)
@@ -1114,9 +1122,9 @@ Estimation steps:
 ####re[, yintercept := 0]
 ####re[, spec := factor(reg, labels = 1:4)]
 results <- qread("../save/DID2024_MainResults.qs")
-resultsJHR <- qread(paste0(pathsave0, "FD_MainCRCoV_results.qs"))
+#### resultsJHR <- qread(paste0(pathsave0, "FD_MainCRCoV_results.qs"))
 ```
-```{r Show results for main 10 - 18 nuclear,  cache = FALSE}
+```{r Show results for main 10 - 18 nuclear, eval = F, cache = FALSE}
 ii <- jj <-  m <- s <- 1
 j <- clnum <- 2 ## extended HH, Satterthwaite
 ge <- 3  # boys+girls
@@ -1146,12 +1154,6 @@ CovariatesCommon <- intersect(prevcovariates, currcovariates)
 CovariatesOnlyInPrev <- prevcovariates[!prevcovariates %in% currcovariates]
 CovariatesOnlyInCurr <- currcovariates[!currcovariates %in% prevcovariates]
 ```
-
-<!-- Common previous and current covariates: `r CovariatesCommon`  -->
-
-<!-- Covariates only in previous spec 7: `r CovariatesOnlyInPrev`  -->
-
-<!-- Covariates only in current spec 4: `r CovariatesOnlyInCurr`  -->
 
 
 <details><summary>Click here to see the R script of main and placebo estimation.</summary>
@@ -2950,6 +2952,7 @@ kt <- footnote(kt,
            )
 qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "MuslimFloodH.qs"))
 kt
+rm(rFM)
 ```
 
 * Verdict: Main estimates do not change when we control for Non-Muslims or flooded areas.  
@@ -3288,7 +3291,8 @@ kt
 * Grade progreesion and days absent impacts are consistent with main results.  
 * Grade progression impact estimates are negative. Exam-harvest overlap delays progression by .21-32 years (`r round((c(.21, .32))*12, 2)` months).   
 * One year impact: As the calendar was favorable in 1999-2001, we consider these estimates as a one year impact because the negative effects were realised only in the academic year of 2002 which were captured in the survey in 2003.   
-* What this means: Even when the children of agricultural households are not dropping out of school, at least a third of them lag behind in one grade progression relative to the children of non-agricultural households.  
+* What this means: Even when the children of agricultural households are not dropping out of school, at least a quarter of them lag behind in one grade progression relative to the children of non-agricultural households.  
+* Point estimates are larger in magnitude for boys (see [Appendix table](#NumGradeDaysAbsentResults)).  
 * Absence increases for about .68-.98 day per month.  
 * A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors.  
 * Cross sectional estimates in 2003 (using enrollers of 1999 and 2002) show a monthly .70 - .83 day increase for children of agricultural households. This reflects that the survey asks days absent of June - August of 2003, which coincide with July-August planting period.  
@@ -4251,6 +4255,8 @@ g
 }
 ```
 
+<a name="NumGradeDaysAbsentResults">Boys+girls and boys and girls subsamples.</a>
+
 ```{r show num grades days absent full results, eval = T}
 1#### HTML output
 library(kableExtra)
@@ -4456,5 +4462,9 @@ is either estimated by differencing out the fixed effect or by taking deviations
 library(qs)
 Enr.DID <- qread("../save/Enr2024.DID.qs")
 Enrchg.DID <- qread("../save/Enrchg2024.DID.qs")
+```
+
+```{r ShowMemUse}
+ShowMemUse(decreasing = T, limit = 10)
 ```
 
