@@ -18,7 +18,7 @@ TabTitle <- "1999-2002, 10 years and older in 1999, exist sample, same sample si
 TabHeadLabelPre <- "\\label{"
 TabHeadLabel <- "zEm.1999.10.sameN"
 TabHeadLabelPost <- "}}"
-TabHead2 <- "\\\\\\setlength{\\tabcolsep}{1pt}\\renewcommand{\\arraystretch}{.675}\\hspace{-2em}\\hfil\\begin{tikzpicture}\\node (tbl) {\\input{"
+TabHead2 <- "\\\\\\setlength{\\tabcolsep}{.5pt}\\renewcommand{\\arraystretch}{.675}\\hspace{-2em}\\hfil\\begin{tikzpicture}\\node (tbl) {\\input{"
 TabFoot1 <- "}};\\input{c:/data/ramadan/save/tablecolortemplate.tex}\\end{tikzpicture}\\\\\\renewcommand{\\arraystretch}{1}"
 TabFNTHeader <- "\\hfil\\begin{tabular}{>{\\hfill\\scriptsize}p{1cm}<{}>{\\scriptsize}p{12cm}<{\\hfill}} Source:& Compiled from IFPRI data. "
 #AddToTabFNT <- "Cohort of 10 - 18 year olds in 1999. Only direct offspring of household head are used." 
@@ -49,7 +49,7 @@ TabFilePathF <- function(
 paste0(FolderPath, Sample, Estimator, AgeCutoff, HHType, AgHHDef, CRSEMethod, ".tex")
 }
 DisplayEstTable0 <- function(
-OmitFootnote = F,
+OmitFootnote = F, Position = NULL,
 TABHead1=TabHead1, TABTitle=TabTitle,  
 TABHeadLabelPre=TabHeadLabelPre, TABHeadLabel=TabHeadLabel,
 TABHeadLabelPost = TabHeadLabelPost, TABHead2=TabHead2, 
@@ -88,7 +88,7 @@ ARRAYStretch = NULL, ...)
 }
 
 DisplayEstTable <- function(
-TwoContinuedTables = F,
+TwoContinuedTables = F, Position = NULL,
 TABHead1=TabHead1, TABTitle=TabTitle,  
 TABHeadLabelPre=TabHeadLabelPre, TABHeadLabel=TabHeadLabel,
 TABHeadLabelPost = TabHeadLabelPost, TABHead2=TabHead2, 
@@ -104,18 +104,22 @@ ArrayStrech = NULL, ...)
 {
 # By using a list, one can have a space between elements.
 # By dividing elements one by one, R syntax like c(...) as in c(1, 2) is not displayed.
+  if (!is.null(Position) && grepl("[Htbp]", Position)) 
+    TABHead1 <- gsub("\\\\begin\\{table\\}", paste0("\\\\begin{table}[", Position, "]"), TabHead1) else
+    TABHead1 <- TabHead1
   if (TwoContinuedTables) 
     c(
       DisplayEstTable0(OmitFootnote = T, 
-      TABTitle=TABTitle,
+      TABHead1 = TABHead1, TABTitle=TABTitle,
       TABFilePath=TABFilePath1, ARRAYStrech=ArrayStrech),
       "\\addtocounter{table}{-1}",
       DisplayEstTable0(OmitFootnote = F, TABFilePath=TABFilePath2, 
         TABTitle=paste0(TABTitle, " (continued)"), ARRAYStrech=ArrayStrech)
     ) else 
-    DisplayEstTable0(TABTitle=TABTitle,
-    TABFilePath=TABFilePath1, 
-    ARRAYStrech=ArrayStrech)
+    DisplayEstTable0(
+      TABHead1 = TABHead1, TABTitle=TABTitle,
+      TABFilePath=TABFilePath1, 
+      ARRAYStrech=ArrayStrech)
 }
 
 disp <- function(A="a", B="b")

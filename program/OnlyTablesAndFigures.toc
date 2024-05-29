@@ -1,0 +1,8 @@
+\contentsline {section}{\numberline {I}Main text tables}{1}{section.2}%
+\contentsline {section}{\numberline {II}Appendix tables}{4}{section.7}%
+\contentsline {subsection}{\numberline {II.1}Main}{4}{subsection.8}%
+\contentsline {subsection}{\numberline {II.2}Robustness}{8}{subsection.14}%
+\contentsline {subsubsection}{\numberline {II.2.1}Age group}{8}{subsubsection.15}%
+\contentsline {subsubsection}{\numberline {II.2.2}Non-Muslims, Flooded}{9}{subsubsection.17}%
+\contentsline {subsubsection}{\numberline {II.2.3}Other schooling outcomes}{11}{subsubsection.20}%
+\contentsline {subsection}{\numberline {II.3}Placebo}{13}{subsection.22}%

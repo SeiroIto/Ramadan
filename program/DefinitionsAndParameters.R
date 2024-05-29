@@ -6,6 +6,7 @@
 #### hdagHH: Head's reply
 #### ocagHH: Occupation based definition
 aghh.defs <- c("agHH0", "isagHH", "hdagHH", "ocagHH")
+Aghh.defs <- c("Combined", "Income source", "Head's reply", "Occupation")
 aghh.defs.regexpr <- paste0(aghh.defs, "\\.")
 agd <- paste0(toupper(substr(aghh.defs, 1, 1)), substr(aghh.defs, 2, 2))
 agd[1] <- ""
