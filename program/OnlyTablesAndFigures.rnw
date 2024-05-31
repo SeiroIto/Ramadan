@@ -116,9 +116,13 @@ source(paste0(pathprogram, "EstimatorFunctions.R"))
 #source("c:/seiro/settings/Rsetting/functions.R")
 @
 
-<<results = "hide", echo = F>>=
+<<TableFootnotes, echo = F>>=
+source("../program/TableFootnotePieces.R")
 source("TabGeneric.R")
-TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A first-difference estimator with standard errors clustered at \\textit{thana} level. Standard errors are clusterd at thana level with Satterthwaite degrees of freedom adjusted for a small number of clusters. $P$ values are shown in the parentheses. 95\\% confidence intervals are shown in square brackets. "
+TabFNLine1Continue <- "\\\\"
+TabFNLine1 <- paste("\\\\[-1ex] Notes:& ", SpecMemo1)
+TabFNLine2 <- ""
+AddToTabFNT <- "" 
 @
 
 
@@ -147,6 +151,19 @@ DisplayEstTable(
   TABHead2=TabHead2NoTIKZ,
   TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Main estimation results 1999-2002, by school level")
+}
+
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderResultsConcise")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Placebo estimation 2002-2006, 1999 and 2002 cohorts")
 }
 
 \Sexpr{
@@ -209,9 +226,6 @@ DisplayEstTable(
 }
 
 
-<<>>=
-TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A DID estimator with standard errors clustered at \\textit{thana} level with bias reduced linearization to adjust for a small number of clusters. $P$ values are shown in the parentheses. $95\\%$ confidence intervals are shown in square brackets. Enrollment rates in 1999, 2002 are"
-@
 
 \clearpage
 \subsection{Robustness}
@@ -223,7 +237,7 @@ DisplayEstTable(
   TwoContinuedTables = F,
   TABFilePath1 = TabFilePathF(
     FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
-    CRSEMethod = "ByGenderResultsConcise")
+    CRSEMethod = "ByGenderResults")
   ,
   TABHead2=TabHead2NoTIKZ,
   TABFoot1 = TabFoot1NoTIKZ, 
@@ -243,6 +257,19 @@ DisplayEstTable(
   TABHead2=TabHead2NoTIKZ,
   TABFoot1 = TabFoot1NoTIKZ, 
   TABTitle="Estimation results 1999-2002, by school level")
+}
+
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "", Sample = "Main1999", 
+    CRSEMethod = "ByGenderByAgeLBResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Main estimation results 1999-2002, by different age lowerbound")
 }
 
 \clearpage

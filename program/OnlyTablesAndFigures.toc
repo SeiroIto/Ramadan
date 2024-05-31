@@ -1,9 +1,9 @@
 \contentsline {section}{\numberline {I}Main text tables}{1}{section.2}%
-\contentsline {section}{\numberline {II}Appendix tables}{5}{section.7}%
-\contentsline {subsection}{\numberline {II.1}Main}{5}{subsection.8}%
-\contentsline {subsection}{\numberline {II.2}Robustness}{9}{subsection.14}%
-\contentsline {subsubsection}{\numberline {II.2.1}Placebo}{9}{subsubsection.15}%
-\contentsline {subsubsection}{\numberline {II.2.2}Age group}{9}{subsubsection.17}%
-\contentsline {subsubsection}{\numberline {II.2.3}Non-Muslims, Flooded}{11}{subsubsection.19}%
-\contentsline {subsubsection}{\numberline {II.2.4}Other schooling outcomes}{13}{subsubsection.22}%
-\contentsline {subsection}{\numberline {II.3}Placebo}{15}{subsection.24}%
+\contentsline {section}{\numberline {II}Appendix tables}{6}{section.8}%
+\contentsline {subsection}{\numberline {II.1}Main}{6}{subsection.9}%
+\contentsline {subsection}{\numberline {II.2}Robustness}{10}{subsection.13}%
+\contentsline {subsubsection}{\numberline {II.2.1}Placebo}{10}{subsubsection.14}%
+\contentsline {subsubsection}{\numberline {II.2.2}Age group}{10}{subsubsection.16}%
+\contentsline {subsubsection}{\numberline {II.2.3}Non-Muslims, Flooded}{13}{subsubsection.19}%
+\contentsline {subsubsection}{\numberline {II.2.4}Other schooling outcomes}{15}{subsubsection.22}%
+\contentsline {subsection}{\numberline {II.3}Placebo}{17}{subsection.24}%

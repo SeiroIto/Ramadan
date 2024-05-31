@@ -33,7 +33,7 @@ TabFNLine1 <- "\\\\[-1ex] Notes:& 1. A first-difference estimator with standard 
 # EnrNonAg = "for non-agricultural households, respectively, with a difference-in-differences of"
 # EnrNote3 <- unlist(Enrchg.Base[grepl("zEm.1999", sample) & grepl("10", age) & grepl("all", HHtype) & grepl("def", agHHdef), "AgNonag", with = F])
 #AddedTabFN <- paste(memocovariates, memo4, collapse = "")
-EnrNote1 <- EnrAg <- EnrNote2 <- EnrNonAg <- EnrNote3 <- AddedTabFN <-NULL
+EnrNote1 <- EnrAg <- EnrNote2 <- EnrNonAg <- EnrNote3 <- AddedTabFN <- NULL
 TabFNLine1Continue <- "Location (\\textit{thana}) dummies are omitted from the table for brevity. \\\\"
 TabFNTFooter <- "\\end{tabular}"
 TabFNLine2 <- "& 2. "
@@ -50,7 +50,7 @@ TabFilePathF <- function(
   ) {
 paste0(FolderPath, Sample, Estimator, AgeCutoff, HHType, AgHHDef, CRSEMethod, ".tex")
 }
-DisplayEstTable0 <- function(
+DisplayEstTable0Old <- function(
 OmitFootnote = F, Position = NULL,
 TABHead1=TabHead1, TABTitle=TabTitle,  
 TABHeadLabelPre=TabHeadLabelPre, TABHeadLabel=TabHeadLabel,
@@ -85,6 +85,37 @@ ARRAYStretch = NULL, ...)
       ENRNote2[2], 
       ENRNonAg, 
       ENRNote3, 
+      paste(TABFNLine1Continue, 
+      TABFNLine2, AddedTABFN, TABFNTFooter, TABFoot2, collapse = ""))
+}
+DisplayEstTable0 <- function(
+OmitFootnote = F, Position = NULL,
+TABHead1=TabHead1, TABTitle=TabTitle,  
+TABHeadLabelPre=TabHeadLabelPre, TABHeadLabel=TabHeadLabel,
+TABHeadLabelPost = TabHeadLabelPost, TABHead2=TabHead2, 
+TABFilePath=TabFilePath, TABFoot1=TabFoot1, 
+TABFNTHeader=TabFNTHeader, AddToTABFNT=AddToTabFNT,  
+TABFNLine1=TabFNLine1, ENRNote1=EnrNote1, ENRNote2=EnrNote2, 
+ENRNote3=EnrNote3, ENRAg = EnrAg, ENRNonAg = EnrNonAg,
+TABFNLine1Continue=TabFNLine1Continue, 
+TABFNLine2=TabFNLine2, AddedTABFN = AddedTabFN,
+TABFNTFooter=TabFNTFooter, TABFoot2=TabFoot2, 
+ARRAYStretch = NULL, ...)
+{
+  if (!is.null(ARRAYStretch))
+    TABHead2 <- gsub(".5", ARRAYStretch, TABHead2)
+# By using a list, one can have a space between elements.
+# By dividing elements one by one, R syntax like c(...) as in c(1, 2) is not displayed.
+  if (OmitFootnote) 
+    list(paste(
+      c(TABHead1, TABTitle, TABHeadLabelPre, TABHeadLabel, 
+      TABHeadLabelPost, TABHead2, TABFilePath, 
+      TABFoot1, TABFoot2), collapse = "")) else
+    list(paste(
+      c(TABHead1, TABTitle, 
+      TABHeadLabelPre, TABHeadLabel, TABHeadLabelPost,
+      TABHead2, TABFilePath, TABFoot1,
+      TABFNTHeader, AddToTABFNT, TABFNLine1), collapse = ""), 
       paste(TABFNLine1Continue, 
       TABFNLine2, AddedTABFN, TABFNTFooter, TABFoot2, collapse = ""))
 }

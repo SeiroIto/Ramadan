@@ -39,6 +39,8 @@ placeboitems <- c("1999 cohort", "2002 cohort")
 ##### Other outcomes
 gdfiles <- c("grade initial enr", "grade enr", "absent enr", "absent cross sec")
 
+#### Add stars to table
+ADDStar <- T
 
 #### ggplot theme
 library(ggplot2)
