@@ -2640,14 +2640,24 @@ for (ii in 1:2) {
   }
 }
 cis <- cis[grepl("^agHH.yr", Coef), ]
+cis[, Agdef := factor(agdef)]
+cis[, Agdef := factor(Agdef, labels = Aghh.defs[c(1, 3, 2, 4)])]
+cis[, Agdef := factor(Agdef, levels = Aghh.defs[c(2:4, 1)])]
+cis[, group := factor(paste0(data, cohort), 
+  levels = c("main1999", "placebo2002", "placebo1999"))]
+cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
+cis[, spec := factor(spec)]
+cis[, yintercept := 0]
+cis[, gender := factor(gender, levels = genderitems)]
 library(ggplot2)
 PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
     stat = "identity", fatten = 1.75, 
     position = position_dodge(width = .25))
-g <- ggplot(data = cis[grepl("A.*2", agegroup) & !is.na(group), ], 
+g <- ggplot(data = cis, 
     aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
-  PointRange + ThisTheme + facet_grid( ~ gender) +
-  xlab("age groups") + 
+  PointRange + ThisTheme + facet_grid(Agdef ~ gender) +
+  xlab("data") + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
   labs(color  = "regression specifications", fill = "regression specifications", 
     shape = "regression specifications") +
   ThisThemeEnd +
@@ -2658,7 +2668,7 @@ g <- ggplot(data = cis[grepl("A.*2", agegroup) & !is.na(group), ],
     ) +
   geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
 pdf(
-  "../save/MainVsPlaceboPlots.pdf"
+  "../save/MainVsPlaceboPlotsByAgdefByGender.pdf"
   , width = 2*12/2.54, height = 2*8/2.54)
 print(g)
 whatever <- dev.off()
@@ -4065,6 +4075,69 @@ assign(paste0(c("M", "P")[ii], c(9, 2)[jj]), kt)
 qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], ".qs"))
 kt
 ```
+
+```{r plot main by age LB, eval = T}
+#### results <- qread("../save/DID2024_MainResults.qs")
+#### results <- qread("save/DID2024_MainResults.qs")
+s <- de <- 1
+j <- m <- clnum <- 2
+cis <- NULL
+for (ii in 1:2) {
+  jjmax <- 1
+  if (ii == 2) jjmax <- 2
+  for (jj in 1:jjmax) {
+    for (ge in c(3, 1, 2)) {
+      for (s in 1:3) {
+        cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
+        cis0 <- lapply(cis0, data.table)
+        cis0 <- lapply(cis0, function(x) x[, data := c("main", "placebo")[ii]])
+        cis0 <- lapply(cis0, function(x) x[, cohort := c("1999", "2002")[jj]])
+        cis0 <- lapply(cis0, function(x) x[, gender := genderitems[ge]])
+        cis0 <- lapply(cis0, function(x) x[, ageLB := (10:12)[s]])
+        cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
+        cis0 <- rbindlist(cis0)
+        cis <- rbindlist(list(cis, cis0))
+      }
+    }
+  }
+}
+cis <- cis[grepl("^agHH.yr", Coef), ]
+cis[, group := factor(paste0(data, cohort), 
+  levels = c("main1999", "placebo2002", "placebo1999"))]
+cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
+cis[, spec := factor(spec)]
+cis[, yintercept := 0]
+cis[, gender := factor(gender, levels = genderitems)]
+cis[, ageLB := factor(ageLB)]
+library(ggplot2)
+PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
+    stat = "identity", fatten = 1.75, 
+    position = position_dodge(width = .25))
+g <- ggplot(data = cis, 
+    aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
+  PointRange + ThisTheme + facet_grid(ageLB ~ gender) +
+  xlab("data") + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+  labs(color  = "regression specifications", fill = "regression specifications", 
+    shape = "regression specifications") +
+  ThisThemeEnd +
+  guides(
+    colour = guide_legend(title = "regression specifications", nrow = 1),
+    fill = guide_legend(title = "regression specifications", nrow = 1),
+    shape = guide_legend(title = "regression specifications", nrow = 1)
+    ) +
+  geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
+pdf(
+  "../save/MainVsPlaceboPlotsByAgeLBByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+g
+```
+
+
+
+
 
 ## By age group
 
