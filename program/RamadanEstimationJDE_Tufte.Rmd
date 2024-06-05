@@ -2151,11 +2151,11 @@ Tab <- rbind(Tab,
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3.25, rep(1.3, ncol(Tab)-1)),
+    hcenter = c(3.25, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", 
+    adjustlineskip = "-.5ex", 
     adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
@@ -2193,6 +2193,10 @@ ltb <- c(
 #### }
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderResults.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb
+  ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByGenderResults.tex")
   ,  colnamestrue = F)
 #### Concise table (dropping estimates on siblings)
@@ -2329,7 +2333,7 @@ Tab <- rbind(Tab,
 #### LaTeX output
 SepCols <- c(3, 6)
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hcenter = c(3, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
@@ -2387,6 +2391,10 @@ ltb4 <- ltb[
     ]
 write.tablev(ltb4
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderByAgeGroup2ResultsConcise.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb4
+  ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByGenderByAgeGroup2ResultsConcise.tex")
   ,  colnamestrue = F)
 #### HTML output
@@ -2524,7 +2532,7 @@ for (jj in 1:2) {
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hcenter = c(3, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
@@ -2562,11 +2570,19 @@ write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByGenderResults.tex")
   ,  colnamestrue = F)
+write.tablev(ltb
+  ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderResults.tex")
+  ,  colnamestrue = F)
 #### concise table for main text
 iii <- grep("\\* Older", ltb)
 ltb2 <- ltb[-(rep(iii, each = 3)+0:2)]
 write.tablev(ltb2
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "ByGenderResultsConcise.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb2
+  ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByGenderResultsConcise.tex")
   ,  colnamestrue = F)
 #### HTML output
@@ -2669,6 +2685,11 @@ g <- ggplot(data = cis,
   geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
 pdf(
   "../save/MainVsPlaceboPlotsByAgdefByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+pdf(
+  "../draft/Figures/App_MainVsPlaceboPlotsByAgdefByGender.pdf"
   , width = 2*12/2.54, height = 2*8/2.54)
 print(g)
 whatever <- dev.off()
@@ -2914,7 +2935,7 @@ Tab <- rbind(Tab,
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hcenter = c(3, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
@@ -2979,6 +3000,10 @@ ltb4 <- ltb[
     ]
 write.tablev(ltb4
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "MuslimFloodResultsConcise.tex")
+  ,  colnamestrue = F)
+write.tablev(ltb4
+  ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "MuslimFloodResultsConcise.tex")
   ,  colnamestrue = F)
 #### HTML output
@@ -3184,7 +3209,7 @@ TabGD = copy(Tab)
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(4.0, rep(1.3, ncol(Tab)-1)),
+    hcenter = c(4.0, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
@@ -3319,6 +3344,10 @@ write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "NumGradeDaysAbsentResults.tex")
   ,  colnamestrue = F)
+write.tablev(ltb
+  ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
+       "NumGradeDaysAbsentResults.tex")
+  ,  colnamestrue = F)
 #### HTML output
 library(kableExtra)
 #### Tab <- TabGD
@@ -3381,7 +3410,7 @@ kt
 
 
 
-# Appendix tables
+# Appendix figures and tables
 
 ## Full results
 
@@ -3915,6 +3944,11 @@ for (ii in 1:2) {
         ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
              "ByGenderByAgHHdefResultsConcise.tex")
         ,  colnamestrue = F)
+      if (s == 1)
+        write.tablev(ltbshort
+          ,  paste0("../draft/Tables/App_", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+               "ByGenderByAgHHdefResultsConcise.tex")
+          ,  colnamestrue = F)
       #### HTML output
       mrtab <- rbind(mrtab, 
         "Thana fixed trends" = c("Thana fixed trends", rep(c("", "Y", "Y"), 3)),
@@ -4024,6 +4058,10 @@ write.tablev(M9L
   ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], 
        "ByGenderByAgeLBResults.tex")
   ,  colnamestrue = F)
+write.tablev(M9L
+  ,  paste0("../draft/Tables/App_", c("Main", "Placebo")[ii], c(1999, 2002)[jj], 
+       "ByGenderByAgeLBResults.tex")
+  ,  colnamestrue = F)
 #### HTML output
 aghhrows <- grep("^Ag", M910[, 1])
 M9 <- rbind(M910[(aghhrows[2]):(aghhrows[3]-1), ], 
@@ -4076,7 +4114,9 @@ qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], ".qs"))
 kt
 ```
 
-```{r plot main by age LB, eval = T}
+<details><summary>Click here to see the R script of plotting effects by age lowerbound.</summary>
+
+```{r plot main by age LB, eval = T, echo = T}
 #### results <- qread("../save/DID2024_MainResults.qs")
 #### results <- qread("save/DID2024_MainResults.qs")
 s <- de <- 1
@@ -4108,7 +4148,7 @@ cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
 cis[, spec := factor(spec)]
 cis[, yintercept := 0]
 cis[, gender := factor(gender, levels = genderitems)]
-cis[, ageLB := factor(ageLB)]
+cis[, ageLB := factor(ageLB, labels = c("10-18", "11-18", "12-18"))]
 library(ggplot2)
 PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
     stat = "identity", fatten = 1.75, 
@@ -4132,10 +4172,24 @@ pdf(
   , width = 2*12/2.54, height = 2*8/2.54)
 print(g)
 whatever <- dev.off()
+pdf(
+  "../draft/Figures/App_MainVsPlaceboPlotsByAgeLBByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+```
+</details>
+
+```{r plot results by ageLB}
 g
 ```
 
 
+* Verdict: Impacts found for boys of 11 years and older, even with raw DID.  
+  * AgHH definition: Income source.  
+* Point estimates are larger for boys of higher age lowerbounds, indicating a brawn-based mechanism [@PittRosenzweigHassan2012] at work.  
+* Probably using 11-18 years old in the main estimation can give sharper results, but we need to commit to the original research design. Also, there is no good justification for using an *ad hoc* 11-18 age range.  
+* We need to refer to this figure in the main text that raw DID can show impacts.  
 
 
 
@@ -4325,6 +4379,9 @@ ltb <- ltb[!grepl("Raw", ltb)]
 write.tablev(ltb
   ,  "../save/MainGenderAgeGroup2WithInteractionsResults.tex"
   ,  colnamestrue = F)
+write.tablev(ltb
+  ,  "../draft/Tables/App_MainGenderAgeGroup2WithInteractionsResults.tex"
+  ,  colnamestrue = F)
 #### for compact tables without triple interactions
 ninter <- length(grep("Older", ltb))
 ltb2 <- ltb[-(grep("Older", ltb)+rep(0:2, ninter))]
@@ -4414,6 +4471,11 @@ g <- ggplot(data = mbga[grepl("A.*2", agegroup) & !is.na(group), ],
   geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
 pdf(
   "../save/GenderAgeGroup2Impacts.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+pdf(
+  "../draft/Figures/GenderAgeGroup2Impacts.pdf"
   , width = 2*12/2.54, height = 2*8/2.54)
 print(g)
 whatever <- dev.off()
@@ -4530,7 +4592,7 @@ Tab <- rbind(Tab,
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.3, ncol(Tab)-1)),
+    hcenter = c(3, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
@@ -4596,6 +4658,99 @@ kt <- footnote(kt,
            )
 kt
 ```
+
+<details><summary>Click here to see the R script of plotting effects on grade progression and days absent.</summary>
+
+```{r plot grade days, eval = T, echo = T}
+ii <- jj <- s <- 1
+j <- m <- clnum <- 2
+rr <- 3
+cis <- NULL
+for (ii in 1:2) {
+  for (gd in 1:5) {
+    #gd 1: NumGrade 1999 enrollers, 2: NumGrade complete panel enrollers, 
+    #    3: DaysAbsent 1999 enrollers, 4: DaysAbsent 2002 cross sectional OLS
+    #    5: DaysAbsent 2002 cross sectional OLS
+    # Placebo is estimated only for NumGrades. No DaysAbsent data collected in 2006.
+    if (gd > 2 & ii == 2) next
+    # For gd == 4, rr = 1 (1999, July-August, asked in Sep-Oct) covers 
+    # For gd == 5, rr = 2 (2002, July-August, asked in Sep-Oct) covers 
+    # 2 months of planting season absenteeism in a 3 month recall question.
+    if (gd == 4) rr <- 1
+    if (gd == 5) rr <- 2
+        for (yy in 1:2) { 
+
+
+
+
+
+    }
+    for (ge in c(3, 1, 2)) {
+      if (gd < 3) 
+        cis0 <- lapply(resultsG[[ii]][[jj]][[gd]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
+        if (gd == 3) 
+        cis0 <- lapply(resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci") else
+        cis0 <- lapply(resultsC[[ii]][[jj]][[yy]][[rr]][[s]][[j]][[ge]][[m]], "[[", "ciBRL")
+      cis0 <- lapply(cis0, data.table)
+      cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
+      cis0 <- rbindlist(cis0)
+      cis0[, data := c("main", "placebo")[ii]]
+      cis0[, outcome := c(rep(c("Grades", "Days"), each = 2), "Days")[gd]]
+      cis0[, year := c(1999, 2002, NA)[rr]]
+      cis0[, sample := c("incomplete panel", "complete panel", "incomplete panel",
+        "cross section 1999", "cross section 2002")[gd]]
+      cis0[, gender := genderitems[ge]]
+      cis <- rbind(cis, cis0)
+    } # ge
+  } # gd
+} # ii
+cis <- cis[grepl("^agHH.yr|^agHH$", Coef), ]
+cis[, spec := factor(spec)]
+cis[, yintercept := 0]
+cis[, data := factor(data)]
+cis[, gender := factor(gender, levels = genderitems)]
+cis[, outcomes := outcome]
+cis[grepl("pla", data), outcomes := "Grades, placebo"]
+cis[, outcomes := factor(outcomes, levels = c("Grades", "Grades, placebo", "Days"))]
+cis[, outcome := factor(outcome, levels = c("Grades", "Days"))]
+cis[, sample := factor(sample)]
+cis[, sample := factor(sample, labels = gsub("panel", "", levels(sample)))]
+cis[, sample := factor(sample, labels = gsub("cross section ", "", levels(sample)))]
+library(ggplot2)
+PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
+    stat = "identity", fatten = 1.75, 
+    position = position_dodge(width = .25))
+g <- ggplot(data = cis, 
+    aes(x = sample, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
+  PointRange + ThisTheme + facet_grid(outcomes ~ gender, scales = "free_y") +
+  xlab("data") + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+  labs(color  = "regression specifications", fill = "regression specifications", 
+    shape = "regression specifications") +
+  ThisThemeEnd +
+  guides(
+    colour = guide_legend(title = "regression specifications", nrow = 1),
+    fill = guide_legend(title = "regression specifications", nrow = 1),
+    shape = guide_legend(title = "regression specifications", nrow = 1)
+    ) +
+  geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
+pdf(
+  "../save/NumGradesDaysAbsentPlotsByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+pdf(
+  "../draft/Figures/App_NumGradesDaysAbsentPlotsByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+```
+</details>
+
+```{r plot GPDA}
+g
+```
+
 
 * Grade progreesion and days absent impacts are consistent with main results.  
 * Grade progression impact estimates are negative. Exam-harvest overlap delays progression by .35-40 years (`r round((c(.35, .4))*12, 2)` months). Only the larger sample gives small $p$ values. Impacts on boys are larger in magnitude yet the sample size is too small, because we must condition on children who are enrolled in 1999.  
