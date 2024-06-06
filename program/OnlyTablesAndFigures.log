@@ -1,4 +1,4 @@
-This is e-pTeX, Version 3.14159265-p3.8.3-191112-2.6 (utf8.sjis) (TeX Live 2020/W32TeX) (preloaded format=platex 2020.6.19)  4 JUN 2024 06:14
+This is e-pTeX, Version 3.14159265-p3.8.3-191112-2.6 (utf8.sjis) (TeX Live 2020/W32TeX) (preloaded format=platex 2020.6.19)  6 JUN 2024 10:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -6,8 +6,8 @@ entering extended mode
 (./OnlyTablesAndFigures.tex
 pLaTeX2e <2020-02-02>+3 (based on LaTeX2e <2020-02-02> patch level 5)
 L3 programming layer <2020-03-06>
-(c:/migrate/R/knitrPreamble/knitr_preamble.rnw
-(c:/seiro/settings/TeX/docset/veryplainJ.tex
+(c:/migrate/R/knitrPreamble/knitr_preambleLetter.rnw
+(c:/seiro/settings/TeX/docset/veryplainJLetter.tex
 (c:/TeX/texmf-local/tex/platex/js/jsarticle.cls
 Document Class: jsarticle 2006/02/12 okumura
 LaTeX Info: Redefining \rmfamily on input line 319.
@@ -894,59 +894,24 @@ grounds.code.tex
 File: tikzlibrarybackgrounds.code.tex 2020/01/08 v3.1.5b (3.1.5b)
 \pgf@layerbox@background=\box88
 \pgf@layerboxsaved@background=\box89
-)) (c:/TeX/texmf-local/tex/latex/algorithm2e/algorithm2e.sty
-Package: algorithm2e 2013/01/06 v5.00 algorithms environments
-\c@AlgoLine=\count329
+)) (c:/TeX/texmf-dist/tex/latex/tex-gyre/tgtermes.sty
+Package: tgtermes 2009/09/27 v1.2 TeX Gyre Termes as default roman family
 
-(c:/TeX/texmf-dist/tex/latex/tools/xspace.sty
-Package: xspace 2014/10/28 v1.13 Space after command names (DPC,MH)
-)
-********************************************************
-Package `algorithm2e' Release 5.0 -- january 06 2013 --
-- algorithm2e-announce@lirmm.fr mailing list for announcement about releases
-- algorithm2e-discussion@lirmm.fr mailing list for discussion about package
-subscribe by emailing sympa@lirmm.fr with 'subscribe <list> <firstname name>'
-- Author: Christophe Fiorio (cfiorio@um2.fr)
-********************************************************
-\skiptotal=\skip59
-\skiplinenumber=\skip60
-\skiprule=\skip61
-\skiphlne=\skip62
-\skiptext=\skip63
-\skiplength=\skip64
-\algomargin=\skip65
-\skipalgocfslide=\skip66
-\algowidth=\dimen297
-\inoutsize=\dimen298
-\inoutindent=\dimen299
-\interspacetitleruled=\dimen300
-\interspacealgoruled=\dimen301
-\interspacetitleboxruled=\dimen302
-\algocf@inoutbox=\box90
-\algocf@inputbox=\box91
-\AlCapSkip=\skip67
-\AlCapHSkip=\skip68
-\algoskipindent=\skip69
-\algocf@nlbox=\box92
-\algocf@hangingbox=\box93
-\algocf@untilbox=\box94
-\algocf@skipuntil=\skip70
-\algocf@capbox=\box95
-\algoheightruledefault=\skip71
-\algoheightrule=\skip72
-\algotitleheightruledefault=\skip73
-\algotitleheightrule=\skip74
-\c@algocfline=\count330
-\c@algocfproc=\count331
-\c@algocf=\count332
-\algocf@algoframe=\box96
-\algocf@algobox=\box97
-) (c:/TeX/texmf-dist/tex/latex/l3backend/l3backend-dvipdfmx.def
+(I search kanjifont definition file: . . ) (I search font definition file: . .
+. . . . . . )) (c:/TeX/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2020/02/11 v2.0o Standard LaTeX package
+LaTeX Font Info:    Trying to load font information for T1+qtm on input line 11
+2.
+
+(c:/TeX/texmf-dist/tex/latex/tex-gyre/t1qtm.fd
+File: t1qtm.fd 2009/09/25 v1.2 font definition file for T1/qtm
+))
+(c:/TeX/texmf-dist/tex/latex/l3backend/l3backend-dvipdfmx.def
 File: l3backend-dvipdfmx.def 2020-03-12 L3 backend support: dvipdfmx
-\g__graphics_track_int=\count333
-\l__pdf_internal_box=\box98
-\g__pdf_backend_object_int=\count334
-\g__pdf_backend_annotation_int=\count335
+\g__graphics_track_int=\count329
+\l__pdf_internal_box=\box90
+\g__pdf_backend_object_int=\count330
+\g__pdf_backend_annotation_int=\count331
 )
 (./OnlyTablesAndFigures.aux
 
@@ -988,69 +953,55 @@ LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
 
 LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
 
-
-LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
-
-
-LaTeX Warning: Label `zEm.1999.10.sameN' multiply defined.
-
 )
 \openout1 = `OnlyTablesAndFigures.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 59.
+LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 51.
 LaTeX Font Info:    Trying to load font information for OML+txmi on input line 
-59.
+51.
  (c:/TeX/texmf-dist/tex/latex/txfonts/omltxmi.fd
 File: omltxmi.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 51.
 LaTeX Font Info:    Trying to load font information for OMS+txsy on input line 
-59.
+51.
 
 (c:/TeX/texmf-dist/tex/latex/txfonts/omstxsy.fd
 File: omstxsy.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 51.
 LaTeX Font Info:    Trying to load font information for OMX+txex on input line 
-59.
+51.
 
 (c:/TeX/texmf-dist/tex/latex/txfonts/omxtxex.fd
 File: omxtxex.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 59.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 51.
 LaTeX Font Info:    Trying to load font information for U+txexa on input line 5
-9.
+1.
 
 (c:/TeX/texmf-dist/tex/latex/txfonts/utxexa.fd
 File: utxexa.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 59.
-LaTeX Font Info:    ... okay on input line 59.
-
-(I search kanjifont definition file: . . ) (I search font definition file: . .
-. . . . . . )
-LaTeX Font Info:    Trying to load font information for OT1+txr on input line 5
-9.
- (c:/TeX/texmf-dist/tex/latex/txfonts/ot1txr.fd
-File: ot1txr.fd 2000/12/15 v3.1
-)
-\c@lstlisting=\count336
-\AtBeginShipoutBox=\box99
-Package hyperref Info: Link coloring ON on input line 59.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 51.
+LaTeX Font Info:    ... okay on input line 51.
+\c@lstlisting=\count332
+\AtBeginShipoutBox=\box91
+Package hyperref Info: Link coloring ON on input line 51.
 
 (c:/TeX/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
@@ -1061,11 +1012,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 (c:/TeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count337
+\c@section@level=\count333
 )
-LaTeX Info: Redefining \ref on input line 59.
-LaTeX Info: Redefining \pageref on input line 59.
-LaTeX Info: Redefining \nameref on input line 59.
+LaTeX Info: Redefining \ref on input line 51.
+LaTeX Info: Redefining \pageref on input line 51.
+LaTeX Info: Redefining \nameref on input line 51.
 
 (./OnlyTablesAndFigures.out) (./OnlyTablesAndFigures.out)
 \@outlinefile=\write6
@@ -1077,28 +1028,34 @@ File: fc-english.def 2016/01/12
 )
 ABD: EveryShipout initializing macros
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 67.
+(Font)              scaled to size 13.83836pt on input line 58.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 67.
+(Font)              scaled to size 13.83836pt on input line 58.
 LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 67.
+(Font)              scaled to size 13.83836pt on input line 58.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 13.83836pt on input line 67.
-LaTeX Font Info:    Trying to load font information for OT1+txss on input line 
-67.
+(Font)              scaled to size 13.83836pt on input line 58.
+LaTeX Font Info:    Trying to load font information for T1+txss on input line 5
+8.
 
-(c:/TeX/texmf-dist/tex/latex/txfonts/ot1txss.fd
-File: ot1txss.fd 2000/12/15 v3.1
+(c:/TeX/texmf-dist/tex/latex/txfonts/t1txss.fd
+File: t1txss.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
-(Font)              scaled to size 13.67995pt on input line 67.
+LaTeX Font Info:    Font shape `T1/txss/m/n' will be
+(Font)              scaled to size 13.67995pt on input line 58.
  (./OnlyTablesAndFigures.toc
 LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
 (Font)              scaled to size 9.60999pt on input line 1.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 9.60999pt on input line 1.
-LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
+LaTeX Font Info:    Font shape `T1/txss/m/n' will be
 (Font)              scaled to size 9.49997pt on input line 1.
+LaTeX Font Info:    Trying to load font information for OT1+txr on input line 3
+.
+
+(c:/TeX/texmf-dist/tex/latex/txfonts/ot1txr.fd
+File: ot1txr.fd 2000/12/15 v3.1
+)
 LaTeX Font Info:    Trying to load font information for U+txsya on input line 3
 .
 
@@ -1126,33 +1083,129 @@ File: utxsyc.fd 2000/12/15 v3.1
 \tf@toc=\write7
 \openout7 = `OnlyTablesAndFigures.toc'.
 
-LaTeX Font Info:    Font shape `JT1/mc/m/sc' in size <10> not available
-(Font)              Font shape `JT1/mc/m/n' tried instead on input line 81.
-LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 9.60999pt on input line 81.
-LaTeX Font Info:    Font shape `JY1/mc/m/sc' in size <10> not available
-(Font)              Font shape `JY1/mc/m/n' tried instead on input line 81.
-LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 9.60999pt on input line 81.
-LaTeX Font Info:    Font shape `JT1/mc/m/sc' in size <8> not available
-(Font)              Font shape `JT1/mc/m/n' tried instead on input line 81.
-LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 7.68799pt on input line 81.
-LaTeX Font Info:    Font shape `JY1/mc/m/sc' in size <8> not available
-(Font)              Font shape `JY1/mc/m/n' tried instead on input line 81.
-LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 7.68799pt on input line 81.
 
-(../save/MainOlder10ByGenderResults.tex
+(c:/TeX/texmf-local/tex/platex/js/lstmisc.sty
+File: lstmisc.sty 2007/02/22 1.4 (Carsten Heinz)
+\lstFV@gtempboxa=\box92
+)
+(c:/TeX/texmf-local/tex/platex/js/lstlang1.sty
+File: lstlang1.sty 2004/09/05 1.3 listings language file
+)
+(c:/TeX/texmf-local/tex/platex/js/lstlang2.sty
+File: lstlang2.sty 2004/09/05 1.3 listings language file
+)
+(c:/TeX/texmf-local/tex/platex/js/lstlang3.sty
+File: lstlang3.sty 2004/09/05 1.3 listings language file
+)
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 3.
+(Font)              scaled to size 6.72699pt on input line 70.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 3.
+(Font)              scaled to size 6.72699pt on input line 70.
+LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
+(Font)              scaled to size 8.00832pt on input line 70.
+LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
+(Font)              scaled to size 8.00832pt on input line 70.
+LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
+(Font)              scaled to size 8.00832pt on input line 73.
+LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
+(Font)              scaled to size 8.00832pt on input line 73.
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 73
+.
+
+(c:/TeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd
+File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
+)
+LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
+(Font)              scaled to size 8.33334pt on input line 73.
+
+Overfull \hbox (1560.489pt too wide) in paragraph at lines 74--75
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][] 
+ []
+
+
+Overfull \hbox (885.48282pt too wide) in paragraph at lines 76--77
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (480.47911pt too wide) in paragraph at lines 78--79
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+LaTeX Font Info:    Calculating math sizes for size <8.33334> on input line 80.
+
+
+Overfull \hbox (180.47636pt too wide) in paragraph at lines 80--81
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][]
+ []
+
+
+Overfull \hbox (465.47897pt too wide) in paragraph at lines 80--81
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][][][][][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 81--82
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][]
+ []
+
+
+Overfull \hbox (210.47664pt too wide) in paragraph at lines 82--83
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+][][][][][][][][][][]
+ []
+
+
+Overfull \hbox (110.47572pt too wide) in paragraph at lines 82--83
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+ []
+
+
+Overfull \hbox (105.47568pt too wide) in paragraph at lines 82--83
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][] 
+ []
+
+
+Overfull \hbox (15.47485pt too wide) in paragraph at lines 83--84
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][]
+ []
+
+
+Overfull \hbox (40.47508pt too wide) in paragraph at lines 83--84
+[][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][][
+] 
+ []
+
+LaTeX Font Info:    Font shape `JT1/mc/m/sc' in size <10> not available
+(Font)              Font shape `JT1/mc/m/n' tried instead on input line 90.
+LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 90.
+LaTeX Font Info:    Font shape `JY1/mc/m/sc' in size <10> not available
+(Font)              Font shape `JY1/mc/m/n' tried instead on input line 90.
+LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
+(Font)              scaled to size 9.60999pt on input line 90.
+LaTeX Font Info:    Font shape `JT1/mc/m/sc' in size <8> not available
+(Font)              Font shape `JT1/mc/m/n' tried instead on input line 90.
+LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
+(Font)              scaled to size 7.68799pt on input line 90.
+LaTeX Font Info:    Font shape `JY1/mc/m/sc' in size <8> not available
+(Font)              Font shape `JY1/mc/m/n' tried instead on input line 90.
+LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
+(Font)              scaled to size 7.68799pt on input line 90.
+(../draft/Tables/MainOlder10ByGenderResults.tex
 LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
 (Font)              scaled to size 6.72699pt on input line 3.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
 (Font)              scaled to size 6.72699pt on input line 3.
-LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
+LaTeX Font Info:    Font shape `T1/txss/m/n' will be
 (Font)              scaled to size 6.64998pt on input line 3.
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
 (Font)              scaled to size 4.805pt on input line 8.
@@ -1160,176 +1213,149 @@ LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
 (Font)              scaled to size 4.805pt on input line 8.
 )
 LaTeX Font Info:    Font shape `JT1/mc/b/n' in size <7> not available
-(Font)              Font shape `JT1/mc/bx/n' tried instead on input line 81.
+(Font)              Font shape `JT1/mc/bx/n' tried instead on input line 90.
 LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <7> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 81.
+(Font)              Font shape `JT1/gt/m/n' tried instead on input line 90.
 LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 81.
+(Font)              scaled to size 6.72699pt on input line 90.
 LaTeX Font Info:    Font shape `JY1/mc/b/n' in size <7> not available
-(Font)              Font shape `JY1/mc/bx/n' tried instead on input line 81.
+(Font)              Font shape `JY1/mc/bx/n' tried instead on input line 90.
 LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <7> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 81.
+(Font)              Font shape `JY1/gt/m/n' tried instead on input line 90.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 81.
-LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <7> not available
-(Font)              Font shape `OT1/txr/bx/n' tried instead on input line 81.
+(Font)              scaled to size 6.72699pt on input line 90.
 
-Overfull \hbox (101.54591pt too wide) in paragraph at lines 81--81
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 90--90
 []  [] 
  []
 
-(../save/MainOlder10ByGenderByAgeGroup2ResultsConcise.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 84--84
+(../draft/Tables/MainOlder10ByGenderByAgeGroup2ResultsConcise.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 93--93
 []  [] 
  []
 
-(../save/PlaceboOlder10ByGenderResultsConcise.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 87--87
+(../draft/Tables/PlaceboOlder10ByGenderResultsConcise.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 96--96
 []  [] 
  []
 
-(../save/MainOlder10MuslimFloodResultsConcise.tex
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 6--6
-[]|[]| 
- []
-
-
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 23--23
-[]|[]| 
- []
-
-)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 89--89
+(../draft/Tables/MainOlder10MuslimFloodResultsConcise.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 98--98
 []  [] 
  []
 
-(../save/MainOlder10NumGradeDaysAbsentResults.tex) [1
+(../draft/Tables/MainOlder10NumGradeDaysAbsentResults.tex)
 
-] [2] [3] [4] [5]
+LaTeX Warning: Float too large for page by 13.90773pt on input line 100.
+
+[1
+
+] [2] [3] [4] [5] [6]
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 11.53198pt on input line 97.
+(Font)              scaled to size 11.53198pt on input line 106.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 11.53198pt on input line 97.
+(Font)              scaled to size 11.53198pt on input line 106.
 LaTeX Font Info:    Font shape `JT1/gt/m/n' will be
-(Font)              scaled to size 11.53198pt on input line 97.
+(Font)              scaled to size 11.53198pt on input line 106.
 LaTeX Font Info:    Font shape `JY1/gt/m/n' will be
-(Font)              scaled to size 11.53198pt on input line 97.
-LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
-(Font)              scaled to size 11.39996pt on input line 97.
+(Font)              scaled to size 11.53198pt on input line 106.
+LaTeX Font Info:    Font shape `T1/txss/m/n' will be
+(Font)              scaled to size 11.39996pt on input line 106.
 File: ../draft/Figures/App_MainVsPlaceboPlotsByAgeLBByGender.pdf Graphic file (
 type pdf)
 <../draft/Figures/App_MainVsPlaceboPlotsByAgeLBByGender.pdf>
 LaTeX Font Info:    Font shape `JT1/mc/m/sc' in size <7> not available
-(Font)              Font shape `JT1/mc/m/n' tried instead on input line 107.
+(Font)              Font shape `JT1/mc/m/n' tried instead on input line 116.
 LaTeX Font Info:    Font shape `JT1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 107.
+(Font)              scaled to size 6.72699pt on input line 116.
 LaTeX Font Info:    Font shape `JY1/mc/m/sc' in size <7> not available
-(Font)              Font shape `JY1/mc/m/n' tried instead on input line 107.
+(Font)              Font shape `JY1/mc/m/n' tried instead on input line 116.
 LaTeX Font Info:    Font shape `JY1/mc/m/n' will be
-(Font)              scaled to size 6.72699pt on input line 107.
+(Font)              scaled to size 6.72699pt on input line 116.
 
 
-LaTeX Warning: Reference `base10' on page 6 undefined on input line 107.
+LaTeX Warning: Reference `base10' on page 7 undefined on input line 116.
 
 File: ../draft/Figures/GenderAgeGroup2Impacts.pdf Graphic file (type pdf)
 <../draft/Figures/GenderAgeGroup2Impacts.pdf>
 
-LaTeX Warning: Reference `base10' on page 6 undefined on input line 121.
+LaTeX Warning: Reference `base10' on page 7 undefined on input line 130.
 
-(../save/Main1999Older10ByGenderByAgHHdefResultsConcise.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 129--129
+(../draft/Tables/App_Main1999Older10ByGenderByAgHHdefResultsConcise.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 140--140
 []  [] 
  []
 
-(../save/Main1999Older10ByGenderByAgHHdefResults1.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 131--131
+
+LaTeX Warning: Float too large for page by 43.5078pt on input line 140.
+
+(../draft/Tables/Main1999Older10ByGenderByAgHHdefResults1.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 142--142
 []  [] 
  []
 
-(../save/Main1999Older10ByGenderByAgHHdefResults2.tex)
-(c:/data/Ramadan/save/tablecolortemplate.tex)
-Overfull \hbox (24.2754pt too wide) in paragraph at lines 131--131
-[]  [] 
- []
+(../draft/Tables/Main1999Older10ByGenderByAgHHdefResults2.tex)
+(c:/data/Ramadan/save/tablecolortemplate.tex) [7
 
-[6
-
-] [7] [8] [9]
+] [8] [9] [10] [11]
 File: ../draft/Figures/App_MainVsPlaceboPlotsByAgdefByGender.pdf Graphic file (
 type pdf)
 <../draft/Figures/App_MainVsPlaceboPlotsByAgdefByGender.pdf>
 
 
-LaTeX Warning: Reference `base10' on page 10 undefined on input line 149.
+LaTeX Warning: Reference `base10' on page 12 undefined on input line 161.
 
-(../save/PlaceboOlder10ByGenderResults.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 157--157
+(../draft/Tables/PlaceboOlder10ByGenderResults.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 169--169
 []  [] 
  []
 
-(../save/MainOlder10ByGenderByAgeGroup2ResultsConcise.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 162--162
+(../draft/Tables/App_MainGenderAgeGroup2WithInteractionsResults.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 174--174
 []  [] 
  []
 
-(../save/Main1999ByGenderByAgeLBResults.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 165--165
+(../draft/Tables/App_Main1999ByGenderByAgeLBResults.tex)
+Overfull \hbox (8.10814pt too wide) in paragraph at lines 177--177
 []  [] 
  []
 
 
-LaTeX Warning: Float too large for page by 9.64395pt on input line 165.
+LaTeX Warning: Float too large for page by 44.50812pt on input line 177.
 
-[10
+[12
 
-] [11] [12] [13] (../save/MainOlder10MuslimFloodResults1.tex
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 6--6
-[]|[]| 
- []
-
-)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 170--170
+] [13] [14] [15] (../save/MainOlder10MuslimFloodResults.tex)
+Overfull \hbox (64.7454pt too wide) in paragraph at lines 182--182
 []  [] 
  []
 
-(../save/MainOlder10MuslimFloodResults2.tex
-Overfull \hbox (7.11319pt too wide) in paragraph at lines 6--6
-[]|[]| 
- []
+[16
 
-) (c:/data/Ramadan/save/tablecolortemplate.tex)
-Overfull \hbox (24.2754pt too wide) in paragraph at lines 170--170
-[]  [] 
- []
-
-[14
-
-] [15]
+] [17]
 File: ../draft/Figures/App_NumGradesDaysAbsentPlotsByGender.pdf Graphic file (t
 ype pdf)
 <../draft/Figures/App_NumGradesDaysAbsentPlotsByGender.pdf>
 
 
-LaTeX Warning: Reference `base10' on page 16 undefined on input line 183.
+LaTeX Warning: Reference `base10' on page 18 undefined on input line 195.
 
-(../save/MainOlder10NumGradeDaysAbsentResults.tex) [16
+(../draft/Tables/MainOlder10NumGradeDaysAbsentResults.tex)
 
-] [17]
-(../save/PlaceboOlder10ByGenderResults.tex)
-Overfull \hbox (17.60945pt too wide) in paragraph at lines 200--200
-[]  [] 
- []
+LaTeX Warning: Float too large for page by 13.19574pt on input line 201.
 
 [18
 
+] [19] [20
+
 ]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 202.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 202.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 221.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 221.
  (./OnlyTablesAndFigures.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 202.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 202.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 221.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 221.
 Package rerunfilecheck Info: File `OnlyTablesAndFigures.out' has not changed.
-(rerunfilecheck)             Checksum: E07FBF61C224CA55BBCF6F5C36D67B1D;277.
+(rerunfilecheck)             Checksum: 2DE239387283CA7CE514661C9DB2B311;283.
 
 
 LaTeX Warning: There were undefined references.
@@ -1337,15 +1363,15 @@ LaTeX Warning: There were undefined references.
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 202.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 221.
  ) 
 Here is how much of TeX's memory you used:
- 24078 strings out of 481140
- 430640 string characters out of 5924191
- 943014 words of memory out of 5000000
- 39526 multiletter control sequences out of 15000+600000
- 558194 words of font info for 109 fonts, out of 8000000 for 9000
+ 24145 strings out of 481140
+ 426623 string characters out of 5924191
+ 986893 words of memory out of 5000000
+ 39577 multiletter control sequences out of 15000+600000
+ 601959 words of font info for 148 fonts, out of 8000000 for 9000
  934 hyphenation exceptions out of 8191
- 67i,21n,64p,2570b,832s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 67i,21n,95p,2749b,1908s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on OnlyTablesAndFigures.dvi (18 pages, 111008 bytes).
+Output written on OnlyTablesAndFigures.dvi (20 pages, 127124 bytes).

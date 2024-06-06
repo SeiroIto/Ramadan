@@ -1314,7 +1314,7 @@ for (rrr in c("", "j")) {
   mrtab <- 
     cbind(
         rep(c(
-          "Agricultural households * year 2002", 
+          "Agricultural household * year 2002", 
           "\\hspace{1em} CI (LZ)", "\\hspace{1em} CI (BRL)", 
           "\\underline{\\phantom{mm}} * Older sisters",
           "\\hspace{1em} CI (LZ)", "\\hspace{1em} CI (BRL)", 
@@ -1364,7 +1364,7 @@ for (rrr in c("", "j")) {
     ) 
   ltb <- gsub("CI \\(.*?\\)", "", ltb)
   ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
-  ltb <- gsub("households", "HHs", ltb)
+  ltb <- gsub("household", "HH", ltb)
   ltb <- gsub("Number of ol", "Ol", ltb)
   ltb <- ltb[!grepl("Raw", ltb)]
 ####  write.tablev(ltb
@@ -2333,11 +2333,11 @@ Tab <- rbind(Tab,
 #### LaTeX output
 SepCols <- c(3, 6)
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.5, ncol(Tab)-1)),
+    hcenter = c(3.25, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", 
+    adjustlineskip = "-.5ex", 
     adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+Girls}", "\\textsf{Boys}", "\\textsf{Girls}")
@@ -2532,11 +2532,11 @@ for (jj in 1:2) {
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.5, ncol(Tab)-1)),
+    hcenter = c(3.25, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", 
+    adjustlineskip = "-.5ex", 
     adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+Girls}", "\\textsf{Boys}", "\\textsf{Girls}")
@@ -2627,81 +2627,6 @@ kt
 * This is only true for cohorts of 2002 but not of 1999. It suggests that this effect may be at work only for the ages between 10-18.  
 * To better satisfy the common trend assumption, one should use the interaction terms between agHH and number of elder sisters.  
 * Main effects remain statistically zero in the specifications with or without the interaction terms between agHH and elder sisters.  
-
-
-
-```{r plot main vs placebo, eval = T}
-#### results <- qread("../save/DID2024_MainResults.qs")
-#### results <- qread("save/DID2024_MainResults.qs")
-s <- de <- 1
-j <- clnum <- 2
-cis <- NULL
-for (ii in 1:2) {
-  jjmax <- 1
-  if (ii == 2) jjmax <- 2
-  for (jj in 1:jjmax) {
-    for (ge in c(3, 1, 2)) {
-      for (m in c(2:4, 1)) {
-        cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
-        cis0 <- lapply(cis0, data.table)
-        cis0 <- lapply(cis0, function(x) x[, data := c("main", "placebo")[ii]])
-        cis0 <- lapply(cis0, function(x) x[, cohort := c("1999", "2002")[jj]])
-        cis0 <- lapply(cis0, function(x) x[, gender := genderitems[ge]])
-        cis0 <- lapply(cis0, function(x) x[, agdef := aghh.defs[m]])
-        cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
-        cis0 <- rbindlist(cis0)
-        cis <- rbindlist(list(cis, cis0))
-      }
-    }
-  }
-}
-cis <- cis[grepl("^agHH.yr", Coef), ]
-cis[, Agdef := factor(agdef)]
-cis[, Agdef := factor(Agdef, labels = Aghh.defs[c(1, 3, 2, 4)])]
-cis[, Agdef := factor(Agdef, levels = Aghh.defs[c(2:4, 1)])]
-cis[, group := factor(paste0(data, cohort), 
-  levels = c("main1999", "placebo2002", "placebo1999"))]
-cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
-cis[, spec := factor(spec)]
-cis[, yintercept := 0]
-cis[, gender := factor(gender, levels = genderitems)]
-library(ggplot2)
-PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
-    stat = "identity", fatten = 1.75, 
-    position = position_dodge(width = .25))
-g <- ggplot(data = cis, 
-    aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
-  PointRange + ThisTheme + facet_grid(Agdef ~ gender) +
-  xlab("data") + 
-  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
-  labs(color  = "regression specifications", fill = "regression specifications", 
-    shape = "regression specifications") +
-  ThisThemeEnd +
-  guides(
-    colour = guide_legend(title = "regression specifications", nrow = 1),
-    fill = guide_legend(title = "regression specifications", nrow = 1),
-    shape = guide_legend(title = "regression specifications", nrow = 1)
-    ) +
-  geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
-pdf(
-  "../save/MainVsPlaceboPlotsByAgdefByGender.pdf"
-  , width = 2*12/2.54, height = 2*8/2.54)
-print(g)
-whatever <- dev.off()
-pdf(
-  "../draft/Figures/App_MainVsPlaceboPlotsByAgdefByGender.pdf"
-  , width = 2*12/2.54, height = 2*8/2.54)
-print(g)
-whatever <- dev.off()
-g
-```
-
-* Verdict: No impacts found in placebo samples.  
-* Placebo estimation shows that, although $p$ values are around 10%, boys from the agricultural households have higher dropout rates when there are elder sisters.  
-* This is only true for cohorts of 2002 but not of 1999. It suggests that this effect may be at work only for the ages between 10-18.  
-* To better satisfy the common trend assumption, one should use the interaction terms between agHH and number of elder sisters.  
-* Main effects remain statistically zero in the specifications with or without the interaction terms between agHH and elder sisters.  
-
 
 
 ## Non Muslim and Flooded 
@@ -2935,11 +2860,11 @@ Tab <- rbind(Tab,
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.5, ncol(Tab)-1)),
+    hcenter = c(3.25, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", 
+    adjustlineskip = "-.5ex", 
     adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
@@ -2948,6 +2873,7 @@ ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
 ltb <- gsub("household", "HH", ltb)
+ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- gsub("R2", "$\\\\bar{R}^{2}$", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 aghhrows <- grep("Agricu", ltb)
@@ -2995,8 +2921,8 @@ write.tablev(ltb2
 aghhrows <- grep("Agricultural", ltb)
 r2rows <- grep("bar.R", ltb)
 ltb4 <- ltb[
-    c(1:(aghhrows[1]+8), r2rows[1]+c(0, 2, 3:6),
-       aghhrows[2]+(-2:8), r2rows[2]+c(0, 2, 3:6), length(ltb)-4:0)
+    c(1:(aghhrows[1]+8), r2rows[1]+c(0, 2, 3:7),
+       aghhrows[2]+(-2:8), r2rows[2]+c(0, 2, 3:7), length(ltb)-4:0)
     ]
 write.tablev(ltb4
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
@@ -3209,11 +3135,11 @@ TabGD = copy(Tab)
 #### LaTeX output
 SepCols <- c(3, 6) 
 ltb <- latextab(Tab, delimiterline = NULL, 
-    hcenter = c(4.0, rep(1.5, ncol(Tab)-1)),
+    hcenter = c(3.25, rep(1.5, ncol(Tab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", 
+    adjustlineskip = "-.5ex", 
     adjlskiprows = rep(grep("CI", Tab[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
@@ -3243,7 +3169,7 @@ ltb <- c(
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
-ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("household", "HH", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 ltb <- ltb[!grepl("NA", ltb)]
@@ -3293,11 +3219,11 @@ MNDbg <- rbind(MNDbg,
   "HH trends" = c("HH trends", rep(c("", "", "Y"), 2)))
 SepCols <- c(3) 
 ltb <- latextab(MNDbg, delimiterline = NULL, 
-    hcenter = c(4, rep(1.3, ncol(MNDbg)-1)),
+    hcenter = c(3.25, rep(1.5, ncol(MNDbg)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(MNDbg)-1)), 
     hright = c("\\hfill", rep("$", ncol(MNDbg)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", 
+    adjustlineskip = "-.5ex", 
     adjlskiprows = rep(grep("CI", MNDbg[, 1]), each = 2)-(2:1),
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Grade progression}", "\\textsf{Days absent}")
@@ -3324,11 +3250,15 @@ ltb <- c(
     ltb[(grep("Cov.*ana", ltb)):(length(ltb)-1)],
     "\\hline", ltb[length(ltb)]
   )
+#### Add * year 2002 to panel estimates (first 2)
+aghhrows <- grep("Agri", ltb)
+for (iii in 1:2)
+  ltb[aghhrows[iii]] <- gsub("household", "household * year 2002", ltb[aghhrows[iii]])
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("R2", "$\\\\bar{R}^{2}$", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
-ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("household", "HH", ltb)
 ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- gsub("NA", "", ltb)
 ltb <- gsub("(Cov.*ana trend)", "\\\\hspace{.5em}\\1", ltb)
@@ -3356,7 +3286,7 @@ colnames(Tab) <- c("variables", rep(c("raw DID", "+covariates", "+HH trends"), 2
 Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", Tab[, 1])
-Tab[, 1] <- gsub("households", "HHs", Tab[, 1])
+Tab[, 1] <- gsub("household", "HH", Tab[, 1])
 Tab[, 1] <- gsub("\\\\hspace\\{.*\\}", "", Tab[, 1])
 Tab[, 1] <- Tab[, 1][!grepl("Raw", Tab[, 1])]
 for (iii in 2:ncol(Tab)) {
@@ -3865,7 +3795,7 @@ for (ii in 1:2) {
       mrtab <- 
         cbind(
             rep(c(
-              "Agricultural households * year 2002", 
+              "Agricultural household * year 2002", 
               "\\hspace{1em} $p$ value", "\\hspace{1em} CI (BRL)", 
               "\\underline{\\phantom{mm}} * Older sisters",
               "\\hspace{1em} $p$ value", "\\hspace{1em} CI (BRL)", 
@@ -3880,11 +3810,11 @@ for (ii in 1:2) {
       #### LaTeX output
       SepCols <- c(3, 6) 
       ltb <- latextab(mrtab, delimiterline = NULL, 
-          hcenter = c(3, rep(1.3, ncol(mrtab)-1)),
+          hcenter = c(3.25, rep(1.5, ncol(mrtab)-1)),
           hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(mrtab)-1)), 
           hright = c("\\hfill", rep("$", ncol(mrtab)-1)),
           headercolor = NULL, 
-          adjustlineskip = "-1ex", adjlskiprows = grep("CI|p..val", mrtab[, 1])-1,
+          adjustlineskip = "-.5ex", adjlskiprows = grep("CI|p..val", mrtab[, 1])-1,
           addseparatingcols = SepCols, separatingcolwidth = rep(.1, 2), 
           separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
         ) 
@@ -3896,22 +3826,22 @@ for (ii in 1:2) {
           paste(rep("&&\\textsf{Spec 1} & \\textsf{Spec 2} & \\textsf{Spec 3}", 2), collapse = "")
           , "\\\\"),
         "&\\multicolumn{11}{l}{}\\\\",
-        paste("A. AgHH def:", Aghh.defs2[1], "&",
+        paste("A. AgHH:", Aghh.defs2[1], "&",
           gsub("3\\)", "3)&", gsub("6\\)", "6)&", paste(paste0("(", 1:9, ")", collapse = "&"), "\\\\")))
           ),
         ltb[(grep("cline", ltb)+2):(grep("M.*ed in 2", ltb)[1]), ], 
         "&\\multicolumn{11}{l}{}\\\\",
-        paste("B. AgHH def:", Aghh.defs2[2], "&",
+        paste("B. AgHH:", Aghh.defs2[2], "&",
           gsub("2\\)", "2)&", gsub("5\\)", "5)&", paste(paste0("(", 1:9+9, ")", collapse = "&"), "\\\\")))
           ),
         ltb[(grep("^Ag", ltb)[2]):(grep("M.*ed in 2", ltb)[2]), ],
         "&\\multicolumn{11}{l}{}\\\\",
-        paste("C. AgHH def:", Aghh.defs2[3], "&",
+        paste("C. AgHH:", Aghh.defs2[3], "&",
           gsub("1\\)", "1)&", gsub("4\\)", "4)&", paste(paste0("(", 1:9+18, ")", collapse = "&"), "\\\\")))
           ),
         ltb[(grep("^Ag", ltb)[3]):(grep("M.*ed in 2", ltb)[3]), ], 
         "&\\multicolumn{11}{l}{}\\\\",
-        paste("D. AgHH def:", Aghh.defs2[4], "&",
+        paste("D. AgHH:", Aghh.defs2[4], "&",
           gsub("0\\)", "0)&", gsub("3\\)", "3)&", paste(paste0("(", 1:9+27, ")", collapse = "&"), "\\\\")))
           ),
         ltb[(grep("^Ag", ltb)[4]):(grep("M.*ed in 2", ltb)[4]), ], "\\hline",
@@ -3919,14 +3849,14 @@ for (ii in 1:2) {
         ) 
       ltb <- gsub("CI \\(.*?\\)|.p..value", "", ltb)
       ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
-      ltb <- gsub("households", "HHs", ltb)
+      ltb <- gsub("household", "HH", ltb)
       ltb <- gsub("Number of ol", "Ol", ltb)
       ltb <- ltb[!grepl("Raw", ltb)]
       write.tablev(ltb
         ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
              "ByGenderByAgHHdefResults.tex")
         ,  colnamestrue = F)
-      aghhrows <- grep("AgHH def", ltb)
+      aghhrows <- grep("AgHH", ltb)
       ltb1 <- c(ltb[1:(aghhrows[3]-2)], ltb[length(ltb)-1:0])
       ltb2 <- c(ltb[1:grep("cline", ltb)], ltb[(aghhrows[3]-1):length(ltb)])
       write.tablev(ltb1
@@ -3937,6 +3867,16 @@ for (ii in 1:2) {
         ,  paste0("../save/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
              "ByGenderByAgHHdefResults2.tex")
         ,  colnamestrue = F)
+      if (ii == 1 & s == 1) {
+        write.tablev(ltb1
+          ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+               "ByGenderByAgHHdefResults1.tex")
+          ,  colnamestrue = F)
+        write.tablev(ltb2
+          ,  paste0("../draft/Tables/", c("Main", "Placebo")[ii], c(1999, 2002)[jj], "Older", (10:12)[s], 
+               "ByGenderByAgHHdefResults2.tex")
+          ,  colnamestrue = F)
+      }
       #### Concise table for appendix
       sibrows <- grep("Older", ltb)
       ltbshort <- ltb[-(sibrows+rep(0:2, length(sibrows)))]
@@ -3989,7 +3929,7 @@ for (ii in 1:2) {
         background = bgcolor)
       kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(Tab)-1), collapse = ""), 
         background = bgcolor)
-      aghhrows <- grep("^Ag", Tab[, "variables"])
+      aghhrows <- grep("Agri", Tab[, "variables"])
       kt <- row_spec(kt, rep(aghhrows, each = 3)+0:2, bold = F, 
         color = "black", background = "#87cefa")
       for (iii in 1:length(aghhrows)) 
@@ -4009,6 +3949,214 @@ for (ii in 1:2) {
 } # ii
 M910H
 ```
+
+```{r plot main vs placebo, eval = T}
+#### results <- qread("../save/DID2024_MainResults.qs")
+#### results <- qread("save/DID2024_MainResults.qs")
+s <- de <- 1
+j <- clnum <- 2
+cis <- NULL
+for (ii in 1:2) {
+  jjmax <- 1
+  if (ii == 2) jjmax <- 2
+  for (jj in 1:jjmax) {
+    for (ge in c(3, 1, 2)) {
+      for (m in c(2:4, 1)) {
+        cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
+        cis0 <- lapply(cis0, data.table)
+        cis0 <- lapply(cis0, function(x) x[, data := c("main", "placebo")[ii]])
+        cis0 <- lapply(cis0, function(x) x[, cohort := c("1999", "2002")[jj]])
+        cis0 <- lapply(cis0, function(x) x[, gender := genderitems[ge]])
+        cis0 <- lapply(cis0, function(x) x[, agdef := aghh.defs[m]])
+        cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
+        cis0 <- rbindlist(cis0)
+        cis <- rbindlist(list(cis, cis0))
+      }
+    }
+  }
+}
+cis <- cis[grepl("^agHH.yr", Coef), ]
+cis[, Agdef := factor(agdef)]
+cis[, Agdef := factor(Agdef, labels = Aghh.defs[c(1, 3, 2, 4)])]
+cis[, Agdef := factor(Agdef, levels = Aghh.defs[c(2:4, 1)])]
+cis[, group := factor(paste0(data, cohort), 
+  levels = c("main1999", "placebo2002", "placebo1999"))]
+cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
+cis[, spec := factor(spec)]
+cis[, yintercept := 0]
+cis[, gender := factor(gender, levels = genderitems)]
+library(ggplot2)
+PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
+    stat = "identity", fatten = 1.75, 
+    position = position_dodge(width = .25))
+g <- ggplot(data = cis, 
+    aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
+  PointRange + ThisTheme + facet_grid(Agdef ~ gender) +
+  xlab("data") + 
+  ylab("estimates") + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+  labs(color  = "regression specifications", fill = "regression specifications", 
+    shape = "regression specifications") +
+  ThisThemeEnd +
+  guides(
+    colour = guide_legend(title = "regression specifications", nrow = 1),
+    fill = guide_legend(title = "regression specifications", nrow = 1),
+    shape = guide_legend(title = "regression specifications", nrow = 1)
+    ) +
+  geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
+pdf(
+  "../save/MainVsPlaceboPlotsByAgdefByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+pdf(
+  "../draft/Figures/App_MainVsPlaceboPlotsByAgdefByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+g
+```
+
+
+
+<details><summary>Click here to see the R script of plotting estimates on older siblings.</summary>
+
+```{r plot main older siblings, eval = T, echo = T}
+#### results <- qread("../save/DID2024_MainResults.qs")
+#### results <- qread("save/DID2024_MainResults.qs")
+s <- de <- 1
+j <- m <- clnum <- 2
+cis <- NULL
+for (ii in 1:2) {
+  jjmax <- 1
+  if (ii == 2) jjmax <- 2
+  for (jj in 1:jjmax) {
+    for (ge in c(3, 1, 2)) {
+      for (s in 1:3) {
+        cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
+        cis0 <- lapply(cis0, data.table)
+        cis0 <- lapply(cis0, function(x) x[, data := c("main", "placebo")[ii]])
+        cis0 <- lapply(cis0, function(x) x[, cohort := c("1999", "2002")[jj]])
+        cis0 <- lapply(cis0, function(x) x[, gender := genderitems[ge]])
+        cis0 <- lapply(cis0, function(x) x[, ageLB := (10:12)[s]])
+        cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
+        cis0 <- rbindlist(cis0)
+        cis <- rbindlist(list(cis, cis0))
+      }
+    }
+  }
+}
+cis[, group := factor(paste0(data, cohort), 
+  levels = c("main1999", "placebo2002", "placebo1999"))]
+cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
+cis[, data := factor(data)]
+cis[, ageLB := factor(ageLB)]
+cis[, cohort := factor(cohort)]
+cis[, spec := factor(spec)]
+cis[, yintercept := 0]
+cis[, gender := factor(gender, levels = genderitems)]
+cis[, Coef := factor(Coef)]
+cis <- cis[grepl("Old.*agHH", Coef), ]
+cis[, Sibling := "older brother"]
+cis[grepl("F", Coef), Sibling := "older sister"]
+cis[, Sibling := factor(Sibling)]
+library(ggplot2)
+PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
+    stat = "identity", fatten = 1.75, 
+    position = position_dodge(width = .25))
+g <- ggplot(data = cis, 
+    aes(x = group, y = beta, group = ageLB, fill = ageLB, shape = ageLB, colour = ageLB)) + 
+  PointRange + ThisTheme + facet_grid(Sibling ~ gender) +
+  xlab("data") + 
+  ylab("estimates") + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+  labs(color  = "age lowerbound", fill = "age lowerbound", 
+    shape = "age lowerbound") +
+  ThisThemeEnd +
+  guides(
+    colour = guide_legend(title = "age lowerbound", nrow = 1),
+    fill = guide_legend(title = "age lowerbound", nrow = 1),
+    shape = guide_legend(title = "age lowerbound", nrow = 1)
+    ) +
+  geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
+pdf(
+  "../save/OlderSiblingPlotsByAgeLBByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+g
+```
+</details>
+
+
+<details><summary>Click here to see the R script of plotting estimates on programs.</summary>
+
+```{r plot main programs, eval = T, echo = T}
+#### results <- qread("../save/DID2024_MainResults.qs")
+#### results <- qread("save/DID2024_MainResults.qs")
+s <- de <- 1
+j <- m <- clnum <- 2
+cis <- NULL
+for (ii in 1:2) {
+  jjmax <- 1
+  if (ii == 2) jjmax <- 2
+  for (jj in 1:jjmax) {
+    for (ge in c(3, 1, 2)) {
+      for (s in 1:3) {
+        cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
+        cis0 <- lapply(cis0, data.table)
+        cis0 <- lapply(cis0, function(x) x[, data := c("main", "placebo")[ii]])
+        cis0 <- lapply(cis0, function(x) x[, cohort := c("1999", "2002")[jj]])
+        cis0 <- lapply(cis0, function(x) x[, gender := genderitems[ge]])
+        cis0 <- lapply(cis0, function(x) x[, ageLB := (10:12)[s]])
+        cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
+        cis0 <- rbindlist(cis0)
+        cis <- rbindlist(list(cis, cis0))
+      }
+    }
+  }
+}
+cis[, group := factor(paste0(data, cohort), 
+  levels = c("main1999", "placebo2002", "placebo1999"))]
+cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
+cis[, data := factor(data)]
+cis[, ageLB := factor(ageLB)]
+cis[, cohort := factor(cohort)]
+cis[, yintercept := 0]
+cis[, gender := factor(gender, levels = genderitems)]
+cis <- cis[grepl("rogram", Coef), ]
+cis <- cis[grepl("10", ageLB), ]
+cis[, Coef := factor(Coef)]
+cis[, spec := factor(spec)]
+cis[, Spec := paste(Coef, spec)]
+library(ggplot2)
+PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
+    stat = "identity", fatten = 1.75, 
+    position = position_dodge(width = .25))
+g <- ggplot(data = cis, 
+    aes(x = group, y = beta, group = Spec, fill = Spec, shape = Spec, colour = Spec)) + 
+  PointRange + ThisTheme + facet_grid( ~ gender) +
+  xlab("data") + 
+  ylab("estimates") + 
+  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+  labs(color  = "regression specifications", fill = "regression specifications", 
+    shape = "regression specifications") +
+  ThisThemeEnd +
+  guides(
+    colour = guide_legend(title = "regression specifications", nrow = 1),
+    fill = guide_legend(title = "regression specifications", nrow = 1),
+    shape = guide_legend(title = "regression specifications", nrow = 1)
+    ) +
+  geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
+pdf(
+  "../save/OlderSiblingPlotsByAgeLBByGender.pdf"
+  , width = 2*12/2.54, height = 2*8/2.54)
+print(g)
+whatever <- dev.off()
+g
+```
+</details>
+
 
 ### By different age cutoff
 
@@ -4048,9 +4196,9 @@ M9L <- gsub(
     paste(paste0("(", 6+1:3, ")"), collapse = "&"),
     sep = "&&")
   , M9L)
-aghhrows <- grep("AgHH def", M9L)
+aghhrows <- grep("AgHH", M9L)
 for (iii in 1:length(aghhrows))
-  M9L[aghhrows[iii]] <- gsub("AgHH def:.*?\\&", 
+  M9L[aghhrows[iii]] <- gsub("AgHH:.*?\\&", 
     paste0("Age lowerbound: ", c(10:12)[iii], "&"), M9L[aghhrows[iii]])
 M9L <- gsub("B. Age lowerbound: 10", "A. Age lowerbound: 10", M9L)
 M9L <- gsub("B. Age lowerbound: 12", "C. Age lowerbound: 12", M9L)
@@ -4157,6 +4305,7 @@ g <- ggplot(data = cis,
     aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
   PointRange + ThisTheme + facet_grid(ageLB ~ gender) +
   xlab("data") + 
+  ylab("estimates") + 
   scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
   labs(color  = "regression specifications", fill = "regression specifications", 
     shape = "regression specifications") +
@@ -4288,7 +4437,7 @@ for (s in c("pri", "sec")) {
 mrtab <- rbind(mainpri, mainsec)
 mrtab <- cbind(
     rep(c(
-      "Agricultural households * year 2002", 
+      "Agricultural household * year 2002", 
       "\\hspace{1em} $p$ value", 
       "\\hspace{1em} CI", 
       "\\underline{\\phantom{mm}} * Older sisters",
@@ -4306,11 +4455,11 @@ mrtab <- cbind(
 #### LaTeX output
 SepCols <- c(3, 6)
 ltb <- latextab(mrtab, delimiterline = NULL, 
-    hcenter = c(3, rep(1.3, ncol(mrtab)-1)),
+    hcenter = c(3.25, rep(1.5, ncol(mrtab)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(mrtab)-1)), 
     hright = c("\\hfill", rep("$", ncol(mrtab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", adjlskiprows = grep("CI|.p. val", mrtab[, 1])-1,
+    adjustlineskip = "-.5ex", adjlskiprows = grep("CI|.p. val", mrtab[, 1])-1,
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+Girls}", "\\textsf{Boys}", "\\textsf{Girls}")
   ) 
@@ -4342,7 +4491,7 @@ ltb <- c(
   )
 ltb <- gsub("CI|.p. value", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
-ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("household", "HH", ltb)
 ltb <- gsub("Number of ol", "Ol", ltb)
 N1 <- gsub("N.*?&", "", ltb[grepl("N: A", ltb)])
 N1 <- gsub("\\\\", "", N1)
@@ -4460,6 +4609,7 @@ g <- ggplot(data = mbga[grepl("A.*2", agegroup) & !is.na(group), ],
     aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
   PointRange + ThisTheme + facet_grid( ~ gender) +
   xlab("age groups") + 
+  ylab("estimates") + 
   labs(color  = "regression specifications", fill = "regression specifications", 
     shape = "regression specifications") +
   ThisThemeEnd +
@@ -4507,7 +4657,7 @@ colnames(Tab) <- c("variables", rep(c("raw DID", "+covariates", "+HH trends"), 3
 Tab[, 1] <- gsub("CI\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("p\\$.*\\$", "", Tab[, 1])
 Tab[, 1] <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", Tab[, 1])
-Tab[, 1] <- gsub("households", "HHs", Tab[, 1])
+Tab[, 1] <- gsub("household", "HH", Tab[, 1])
 Tab[, 1] <- Tab[, 1][!grepl("Raw", Tab[, 1])]
 for (iii in 2:ncol(Tab)) {
   Tab[, iii] <- gsub("\\\\mbox\\{\\\\tiny ?(.*)\\}", "\\1", Tab[, iii])
@@ -4596,14 +4746,14 @@ ltb <- latextab(Tab, delimiterline = NULL,
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(Tab)-1)), 
     hright = c("\\hfill", rep("$", ncol(Tab)-1)),
     headercolor = NULL, 
-    adjustlineskip = "-1ex", adjlskiprows = grep("CI", Tab[, 1])-1,
+    adjustlineskip = "-.5ex", adjlskiprows = grep("CI", Tab[, 1])-1,
     addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
     separatingcoltitle = c("\\textsf{Boys+girls}", "\\textsf{Boys}", "\\textsf{Girls}")
   ) 
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
-ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("household", "HH", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 aghhrows <- grep(" Agri", ltb)
 ltb <- c(
@@ -4620,7 +4770,7 @@ ltb <- c(
 ltb <- gsub("CI\\$.*\\$", "", ltb)
 ltb <- gsub("p\\$.*\\$", "", ltb)
 ltb <- gsub("(^\\\\cline.*$)", "\\1[-1ex]", ltb)
-ltb <- gsub("households", "HHs", ltb)
+ltb <- gsub("household", "HH", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "NumGradeDaysAbsent.tex")
@@ -4681,9 +4831,6 @@ for (ii in 1:2) {
         for (yy in 1:2) { 
 
 
-
-
-
     }
     for (ge in c(3, 1, 2)) {
       if (gd < 3) 
@@ -4724,6 +4871,7 @@ g <- ggplot(data = cis,
     aes(x = sample, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
   PointRange + ThisTheme + facet_grid(outcomes ~ gender, scales = "free_y") +
   xlab("data") + 
+  ylab("estimates") + 
   scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
   labs(color  = "regression specifications", fill = "regression specifications", 
     shape = "regression specifications") +
