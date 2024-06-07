@@ -382,8 +382,8 @@ zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")[c(1, 3)]
 library(qs)
 #### Read from submission data / estimation for JHR
 zi00N <- qread(paste0(pathsave0, "DID_N_MainResults.qs"))
-ii <- jj <- s <- m <- 1
-j <- 2
+ii <- jj <- s <- 1
+m <- j <- 2
 for (ii in 1:length(zsobj)) {
   zSobj <- get(zsobj[ii])
   zSobj2 <- get(zsobj2[ii])
@@ -537,7 +537,7 @@ We need to know if `program` is as good as random between ag and nonag. `program
 
 <details><summary>Click here to see the code of ag vs. nonag differences.</summary>
 
-```{r program random test, echo = T, class.output="scroll-100"}
+```{r program random test, echo = T, eval = T, class.output="scroll-100"}
 #### Table 1 ag nonag difference AgNonAgDiffTableForJHR
 yzw <- qread("../save/DataRamadan.qs")
 zEm.1999 <- qread("../save/zEm1999.qs")
@@ -559,8 +559,8 @@ varcompare3 <- c("pclandDec", "pcnlasset1000",
   "rainfallMeanY", "highMeanY", "lowMeanY",
   "UDOldSibF", "UDOldSibM" #,"OldAgSibF", "OldAgSibM",
 )
-Sample.Diff <- NULL
 zi00 <- qread(paste0(pathsave0, "FD_N_MainCRCoV_results.qs"))
+Sample.Diff <- NULL
 samples <- c("main", "placebo")
 z23 <- c("z2", "z3")
 zsobj <- c("zmobj", "zpobj")
@@ -569,7 +569,7 @@ zpobj <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[c(1, 3)]
 zmobj <- c("zEm.1999", "zSm.1999")[1]
 zmobj2 <- c("zEm", "zSm")
 zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")[c(1, 3)]
-ii <- jj <- s <- m <- 1; j <- 2; ge <- 3
+ii <- jj <- s <- 1; j <- m <- 2; ge <- 3
 zSobj <- get(zsobj[ii])
 yrx <- c("yr2", "yr3")[ii]
 s0 <- (10:12)[s]
@@ -630,6 +630,9 @@ z12[eval(parse(text=aghh.defs[m])) == 1L, AgHH := 1L]
 z01 <- z12[tee == 1, ]
 z.0 <- z01[eval(parse(text=aghh.defs[m])) == 0L, ]
 z.1 <- z01[eval(parse(text=aghh.defs[m])) == 1L, ]
+setnames(z.1, "LHS", "Enrolled")
+setnames(z01, "LHS", "Enrolled")
+setnames(z.0, "LHS", "Enrolled")
 ClusterVec <- as.numeric(z01[, thana])
 SampleDiff <- NULL
 #### binary variables
@@ -707,40 +710,99 @@ for (j in c("overall", "agHH", "nonagHH", "t", "Satterthwaite"))
 #### reorder
 reo <- paste0("Enr|rain|high|low|[Yy]i|[pP]rog|[Aa]ge|[Ss]ex|",
   "d ed|e ed|pri|seco|bro|sis|sibl|hold|asse|wat|toi|latr|Mus|Flo")
+#### This one is for JR and JDE
+reo <- paste0("Enr|[Aa]ge|Sex|sex|d ed|e ed|pri|seco|sibl|hold|asse|wat|toi|latr|Mus|",
+  "[pP]rog|rain|high|low|[Yy]i|Flo")
 reo <- unlist(strsplit(reo, "\\|"))
 reo2 <- NULL
 for (rr in reo) reo2 <- c(reo2, grep(rr, unlist(SampleDiff[, 3])))
 reo2 <- c(t(cbind(reo2, reo2+1)))
-SampleDiff <- SampleDiff[reo2, ]
-SDiff.print = copy(SampleDiff)
+SampleDif <- SampleDiff[reo2, ]
+varlabels <- 
+c(
+"Enrollment status of the child", 
+"Age of the child", 
+"Sex of the child (female = 1)", 
+"HH head sex (female = 1)", 
+"HH head education: primary", 
+"HH head spouse education: primary", 
+"HH head education: secondary", 
+"HH head spouse education: secondary", 
+"Number of older brothers", 
+"Number of older sisters", 
+"Per-member land holding (decimal)", 
+"Per-member nonland asset (1000 Tk)", 
+"HH has water supply (piped water)", 
+"HH has sanitary latrine (Structured toilet)", 
+"HH is non-Muslim", 
+"HH receives Food-for-Education (FFE) program", 
+"HH receives other non-FFE program",
+"HH receives a program",
+"Rainfall (in millimeters)",
+"High temperature (in Celsius)",
+"Low temperature (in Celsius)",
+"Paddy yield (in '000 metric tons)",
+"Flooded (=1)"
+)
+SampleDif[seq(1, nrow(SampleDif), 2), 3] <- varlabels
+SDif.print = copy(SampleDif)
 for (j in c("overall", "agHH", "nonagHH", "t", "Satterthwaite")) 
-  SDiff.print[, (j) := formatC(eval(parse(text=j)), digits = 4, format = "f")]
-SDiff.print <- rbind(as.matrix(SDiff.print), 
+  SDif.print[, (j) := formatC(eval(parse(text=j)), digits = 4, format = "f")]
+SDif.print <- rbind(as.matrix(SDif.print), 
   c("", "", "n", nrow(z01), nrow(z.1[tee == 1, ]), nrow(z.0[tee == 1, ]), "", ""))
-SDiff.print <- a2b(SDiff.print, "   NA", "")
+SDif.print <- a2b(SDif.print, "   NA", "")
 iispace <- which(
-  SDiff.print[, 3]=="" & 
-    !grepl("interaction with|^n$|bar.R|thana dum|mean at|raw DID", SDiff.print[, 3])
+  SDif.print[, 3]=="" & 
+    !grepl("interaction with|^n$|bar.R|thana dum|mean at|raw DID", SDif.print[, 3])
     )
 iispace <- iispace-1
 iispace2 <- iispace[seq(2, length(iispace), 2)]
 for (kk in c("overall", "agHH", "nonagHH")) 
-  SDiff.print[iispace+1, kk] <- 
+  SDif.print[iispace+1, kk] <- 
     paste0("(", 
-      formatC(as.numeric(SDiff.print[iispace+1, kk]), digits = 3, format = "f")
+      formatC(as.numeric(SDif.print[iispace+1, kk]), digits = 3, format = "f")
     , ")")
 for (kk in c("t", "Satterthwaite")) 
-  SDiff.print[iispace, kk] <- 
+  SDif.print[iispace, kk] <- 
     paste0("[", 
-      formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = "f")
+      formatC(as.numeric(SDif.print[iispace, kk])*100, digits = 2, format = "f")
     , "]")
 rm(zi00)
+SDltx <- SDif.print[, -(1:2)]
+colnames(SDltx) <- c("Individual and household level variables", "Overall", "Agri HH", "Non-agri HH",
+  "t-test", "Satterthwaite")
+SepCols <- 3 
+ltb <- latextab(SDltx, delimiterline = NULL, 
+    hcenter = c(6, rep(1.3, ncol(SDltx)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(SDltx)-1)), 
+    hright = c("\\hfill", rep("$", ncol(SDltx)-1)),
+    headercolor = NULL, 
+    adjustlineskip = "-.5ex", adjlskiprows = grep("\\w\\w", SDltx[, 1]),
+    addseparatingcols = SepCols, separatingcolwidth = rep(.1, length(SepCols)), 
+    separatingcoltitle = c("\\textsf{Means}", "\\textsf{$p$ values (\\%)}")
+  ) 
+ltb <- gsub("household", "HH", ltb)
+ltb <- gsub("Number of ol", "Ol", ltb)
+aghhrows <- grep("Rain", ltb)
+###ltb[length(ltb)-1] <- gsub("\\\\\\\\", "", ltb[length(ltb)-1])
+ltb <- c(
+  ltb[1], "\\hline",
+  ltb[2:3], "\\line",
+  ltb[4:(aghhrows-1)],
+  "\\hline\\multicolumn{7}{l}{\\scriptsize Thana level variables}\\\\\\hline",
+  ltb[aghhrows:(length(ltb)-1)], "\\hline",
+  ltb[length(ltb)]
+  )
+ltb <- ltb[!grepl("Raw", ltb)]
+write.tablev(ltb
+  ,  "../draft/Tables/AgNonagDestat.tex"
+  ,  colnamestrue = F)
 ```
 </details>
 
 ```{r show ag nonag diff table}
 library(kableExtra)
-kt <- kbl(SDiff.print[, -(1:2)], 
+kt <- kbl(SDif.print[, -(1:2)], 
   caption = "Differences between agricultural and non-agricultural households in main data (ref:SDiffTable)")
 library(kableExtra)
 kt <- kableExtra::footnote(kt, general = "Differences between agricultural and non-agricultural households in main data with the 10 years and older cutlff. Overall, agHH, nonagHH columns show means for all households, means for agricultural households, means for non-agricultural households. Column headed by t shows p-values of regular t-tests, Satterthwaite shows p-values under a Sattherthwaite correction for small number of clusters.")
@@ -3219,7 +3281,7 @@ MNDbg <- rbind(MNDbg,
   "HH trends" = c("HH trends", rep(c("", "", "Y"), 2)))
 SepCols <- c(3) 
 ltb <- latextab(MNDbg, delimiterline = NULL, 
-    hcenter = c(3.25, rep(1.5, ncol(MNDbg)-1)),
+    hcenter = c(3.5, rep(1.5, ncol(MNDbg)-1)),
     hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(MNDbg)-1)), 
     hright = c("\\hfill", rep("$", ncol(MNDbg)-1)),
     headercolor = NULL, 
@@ -4369,7 +4431,7 @@ g0
   * Holds under all agHH definitions.  
 * Point estimates are larger for boys of higher age lowerbounds, indicating a brawn-based mechanism [@PittRosenzweigHassan2012] at work.  
 * Probably using 11-18 years old in the main estimation can give sharper results, but we need to commit to the original research design. Also, there is no good justification for using an *ad hoc* 11-18 age range.  
-* We need to refer to this figure in the main text that raw DID can show impacts.  
+* We need to refer to these figures in the main text that raw DID can show impacts among older boys.  
 
 
 
