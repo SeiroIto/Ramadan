@@ -4268,23 +4268,26 @@ kt
 #### results <- qread("../save/DID2024_MainResults.qs")
 #### results <- qread("save/DID2024_MainResults.qs")
 s <- de <- 1
-j <- m <- clnum <- 2
+j <- clnum <- 2
 cis <- NULL
 for (ii in 1:2) {
   jjmax <- 1
   if (ii == 2) jjmax <- 2
   for (jj in 1:jjmax) {
-    for (ge in c(3, 1, 2)) {
-      for (s in 1:3) {
-        cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
-        cis0 <- lapply(cis0, data.table)
-        cis0 <- lapply(cis0, function(x) x[, data := c("main", "placebo")[ii]])
-        cis0 <- lapply(cis0, function(x) x[, cohort := c("1999", "2002")[jj]])
-        cis0 <- lapply(cis0, function(x) x[, gender := genderitems[ge]])
-        cis0 <- lapply(cis0, function(x) x[, ageLB := (10:12)[s]])
-        cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
-        cis0 <- rbindlist(cis0)
-        cis <- rbindlist(list(cis, cis0))
+    for (m in 1:4) {
+      for (ge in c(3, 1, 2)) {
+        for (s in 1:3) {
+          cis0 <- lapply(results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]], "[[", "ci")
+          cis0 <- lapply(cis0, data.table)
+          cis0 <- lapply(cis0, function(x) x[, data := c("main", "placebo")[ii]])
+          cis0 <- lapply(cis0, function(x) x[, cohort := c("1999", "2002")[jj]])
+          cis0 <- lapply(cis0, function(x) x[, gender := genderitems[ge]])
+          cis0 <- lapply(cis0, function(x) x[, agdef := aghh.defs[m]])
+          cis0 <- lapply(cis0, function(x) x[, ageLB := (10:12)[s]])
+          cis0 <- lapply(1:length(cis0), function(i) cis0[[i]][, spec := i])
+          cis0 <- rbindlist(cis0)
+          cis <- rbindlist(list(cis, cis0))
+        }
       }
     }
   }
@@ -4295,47 +4298,75 @@ cis[, group := factor(paste0(data, cohort),
 cis[, group := factor(group, labels = c("main", "placebo2002", "placebo1999"))]
 cis[, spec := factor(spec)]
 cis[, yintercept := 0]
+cis[, agdef := factor(agdef, levels = aghh.defs[c(2:4, 1)])]
 cis[, gender := factor(gender, levels = genderitems)]
 cis[, ageLB := factor(ageLB, labels = c("10-18", "11-18", "12-18"))]
 library(ggplot2)
 PointRange <-  geom_pointrange(aes(ymin = CI_L, ymax = CI_U),
     stat = "identity", fatten = 1.75, 
     position = position_dodge(width = .25))
-g <- ggplot(data = cis, 
-    aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
-  PointRange + ThisTheme + facet_grid(ageLB ~ gender) +
-  xlab("data") + 
-  ylab("estimates") + 
-  scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
-  labs(color  = "regression specifications", fill = "regression specifications", 
-    shape = "regression specifications") +
-  ThisThemeEnd +
-  guides(
-    colour = guide_legend(title = "regression specifications", nrow = 1),
-    fill = guide_legend(title = "regression specifications", nrow = 1),
-    shape = guide_legend(title = "regression specifications", nrow = 1)
-    ) +
-  geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
-pdf(
-  "../save/MainVsPlaceboPlotsByAgeLBByGender.pdf"
-  , width = 2*12/2.54, height = 2*8/2.54)
-print(g)
-whatever <- dev.off()
-pdf(
-  "../draft/Figures/App_MainVsPlaceboPlotsByAgeLBByGender.pdf"
-  , width = 2*12/2.54, height = 2*8/2.54)
-print(g)
-whatever <- dev.off()
+AddToFileName <- c("", "HeadReply", "Occ", "Combined")
+AgDefShort <- c("is", "hd", "oc", "0")
+for (iii in 1:length(AgDefShort)) {
+  g <- ggplot(data = cis[grepl(AgDefShort[iii], agdef), ], 
+      aes(x = group, y = beta, group = spec, fill = spec, shape = spec, colour = spec)) + 
+    PointRange + ThisTheme + facet_grid(ageLB ~ gender) +
+    xlab("data") + 
+    ylab("estimates") + 
+    scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+    labs(color  = "regression specifications", fill = "regression specifications", 
+      shape = "regression specifications") +
+    ThisThemeEnd +
+    guides(
+      colour = guide_legend(title = "regression specifications", nrow = 1),
+      fill = guide_legend(title = "regression specifications", nrow = 1),
+      shape = guide_legend(title = "regression specifications", nrow = 1)
+      ) +
+    geom_hline(aes(yintercept = yintercept), colour = "lightgreen")
+  pdf(
+    paste0("../save/MainVsPlaceboPlotsByAgeLBByGender", AddToFileName[iii], ".pdf")
+    , width = 2*12/2.54, height = 2*8/2.54)
+  print(g)
+  whatever <- dev.off()
+  pdf(
+    paste0("../draft/Figures/MainVsPlaceboPlotsByAgeLBByGender", AddToFileName[iii], ".pdf")
+    , width = 2*12/2.54, height = 2*8/2.54)
+  print(g)
+  whatever <- dev.off()
+  assign(paste0("g", AgDefShort[iii]), g)
+}
 ```
 </details>
 
-```{r plot results by ageLB}
+Income source based. 
+
+```{r PlotResultsByAgeLB}
 g
 ```
+
+Head's reply based.
+
+```{r PlotResultsByAgeLBhd}
+ghd
+```
+
+Occupation based.
+
+```{r PlotResultsByAgeLBocc}
+goc
+```
+
+Combined.
+
+```{r PlotResultsByAgeLBaghh0}
+g0
+```
+
 
 
 * Verdict: Impacts found for boys of 11 years and older, even with raw DID.  
   * AgHH definition: Income source.  
+  * Holds under all agHH definitions.  
 * Point estimates are larger for boys of higher age lowerbounds, indicating a brawn-based mechanism [@PittRosenzweigHassan2012] at work.  
 * Probably using 11-18 years old in the main estimation can give sharper results, but we need to commit to the original research design. Also, there is no good justification for using an *ad hoc* 11-18 age range.  
 * We need to refer to this figure in the main text that raw DID can show impacts.  
