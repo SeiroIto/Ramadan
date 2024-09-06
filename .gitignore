@@ -1,0 +1,11 @@
+#### This is gitignore for Ramadan
+/save/*.qs
+/save/*.rds
+/save/*.prn
+/save/*.tex
+/save/Feb29/
+/save/Apr10/
+/progran/cache/
+/progran/*.txt
+/draft/Figures/Figures2024Aug/
+/draft/Tables/Tables2024Aug/

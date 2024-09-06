@@ -1,0 +1,13 @@
+<<<<<<< HEAD
+\BOOKMARK [1][-]{section.2}{Main text tables}{}% 1
+\BOOKMARK [1][-]{section.8}{Appendix figures and tables}{}% 2
+\BOOKMARK [2][-]{subsection.9}{Main}{section.8}% 3
+\BOOKMARK [2][-]{subsection.15}{Robustness}{section.8}% 4
+\BOOKMARK [2][-]{subsection.28}{Placebo}{section.8}% 5
+=======
+\BOOKMARK [1][-]{section.15}{Main text tables}{}% 1
+\BOOKMARK [1][-]{section.21}{Appendix figures and tables}{}% 2
+\BOOKMARK [2][-]{subsection.22}{Main}{section.21}% 3
+\BOOKMARK [2][-]{subsection.28}{Robustness}{section.21}% 4
+\BOOKMARK [2][-]{subsection.40}{Placebo}{section.21}% 5
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe

@@ -1,0 +1,128 @@
+%  source("c:/data/ramadan/DataSubmitted/program/path.R"); library(knitr); library(data.table); setwd(pathprogram); knit("DIDReplication.rnw", "DIDReplication.tex"); system("platex DIDReplication"); system("pbibtex DIDReplication"); system("dvipdfmx DIDReplication")
+
+% : cannot coerce type 'closure' to vector of type 'character': This error shows up 
+% when nonexisting column name was specified in 
+% Enr.Agewise[grepl("zEm.1999", sample) & grepl("wise", AgeGrouping) & grepl("1", agHH) & 
+%  Age>=8 & Age<=18 & survey == 1, rate] 
+% When an error ``zEm1'' not found happens, check all estimation is OK to produce \textsf{FD\_sameN\_results.rds} and the chunk \textsf{main sample size check} does not produce null results.
+% zmobj2 <- c("zEm", "zSm"); zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")
+
+
+\input{c:/migrate/R/knitrPreamble/knitr_preamble.rnw}
+
+\usepackage{url}
+\renewcommand\Routcolor{\color{gray30}}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+\setlength{\topmargin}{-.5in}
+\setlength{\oddsidemargin}{-10pt}
+\setlength{\evensidemargin}{-10pt}
+\setlength{\textheight}{.875\paperheight}
+\setlength{\textwidth}{.8\paperwidth}
+\setlength{\baselineskip}{15pt}
+\setlength{\footskip}{-10pt}
+\setlength{\parindent}{0pt}
+\AtBeginDvi{\special{pdf:tounicode 90ms-RKSJ-UCS2}}
+\special{papersize= 209.9mm, 297.04mm}
+\renewcommand{\labelenumii}{\theenumii.}
+\def\pgfsysdriver{pgfsys-dvipdfm.def}
+\usepackage{tikz}
+\usetikzlibrary{calc, arrows, decorations, decorations.pathreplacing, backgrounds}
+\usepackage{adjustbox}
+\usepackage[linesnumbered, ruled, lined]{algorithm2e}
+\normalem % disable auto underline
+
+\tikzstyle{toprow} =
+[
+top color = gray!20, bottom color = gray!50, thick
+]
+\tikzstyle{maintable} =
+[
+top color = blue!1, bottom color = blue!10, draw = white
+%top color = green!1, bottom color = green!20, draw = white
+]
+\tikzset{
+%Define standard arrow tip
+>=stealth',
+%Define style for different line styles
+help lines/.style={dashed, thick},
+axis/.style={<->},
+important line/.style={thick},
+connection/.style={thick, dotted},
+}
+
+\begin{document}
+\setlength{\baselineskip}{12pt}
+
+\hfil Estimation for JHR revision and resubmission\\
+\hfil\MonthDY\\
+\hfil{\footnotesize\currenttime}\\
+\hfil Seiro Ito
+
+\tableofcontents 
+
+\setlength{\baselineskip}{12pt}
+
+<<option setting 1, cache = F, child='c:/migrate/R/knitrPreamble/knitr_initial_option_setting_chunk.rnw'>>=
+<<set-options2, source = T, echo = F, cache = F, inline = T, warning = F, tidy = T, message = F, include = F>>=
+opts_knit$set(base.dir = 'c:/data/ramadan/program/program/')
+dir.create(paste0(pathprogram, "DIDReplication/"))
+dir.create(pathsaveThisVer <- paste0(pathsave, "DIDReplication/"))
+## Important switch: Demeaning level ##
+DemeanAtIndividualLevel <- F
+if (DemeanAtIndividualLevel)
+  dir.create(pathsaveThisVer <- paste0(pathsaveThisVer, "IndivDemeaned/"))
+dir.create(pathsavePrevVer <- paste0(pathsave, "DID_JHR_2/"))
+opts_chunk$set(
+  fig.path='DIDReplication/figure/', 
+  cache.path='DIDReplication/cache/', 
+  cache = F, echo = T, results = 'markup', 
+  par=TRUE, 'reindent.spaces' = 0,
+  tidy.opts=list(blank=FALSE, width.cutoff=40)
+)
+file.remove(list.files("c:/data/ramadan/program/program/DIDReplication/cache", full.names = T))
+options(digits = 6, width = 80)
+color_block = function(color) {
+  function(x, options) sprintf(
+  '{\\color{%s}\\begin{verbatim}%s\\end{verbatim}}', 
+  color, x)
+}
+render_listings()	#	it changes "<-" to real arrows, etc., prettifying
+knit_hooks$set(
+#  warning = color_block('magenta'),
+#  error = color_block('red'),
+  par = function(before, options, envir){if (before) par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)})
+@
+<<paths functions>>=
+# below gives substitution table sbt
+source(paste0(pathprogram, "substitution_table.R"))
+# agHH defs, minAge, maxAge
+source(paste0(pathprogram, "DefinitionsAndParameters.R")) 
+dropunbalanced <- function(Z, idcol = "uniquid", returnDT = F) {
+#	drop unbalanced obs (fast operation using data.table)
+  require(data.table)
+  dZ <- data.table(Z)
+  setkeyv(dZ, idcol)
+  dZ[, period := .N, by = idcol]
+  # keep only individuals with largest round numbers
+  dZ <- dZ[period == max(period), ]
+  dZ <- dZ[, period := NULL]
+  if (returnDT) dZ else data.frame(dZ)
+}
+source(paste0(pathprogram, "tabulate_est.R"))
+source(paste0(pathprogram, "EstimatorFunctions.R"))
+#source("c:/seiro/settings/Rsetting/functions.R")
+@
+
+\Sexpr{knit_child("c:/data/ramadan/DataSubmitted/program/DIDJHR2_Summary.rnw")}
+\Sexpr{knit_child("c:/data/ramadan/DataSubmitted/program/DIDJHR2_PreparingRegressors.rnw")}
+\Sexpr{knit_child("c:/data/ramadan/DataSubmitted/program/DIDJHR2_UnderstandingCharacteristicsOfSample.rnw")}
+\Sexpr{knit_child("c:/data/ramadan/DataSubmitted/program/DIDJHR2_Estimation.rnw")}
+\Sexpr{knit_child("c:/data/ramadan/DataSubmitted/program/DIDJHR2_Results.rnw")}
+
+\end{document}

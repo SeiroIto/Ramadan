@@ -1,0 +1,30 @@
+\ifx\undefined\bysame
+\newcommand{\bysame}{\leavevmode\hbox to\leftmargin{\hrulefill\,\,}}
+\fi
+\begin{thebibliography}{xx}
+
+\harvarditem[Bell and McCaffrey]{Bell and McCaffrey}{2002}{BellMcCaffrey2002}
+{\bf Bell, Robert~M. and Daniel~F. McCaffrey}, ``Bias reduction in standard
+  errors for linear regression with multi-stage samples,'' {\it Survey
+  Methodology}, 2002, {\it 28} (2), 169--182.
+
+\harvarditem[Canay et al.]{Canay, Santos and
+  Shaikh}{2021}{CanaySantosShaikh2021}
+{\bf Canay, Ivan~A., Andres Santos, and Azeem~M. Shaikh}, ``{The wild bootstrap
+  with a ``small'' number of ``large'' clusters},'' {\it The Review of
+  Economics and Statistics}, 05 2021, {\it 103} (2), 346--363.
+
+\harvarditem[Imbens and Koles\'ar]{Imbens and
+  Koles\'ar}{2016}{ImbensKolesar2016}
+{\bf Imbens, Guido~W. and Michal Koles\'ar}, ``{Robust standard errors in small
+  samples: Some practical advice},'' {\it The Review of Economics and
+  Statistics}, 10 2016, {\it 98} (4), 701--712.
+
+\harvarditem[Pustejovsky and Tipton]{Pustejovsky and
+  Tipton}{2018}{PustejovskyTipton2018}
+{\bf Pustejovsky, James~E. and Elizabeth Tipton}, ``Small-sample methods for
+  cluster-robust variance estimation and hypothesis testing in fixed effects
+  models,'' {\it Journal of Business \& Economic Statistics}, 2018, {\it 36}
+  (4), 672--683.
+
+\end{thebibliography}

@@ -1,0 +1,1919 @@
+\section{Understanding characteristics of sample used in main results}
+
+\subsection{Summary statitistics}
+
+<<main sample size check, echo = F>>=
+# zXy0, zXy1 (zEm0, zEm1, ..., zEp20, zEp21, ...) are created.
+# Need to run this after having done main estimation. 
+zEm.1999 <- readRDS(paste0(pathsaveThisVer, "zEm1999.rds"))
+zSm.1999 <- readRDS(paste0(pathsaveThisVer, "zSm1999.rds"))
+zEp.1999 <- readRDS(paste0(pathsaveThisVer, "zEp1999.rds"))
+zEp.2002 <- readRDS(paste0(pathsaveThisVer, "zEp2002.rds"))
+zSp.1999 <- readRDS(paste0(pathsaveThisVer, "zSp1999.rds"))
+zSp.2002 <- readRDS(paste0(pathsaveThisVer, "zSp2002.rds"))
+zYp.1999 <- readRDS(paste0(pathsaveThisVer, "zYp1999.rds"))
+zEp.1999[, AgeIn1999 := Age[survey == 2002] - 3, by = uniquid]
+zSp.1999[, AgeIn1999 := Age[survey == 2002] - 3, by = uniquid]
+zsobj <- c("zmobj", "zpobj")
+zsobj2 <- c("zmobj2", "zpobj2")
+zmobj <- c("zEm.1999", "zSm.1999")[1]
+zpobj <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[c(1, 3)]
+zmobj2 <- c("zEm", "zSm")[1]
+zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")[c(1, 3)]
+library(qs)
+zi00N <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+ii <- jj <- s <- m <- 1
+j <- 2
+for (ii in 1:length(zsobj)) {
+  zSobj <- get(zsobj[ii])
+  zSobj2 <- get(zsobj2[ii])
+  for (jj in 1:length(zSobj)) {
+    # ii: estimation objective (main/placebo)
+    # jj: jj, zE/zS sample selection
+    # j needs to be set at 1. We use j == 1 in SampleSizeCompareTable, 
+    # and apply sd == 1 in NuclearSampleSizeCompareTable
+    j <- 1; ge <- 3
+    zi <- zi00N[[ii]][[jj]][[s]][[j]][[ge]][[m]] 
+    # age s=10/nuclear j/agHHdef m/cl=satterthwaite
+    zid <- lapply(zi, "[[", "level.data")
+    zidd <- lapply(zi, "[[", "diff.data")
+    # least num of obs data
+    zid0 <- zid[[length(zid)]]
+    zidd0 <- zidd[[length(zidd)]]
+    zid0 <- zid0[uniquid %in% zidd0[, uniquid], ]
+    # most num of obs data
+    zid1 <- zid[[1]]
+    zidd1 <- zidd[[1]]
+    zid1 <- zid1[uniquid %in% zidd1[, uniquid], ]
+    # original data
+    z1 <- get(zSobj[jj])
+    z1[, tee := 1:.N, by = uniquid]
+    z.0 <- z1[uniquid %in% zid0[, uniquid], ]
+    z.1 <- z1[uniquid %in% zid1[, uniquid], ]
+    assign(paste0(zSobj2[jj], 0), z.0) # zEm0: least num of obs
+    assign(paste0(zSobj2[jj], 1), z.1) # zEm1: most num of obs
+  }  # jj
+}  # ii
+@
+Add \textsf{id} variable from original rd 1 file \textsf{}
+<<>>=
+# fn0, fn3, fn7
+for (yy in c(0, 3, 7)) {
+  pathsource000 <- paste0(pathsource, "/ffe/200", yy, "/Data/HouseholdData/STATA/")
+  assign(paste0("pathsource0", yy), pathsource000)
+  fn <- list.files(pathsource000)
+  assign(paste0("fn", yy), list.files(pathsource000, full.names = T))
+}
+ros1 <- data.table(foreign::read.dta(grepout("a1", fn0)))
+# rd 2 has hhid = hh used in uniquid
+# uniquid = paste0(4000+hhid, ".", putzeroontop(mid/100))
+ros2 <- data.table(foreign::read.dta(grepout("a1", fn3)))
+ros3 <- data.table(foreign::read.dta(grepout("rost", fn7)))
+# ros1 and ros2 have hhnum in common. id = hhnum-mid
+# ros2 and ros3 have hhidn in common. id2 = hhidn-mid
+ros1[, id := paste0(hhnum, "-", mid)]
+ros2[, id := paste0(hhnum, "-", mid)]
+ros2[, id2 := paste0(hhidn, "-", mid)]
+ros3[, id2 := paste0(hhidn, "-", mid)]
+ros1[, rd2 := 0L]
+ros1[id %in% ros2[, id], rd2 := 1L]
+ros2[, rd3 := 0L]
+ros2[id2 %in% ros3[, id2], rd3 := 1L]
+ros1[, rd3 := 0L]
+ros1[id %in% ros2[rd3==1L, id], rd3 := 1L]
+ros1[, exist := paste0(1, rd2, rd3)]
+ros1[, exist := factor(exist)]
+# attach uniquid in ros1
+ros2[, uniquid := paste0(4000+hhidn, ".", putzeroontop(mid))]
+rs2id <- ros2[, .(id, uniquid)]
+setkey(rs2id, id); setkey(ros1, id)
+RosRd1 <- rs2id[ros1]
+# attach schoop
+a00 <- foreign::read.dta(grepout("a2a", fn0))
+a00 <- data.table(a00)
+a00sch <- a00[, .(hhnum, mid, schoolp)]
+a00sch[, schoolp := as.numeric(grepl("Y", schoolp))]
+setkey(RosRd1, hhnum, mid); setkey(a00sch, hhnum, mid)
+RosRd1 <- a00sch[RosRd1]
+# attach agHH defs
+# 	sum(ii1 <- whichgrep("Agri|Tena", z[, "isource"]) & y2k )
+# 	sum(ii2 <- whichgrep("Agri|enan|farm", z[, "occup"]) & y2k) # tenant and own farmers as occupation
+# 	sum(ii3 <- whichgrep("OwnL|Tena", z[, "isource"]) & y2k) # a subset of ii1, owners and cultivators
+# 	sum(iiL <- whichgrep("Agri.*day", z[, "occup"]) & y2k)
+# 	c(sum(ii1 & ii2), sum(ii1 & !ii2), sum(!ii1 & ii2))
+# 	table(ocagHHold=ii2, aglabHH=iiL)
+# 	fem <- z[, "sex"] == "Female"
+# 	hd <- whichgrep("head", z[, "rhhold"])
+# 		#	adult members: age > 20 and not enrolled, both in 2000
+# 	adlt <- y2k & z[, "age"] > 20 & !eq(z[, "schoolp"], "Yes")
+# 		#	isource agri HH
+# 	z <- cbind(z, isagHH = z[, "hh"] %in% z[ii1 & y2k, "hh"])
+# 		#	owner cultivator household as ownagHH
+# 	z <- cbind(z, ownagHH = z[, "hh"] %in% z[ii3 & y2k, "hh"])
+# 		#	M/F head isource|occup is agri
+# 	z <- cbind(z, hdagHH = z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd, "hh"])
+# 	z <- cbind(z, mhdagHH = z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd & !fem, "hh"])
+# 	z <- cbind(z, fhdagHH = z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd & fem, "hh"])
+# 		#	agri laborer indicator
+# 	z <- cbind(z, aglabHH = z[, "hh"] %in% z[iiL & y2k, "hh"])
+# 		#	occup agri HH (old def, wrong, due to error in data.prn codes)
+# 	z <- cbind(z, ocagHHold = z[, "hh"] %in% z[ii2 & y2k, "hh"])
+# 		# correct def of occup ag HH
+# 	pathsource00 <- paste0(pathsource, "/ffe/2000/Data/HouseholdData/STATA/")
+# 	fn <- list.files(pathsource00)
+# 	fn0 <- list.files(pathsource00, full.names = T)
+# 	# 1.A.1 section (roster)
+# 	e00 <- foreign::read.dta(grepout("a1", fn0))
+# 	e00 <- data.table(e00)
+# 	f1 <- fread(paste0(pathsource, "ffe2000.prn"))
+# 	f1id <- unique(f1[!is.na(q1_04n), .(hhnum, q1_04n)])
+# 	setnames(f1id, "q1_04n", "hh")
+# 	setkey(f1id, hhnum); setkey(e00, hhnum)
+# 	e00 <- e00[f1id]
+# 	setkey(e00, hh)
+# 	# ocagHH: Any member of HH reports agri as one's occupation
+# 	z <- cbind(z, ocagHH = z[, "hh"] %in% unique(e00[grepl("Ag|arm|enan", occup), hh]))
+#	z <- cbind(z, agHH0 = z[, "isagHH"] | z[, "ocagHH"])
+qsave(RosRd1, paste0(pathsaveThisVer, "OriginalRd1RosterFileWithUniquid.qs"))
+@
+<<common trend tests using 2002 2006>>=
+zp <- readRDS(paste0(pathsaveThisVer, "zEp1999.rds"))
+ComTrendTests <- NULL
+zp <- zp[10 <= AgeIn1999 & AgeIn1999 <= 18, ]
+# 1. Aggregate proportions test of change.
+# Test if abs(s1-s2)/total1 where st is sum(schoolp) in period t for t = 1, 2 are same between ag and nonag
+# From DIDJHR2_contents.rnw
+rchg <- zp[tee != 1 & sd == 1 & grepl(".11", exist), .(sum=sum(schoolp), .N), by = .(agHH0>0, tee)][, 
+  .(absdiff = abs(diff(sum)), n=N[1]), by = agHH0]
+setorder(rchg, -agHH0)
+d0 <- rep(0, rchg[grepl("F", agHH0), n])
+d1 <- rep(0, rchg[grepl("T", agHH0), n])
+d0[1:rchg[grepl("F", agHH0), absdiff]] <- 1
+d1[1:rchg[grepl("T", agHH0), absdiff]] <- 1
+ttested <- t.test(d1, d0)
+proptest <- prop.test(x = rchg[, absdiff], n = rchg[, n], correct = F)
+# Fisher: smaller p value indicates unlikeliness of having same proportions
+# test1: Rate in agHH0 is tested against the rate in non-agHH0
+# test0: Rate in non-agHH0 is tested against the rate in agHH0
+fishertest0 <- binom.test(sum(d0==1), length(d0), mean(d1, na.rm = T))
+fishertest1 <- binom.test(sum(d1==1), length(d1), mean(d0, na.rm = T))
+ComTrendTests <- rbind(ComTrendTests, 
+  c("all", rchg[, n], ttested$est, diff(ttested$est)*100, ttested$p.value*100, proptest$p.value*100, 
+    fishertest1$p.value*100, fishertest0$p.value*100)
+)
+# 2. Agewise proportion tests.
+setnames(zp, "AgeIn1999", "AGE")
+setkey(zp, agHH0, tee, AGE)
+rchg <- zp[tee != 1 & sd == 1 & grepl("11$", exist), .(sum=sum(schoolp), .N), by = .(agHH0>0, tee, AGE)][, 
+  .(absdiff = abs(diff(sum)), n=N[1]), by = .(agHH0, AGE)]
+setorder(rchg, -agHH0, AGE)
+for (ss in min(rchg[,AGE]):18) {
+  d0 <- rep(0, rchg[grepl("F", agHH0) & AGE == ss, n])
+  d1 <- rep(0, rchg[grepl("T", agHH0) & AGE == ss, n])
+  d0[1:rchg[grepl("F", agHH0) & AGE == ss, absdiff]] <- 1
+  d1[1:rchg[grepl("T", agHH0) & AGE == ss, absdiff]] <- 1
+  ttested <- t.test(d1, d0)
+  proptest <- prop.test(x = rchg[AGE == ss, absdiff], n = rchg[AGE == ss, n], correct = F)
+  # Fisher: smaller p value indicates unlikeliness of having same proportions
+  # test1: Rate in agHH0 is tested against the rate in non-agHH0
+  # test0: Rate in non-agHH0 is tested against the rate in agHH0
+  fishertest0 <- binom.test(sum(d0==1), length(d0), mean(d1, na.rm = T))
+  fishertest1 <- binom.test(sum(d1==1), length(d1), mean(d0, na.rm = T))
+  ComTrendTests <- rbind(ComTrendTests, 
+    c(ss, rchg[AGE == ss, n], ttested$est, diff(ttested$est)*100, 
+      ttested$p.value*100, proptest$p.value*100, 
+      fishertest1$p.value*100, fishertest0$p.value*100)
+  )
+}
+ComTrendTests <- data.table(ComTrendTests)
+setnames(ComTrendTests, c("age", 
+  "N.agHH", "N.nonagHH", "mean.agHH", "mean.nonagHH", "diff",
+  paste0("p.", c("ttest", "proptest", "fisher0vs1", "fisher1vs0"))))
+setnames(ComTrendTests, c("age", 
+  "N.ag", "N.nonag", "mean.ag", "mean.nonag", "diff",
+  paste0("p.", c("t", "prop", "f0vs1", "f1vs0"))))
+iinum <- grepout("me|p\\.|dif", colnames(ComTrendTests))
+ComTrendTests[, (iinum) := lapply(.SD, function(x) formatC(as.numeric(x), digits = 2, format = "f")), 
+  .SDcols = iinum]
+options(width = 120)
+ComTrendTests
+@
+
+
+
+Each sample has following selection of observations.
+
+\hspace{-.5cm}\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Sample size of original vs. regression data in main results for above 10 years old\label{tab origregcontrast}}\\
+\vspace{2ex}
+\hfil\begin{tikzpicture}
+\node (tblheader) {
+With extended family
+};
+\node[below of = tblheader, yshift = -.75cm] (tbl) {
+% This table reads data and summarises sample size.
+\Sexpr{knit_child(paste0(pathprogram0, "SampleSizeCompareTable.rnw"))}
+};
+\node[below of = tbl, yshift = -0.75cm] (tbl2header) {
+Direct offsprings of head
+};
+\node[below of = tbl2header, yshift = -.75cm] (tbl2) {
+% This table reads data and summarises sample size.
+\Sexpr{knit_child(paste0(pathprogram0, "NuclearSampleSizeCompareTable.rnw"))}
+};
+\end{tikzpicture}
+\end{minipage}
+
+<<enroll rates for main texts>>=
+# Created and saved in SampleSelectionDemeaning.rnw
+zEm.1999 <- readRDS(paste0(pathsaveThisVer, "zEm1999.rds"))
+iiid <- unique(zEm.1999[10 <= AgeIn1999 & AgeIn1999 <= 18, uniquid])
+z1 <- zEm.1999[uniquid %in% iiid & survey != 2006 & sd == 1, ]
+# enrollment rates of cohort 1999, exist sample for main estimation
+er0 <- addmargins(addmargins(table(z1[agHH0<0,.(survey, schoolp)]), 1, sum), 2, sum)
+er1 <- addmargins(addmargins(table(z1[agHH0>0,.(survey, schoolp)]), 1, sum), 2, sum)
+er <- cbind(ag = er1[-3, 2]/er1[1, 3], nonag = er0[-3, 2]/er0[1, 3])
+er <- data.table(rbind(er, d0299 = er[2, ] - er[1, ]))
+er[, diffagnonag := ag-nonag]
+er <- data.table(rbind(formatC(as.matrix(er), digits = 3, format = "f"), 
+  total = c(er1[1, 3], er0[1, 3], er1[1, 3]+er0[1, 3])))
+er[, year := c(1999, 2002, "2002-1999", "total")]
+setcolorder(er, c("year", "ag", "nonag", "diffagnonag"))
+zEp.2002 <- readRDS(paste0(pathsaveThisVer, "zEp2002.rds"))
+iiid <- unique(zEp.2002[10 <= AgeIn2002 & AgeIn2002 <= 18 & sd == 1, uniquid])
+z1 <- zEp.2002[uniquid %in% iiid & survey != 1999, ]
+er0 <- addmargins(addmargins(table(z1[agHH0<0,.(survey, schoolp)]), 1, sum), 2, sum)
+er1 <- addmargins(addmargins(table(z1[agHH0>0,.(survey, schoolp)]), 1, sum), 2, sum)
+erp <- cbind(ag = er1[-3, 2]/er1[1, 3], nonag = er0[-3, 2]/er0[1, 3])
+erp <- data.table(rbind(erp, d0299 = erp[2, ] - erp[1, ]))
+erp[, diffagnonag := ag-nonag]
+erp <- data.table(rbind(formatC(as.matrix(erp), digits = 3, format = "f"), 
+  total = c(er1[1, 3], er0[1, 3], er1[1, 3]+er0[1, 3])))
+erp[, year := c(1999, 2002, "2002-1999", "total")]
+setcolorder(erp, c("year", "ag", "nonag", "diffagnonag"))
+@
+Here is raw DID using \textsf{exist} sample, 1999-2002. Note that we are taking $(t-1)-t$ difference, or an opposite time order difference. If we take a $t-(t-1)$ difference, the change of ag is \Sexpr{-1*as.numeric(er[grepl("-", year), ag])} and the difference between ag and nonag is \Sexpr{-1*as.numeric(er[grepl("-", year), diffagnonag])}, so the signs are all flipped.
+<<er>>=
+er
+@
+Here is raw DID using placebo \textsf{exist} sample, 2002-2006.
+<<erp>>=
+erp
+@
+\textsf{schoolp} is a reply to ``still attending school?'' question of rd 1 questionnaire1.A.2 section (roster and school attendance). 
+<<enrollment by age>>=
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+zE = copy(yzw[grepl("111|110", exist), ])
+iiid <- unique(zE[AgeIn1999 <= 18, uniquid])
+z1 <- zE[uniquid %in% iiid & survey != 2006 & sd == 1, ]
+# enrollment rates of cohort 1999, exist sample for main estimation
+z1[, .(Enroll = mean(schoolp, na.rm = T), N = .N), by = .(AgeIn1999, agHH0>0)][order(AgeIn1999, agHH0), ]
+er1 <- addmargins(addmargins(table(z1[agHH0>0,.(survey, schoolp)]), 1, sum), 2, sum)
+pathsource00 <- paste0(pathsource, "/ffe/2000/Data/HouseholdData/STATA/")
+fn <- list.files(pathsource00)
+fn0 <- list.files(pathsource00, full.names = T)
+# 1.A.1 section (roster)
+e00 <- foreign::read.dta(grepout("a1", fn0))
+e00 <- data.table(e00)
+	#	isource agri HH: Agri|Tena
+e00[, isagHH := as.integer(hhnum %in% hhnum[grep("^1$|^6[12]$", isource)])]
+	#	occup agri HH
+e00[, ocagHH := as.integer(hhnum %in% hhnum[grep("Agri|enan|farm", occup)])]
+	#	owner or cultivator household as ownagHH. A subset of isagHH.
+e00[, ownagHH := as.integer(hhnum %in% hhnum[grep("^6[12]$", isource)])]
+e00[, agHH0 := as.integer(isagHH+ocagHH > 0L)]
+# 1.A.2 section (roster and school attendance): schoolp (still attending school?), 
+# agead (age first admitted) and year_ (year first admitted)
+a00 <- foreign::read.dta(grepout("a2a", fn0))
+a00 <- data.table(a00)
+e00age <- e00[, .(hhnum, mid, age, agem, agHH0)]
+setkey(e00age, hhnum, mid); setkey(a00, hhnum, mid)
+a00 <- e00age[a00]
+# Age and year admitted to grade 1
+adyr <- a00[, .(MeanAgeAtG1 = mean(agead, na.rm = T), 
+  MedianAgeAtG1 = median(agead, na.rm = T), 
+  MinAgeAtG1 = min(agead, na.rm = T), 
+  MaxAgeAtG1 = max(agead, na.rm = T), N = .N), by = .(agHH0, year_)]
+adyr <- adyr[!is.na(year_) & !is.na(agHH0), ]
+setkey(adyr, year_, agHH0)
+adyrW <- reshape(adyr, direction = "wide", idvar = "year_", timevar = "agHH0", 
+  v.names = grepout("G1|N", colnames(adyr)))
+adyr[, agHH0 := factor(agHH0, labels = c("nonag HH", "ag HH"))]
+# Enrollment rates by age
+a00[, Schoolp := schoolp]
+a00[, schoolp := NULL]
+a00[, schoolp := 0L]
+a00[grepl("Y", Schoolp), schoolp := 1L]
+erbg <- a00[, .(MeanEAtG1 = mean(schoolp, na.rm = T), 
+  StdEAtG1 = var(schoolp, na.rm = T)^(.5), N = .N), by = .(age, agHH0)]
+erbg <- erbg[!is.na(age) & !is.na(agHH0) & age <= 18 & age >= 5, ]
+setkey(erbg, age, agHH0)
+erbgW <- reshape(erbg, direction = "wide", idvar = "age", timevar = "agHH0", 
+  v.names = grepout("G1|N", colnames(erbg)))
+erbg[, agHH0 := factor(agHH0, labels = c("nonag HH", "ag HH"))]
+erbg[, age := factor(age, levels = 5:18)]
+@
+<<plot enrollment rate by age, eval = F>>=
+library(ggplot2)
+g <- ggplot(data = erbg, 
+    aes(x = age, y = MeanEAtG1, group = agHH0, fill = agHH0, colour = agHH0, label = N)) + 
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("lightblue", "blue")) +
+  scale_colour_manual(values = c("blue", "blue")) +
+  scale_x_discrete(expand=c(.04, .04)) +
+  ThisThemeEnd+
+  geom_text(vjust = -0.5, size = 3, position = position_dodge(width = 0.9))+
+  xlab("age") + 
+  ylab("mean enrollment rate at round 1") + 
+  labs(color  = "HH type", fill = "HH type", label = "cell size") +
+  guides(
+    colour = guide_legend(title = "HH type", nrow = 1),
+    label = guide_legend(title = "cell size", nrow = 1),
+    fill = guide_legend(title = "HH type", nrow = 1)
+    )
+pdf(
+  paste0(pathsaveThisVer, "AgewiseRawEnrollmentRates.pdf")
+  , width = 2*12/2.54, height = 2*6/2.54)
+print(g)
+whatever <- dev.off()
+<<plot age at grade 1, eval = F>>=
+library(ggplot2)
+g <- ggplot(data = adyr, 
+    aes(x = year_, y = MeanAgeAtG1, group = agHH0, fill = agHH0, colour = agHH0, label = N)) + 
+  geom_col(position = "dodge") +
+  scale_fill_manual(values = c("lightblue", "blue")) +
+  scale_colour_manual(values = c("blue", "blue")) +
+  scale_x_continuous(breaks = 1987:2000, expand=c(.04, .04)) +
+  ThisThemeEnd+
+  geom_text(vjust = -0.5, size = 3, position = position_dodge(width = 0.9))+
+  xlab("year of starting primary school") + 
+  ylab("mean age") + 
+  labs(color  = "HH type", fill = "HH type", label = "cell size") +
+  guides(
+    colour = guide_legend(title = "HH type", nrow = 1),
+    label = guide_legend(title = "cell size", nrow = 1),
+    fill = guide_legend(title = "HH type", nrow = 1)
+    )
+pdf(
+  paste0(pathsaveThisVer, "AgeAtClass1Enrollment.pdf")
+  , width = 2*12/2.54, height = 2*6/2.54)
+print(g)
+whatever <- dev.off()
+@
+
+Parental education.
+<<edu of head and spouse, echo = T>>=
+dim(z2 <- invisible(fread(paste0(pathsave0, "2RoundPanel.prn"))))
+zi00N <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+ii <- jj <- s <- m <- 1
+j <- 2
+ge <- 3
+zi <- zi00N[[ii]][[jj]][[s]][[j]][[ge]][[m]] # resultsN0[[ii]][[jj]][[s]][[j]][[ge]][[m]]
+zid <- lapply(zi, "[[", "level.data")
+zid <- zid[[length(zid)]]
+zidd <- lapply(zi, "[[", "diff.data")
+zidd <- zidd[[length(zidd)]]
+# zd2_JHR.rds is created in Construct3RoundPanelAndClean.rnw (1017)
+zd2 <- readRDS(paste0(pathsaveThisVer, "zd2_JHR2.rds"))
+zd2[uniquid %in% zidd[, uniquid] & survey == 1999, .(
+    hd.primary=mean(hd.edulevel.primary), hd.secondary=mean(hd.edulevel.secondary)
+    , sp.primary=mean(sp.edulevel.primary, na.rm = T), 
+    sp.secondary=mean(hd.edulevel.secondary), 
+    n = .N
+  ), by = agHH0]
+# DataForJHR.rds is created in Construct3RoundPanelAndClean.rnw (1601)
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+zF <- yzw
+zE <- zF[grepl("111|110", exist), ]
+zE[uniquid %in% zidd[, uniquid] & survey == 1999, .(
+    hd.primary=mean(hd.edulevel.primary)
+    , hd.secondary=mean(hd.edulevel.secondary)
+    , sp.primary=mean(sp.edulevel.primary, na.rm = T)
+    , sp.secondary=mean(hd.edulevel.secondary)
+    , n = .N
+  ), by = agHH0]
+# When zd2 => zd3, head and spouse education was altered. This is when I copied 
+# head and spuse edu info within hh-survey in "Copy HH characteristics among members and across rounds".
+<<sample destat, echo = F, warning = F>>=
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+zEm.1999 <- readRDS(paste0(pathsaveThisVer, "zEm1999.rds"))
+zE = copy(yzw[grepl("111|110", exist), ])
+samples <- c("main", "placebo")
+z23 <- c("z2", "z3")
+zsobj <- c("zmobj", "zpobj")
+zsobj2 <- c("zmobj2", "zpobj2")
+zpobj <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[c(1, 3)]
+zmobj <- c("zEm.1999", "zSm.1999")[1]
+zmobj2 <- c("zEm", "zSm")
+zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")[c(1, 3)]
+yrXs <- list(c("yr2", "yr2"), c("yr3", "yr3", "yr3", "yr3"))
+#regressors.list <- list(
+#  main = regressorsM,
+#  placebo = regressorsM2002
+#)
+# (note the chapitalised names in some) created in the below loop
+# binary
+varcompare01 <- c("Enrolled", "AgHH", "HdagHH", "IsagHH", "OcagHH", "program",
+  # hdsex uses Rd1RelToHead while hd.sex = 1 if reltohead=1 in any round (vulnerable to entry errors)
+  # Need to use .yr2 variables: By substituting with yrXs, we can specify 
+  # yr2 (baseline value) in main estimation, yr3 (2002 value) in placebo estimation.
+  "Sex", "UDhdsex", "UDnonmuslim", "UDflooded",
+  "kutchalatrine.yr2", "ownwater.yr2", 
+  "Hd.edulevel.primary", "Hd.edulevel.secondary", 
+  "Sp.edulevel.primary", "Sp.edulevel.secondary")
+# continuous
+varcompare2 <- c("age", "yield", "UDOldSibF", "UDOldSibM") #"OldAgSibF", "OldAgSibM")
+# scaled continuous
+varcompare3 <- c("pclandDec", "pcnlasset1000")
+boxsize <- .75
+library(qs)
+zi00N <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+for (ii in 1:length(samples)) {
+  zSobj <- get(zsobj[ii]) # zmobj or zpobj
+  yrxs <- yrXs[[ii]]
+  dst0 <- vector("list", length = length(10:12)) # s
+  dst <- vector("list", length = length(zSobj)) # jj
+  # jj
+  #  zmobj: zEm.1999, zSm.1999
+  #  zpobj: zEp.2002, zSp.2002, zEp.1999, zSp.1999
+  for (jj in 1:length(zSobj)) {
+    dst[[jj]] <- dst0
+    # choose yrX
+    yrx <- yrxs[jj]
+    varcompare1 <- gsub("yr2", yrx, varcompare01)
+    # drop nonmuslims if zXp
+    if (any(grepl("p", zSobj))) 
+      varcompare1 <- varcompare1[!grepl("nonmu", varcompare1)]
+    for (s in 1:3) {
+      s0 <- (10:12)[s]
+      i <- paste0("older", s0)
+      s <- 1
+      j <- 2
+      ge <- 3
+      zi <- zi00N[[ii]][[jj]][[s]][[j]][[ge]][[1]] # resultsN0[[ii]][[jj]][[dd]][[s]][[j]][[ge]][[m]]
+      # age s=10/nuclear j/agHHdef m/cl=satterthwaite
+      # [[ii]][[jj]][[s]][[j]][[m]][[k]]
+     zid <- lapply(zi, "[[", "level.data")
+     zid <- zid[[length(zid)]]
+     zidd <- lapply(zi, "[[", "diff.data")
+     zidd <- zidd[[length(zidd)]]
+     z1 <- zid[uniquid %in% zidd[, uniquid], ]
+     z1[, age := age2^(.5)]
+     if (any(grepl("LHS", colnames(z1)))) setnames(z1, c("LHS"), c("Enrolled"))
+     z1[, tee := 1:.N, by = uniquid]
+     # Binary: copy all 0/1 values at tee == 1 to other rds
+     # Change back from demeaned to undemeaned values
+     yrXvars <- grepout(paste0(yrx, "$"), colnames(z1))
+     yrXvars <- yrXvars[!grepl("^pc|Sib|hdsex|agH", yrXvars)]
+     yrXvars0 <- gsub(paste0("\\.", yrx), "", yrXvars)
+     yrXvars1 <- yrXvars[!grepl("Sib", yrXvars)]
+     yrXvars10 <- gsub(paste0("\\.", yrx), "", yrXvars1)
+     # Add agHH defs from original data
+     yrXvars10 <- gsub("^agHH$", aghh.defs[1], yrXvars10)
+     # pcland, pcnlasset is not in z1 (zid). Need to get from yzw
+     yrXvars10 <- c("hdagHH", "isagHH", "ocagHH", "hdsex", "pcland", "pcnlasset", yrXvars10)
+     if (ii == 1) 
+       yzw.vars1 <- yzw[survey == 1999, c("uniquid", yrXvars10), with = F] else
+       yzw.vars1 <- yzw[survey == 2002, c("uniquid", yrXvars10), with = F]
+     setkey(yzw.vars1, uniquid); setkey(z1, uniquid)
+     z12 <- yzw.vars1[z1]
+     #z1[, (yrXvars0) := 0L]
+     ## i needs to be set at tee == 2, because sex.yr2 > 0 for sex = 1 in yr2, but sex.yr2 > 0 for sex = 0 in yr1
+     #for (yy in 1:length(yrXvars))
+     #  set(z1, i = which(z1[["tee"]] == 2 & z1[[yrXvars[yy]]] > 0), 
+     #    j = grep(paste0("^", yrXvars0[[yy]], "$"), colnames(z1)), value = 1L)
+     #z1[, (yrXvars0) := .SD[tee == 2], by = uniquid, .SDcols = yrXvars0]
+     for (v2 in c("sex", "agHH", "hdagHH", "isagHH", "ocagHH",
+       #"OldSibF", "OldSibM", #"OldAgSibF", "OldAgSibM", 
+       "hd.edulevel.primary", "hd.edulevel.secondary", 
+       "sp.edulevel.primary", "sp.edulevel.secondary")) {
+       V2 <- paste0(toupper(substr(v2, 1, 1)), substr(v2, 2, nchar(v2)))
+       z12[, (V2) := eval(parse(text = v2))]
+     }
+     # HdagHH changes. tee == 2 has more HadgHH == 1. Use tee == 2 values.
+     z12[, HdagHH := HdagHH[tee==2], by = uniquid]
+     z12[, AgHH := as.integer(agHH>0)]
+     # UD covariates: Created in SampleSelectionDemeaning.rnw. Need to get from zEm.1999
+     zud <- zEm.1999[, .(uniquid, tee, UDhdsex, UDnonmuslim, UDflooded, UDOldSibF, UDOldSibM)]
+     setkey(zud, uniquid, tee); setkey(z12, uniquid, tee); 
+     z12 <- zud[z12]
+     # 4002.04: totalland = 5 decimal, 5 members => pcland = 1 decimal
+     z12[, pclandDec := pcland]
+     #"per member nonland asset (1000 tk)",
+     # totalvalue is deflated with 1million (1000000). Multiply with 1000 to get 1000 Tk units.
+     z12[, pcnlasset1000 := pcnlasset*1000]
+     # Keep only rd 1 values. (Rd 1 values are copied already, do it again to make sure.)
+     z12[, pclandDec := pclandDec[1], by = uniquid]
+     z12[, pcnlasset1000 := pcnlasset1000[1], by = uniquid]
+     # all variables to numeric
+     d1 <- sapply(z12[tee == 1, gsub("\\.yr.$", "", 
+       c(varcompare1, varcompare2, varcompare3)), with = F], as.numeric)
+     d1 <- destat(d1, signif = 3)
+     dst[[jj]][[s]] <- d1
+     dst.print <- as.matrix(d1)
+     d2 <- data.table(d1)
+     thesecols <- c("mean", "std")
+     d2[, (thesecols) := lapply(.SD, formatC, digits = 3, format = "f"), .SDcols = thesecols]
+     d2 <- d2[, thesecols, with = F]
+     dst.print <- a2b(dst.print, "NA", "")
+     dst.print[, thesecols] <- as.matrix(d2)
+     source(paste0(pathprogram, "substitution_table.R"))
+     rn <- rownames(dst.print)
+     # substitute variable names with short labels
+     for (mm in 1:nrow(sbt))
+       if (length(iir <- grep(sbt[mm, 1], rn)) > 0) 
+         rn[iir] <- sbt[mm, 2]
+     dst.print <- cbind(covariates = rn, dst.print)
+     ltb <- latextab(dst.print, delimiterline = NULL, 
+        hcenter = c(5, rep(boxsize, ncol(dst.print)-1)),
+        hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(dst.print)-1)), 
+        hright = c("\\hfill", rep("$", ncol(dst.print)-1)),
+        headercolor = "gray90", alternatecolor = "paleblue")
+     ltb <- gsub("agr", "Agr", ltb)
+     write.tablev(ltb, 
+        paste0(pathsaveThisVer, "SampleDescriptiveStat_", i, "_", zSobj[jj], ".tex")
+        , colnamestrue = F)
+    }  # s
+    saveRDS(dst, paste0(pathsaveThisVer, "SampleDestat_", zSobj[jj], ".rds"))
+  }  # jj
+}  # ii
+<<difference fdrobust vs FDestimation sample, echo = F, warning = F>>=
+zEm.1999 <- readRDS(paste0(pathsaveThisVer, "zEm1999.rds"))
+zSm.1999 <- readRDS(paste0(pathsaveThisVer, "zSm1999.rds"))
+zEp.2002 <- readRDS(paste0(pathsaveThisVer, "zEp2002.rds"))
+zEp.1999 <- readRDS(paste0(pathsaveThisVer, "zEp1999.rds"))
+zSp.2002 <- readRDS(paste0(pathsaveThisVer, "zSp2002.rds"))
+zSp.1999 <- readRDS(paste0(pathsaveThisVer, "zSp1999.rds"))
+samples <- c("main", "placebo")
+z23 <- c("z2", "z3")
+zsobj <- c("zmobj", "zpobj")
+zsobj2 <- c("zmobj2", "zpobj2")
+zpobj <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[c(1, 3)]
+zmobj <- c("zEm.1999", "zSm.1999")[1]
+zmobj2 <- c("zEm", "zSm")
+zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")
+yrXs <- c("yr2", "yr3")
+varcompare01 <- c("Enrolled", "agHH", "hdagHH", "program",
+  "sex", "hdsex", "nonmuslim", "flood",
+  "UDOldSibF", "UDOldSibM", #"OldAgSibF", "OldAgSibM",
+  "kutchalatrine.yr2", "ownwater.yr2", 
+  "hd.edulevel.primary", "hd.edulevel.secondary", 
+  "sp.edulevel.primary", "sp.edulevel.secondary")
+varcompare2 <- c("Age", "yield")
+varcompare3 <- c("pclandDec", "pcnlasset1000")
+boxsize <- 1.2
+Sample.Diff <- NULL
+zi00N <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+for (ii in 1:length(samples)) {
+  zSobj <- get(zsobj[ii])
+  yrx <- yrXs[ii]
+  dst0 <- vector("list", length = length(10:12)) # s
+  dst <- vector("list", length = length(zSobj)) # jj
+  for (jj in 1:length(zSobj)) {
+    dst[[jj]] <- dst0
+    varcompare1 <- gsub("yr2", yrx, varcompare01)
+    # drop nonmuslims if zXp
+    if (any(grepl("p", zSobj))) 
+      varcompare1 <- varcompare1[!grepl("nonmu", varcompare1)]
+    for (s in 1:3) {
+      s0 <- (10:12)[s]
+      olders0 <- paste0("older", s0)
+      SampleDiff <- NULL
+      j <- 2; m <- 1; ge <- 3
+      zi <- zi00N[[ii]][[jj]][[s]][[j]][[ge]][[m]] # [[ii]][[jj]][[dd]][[s]][[j]][[ge]][[m]]
+      # age s=10/nuclear j/agHHdef m. There is no cluster option layer for 1st run results.
+      zid <- lapply(zi, "[[", "level.data")
+      zidd <- lapply(zi, "[[", "diff.data")
+      # pick the last item of data list which has the least num of obs (this is data to use for all specifications)
+      # most-number data
+      zidd1 <- zidd[[1]]
+      zid1 <- zid[[1]][uniquid %in% zidd1[, uniquid], ] # this has only a part of covariates
+      zid2 <- zid[[length(zid)]] # this has all covariates
+      zid2[, tee := 1:.N, by = uniquid]
+      zid2[, Age := age2^(.5)]
+      # least number data
+      zidd <- zidd[[length(zidd)]]
+      z1 <- zid2[uniquid %in% zidd[, uniquid], ]
+      # thrown away obs: obs only found in most number data
+      ii.thrown <- unique(zid2[!(uniquid %in% zid2[, uniquid]), uniquid])
+      # kept obs: obs kept in least number data
+      ii.kept <- unique(zid2[(uniquid %in% zid2[, uniquid]), uniquid])
+      # if no obs is thron away, originl sample == regression sample
+      #if (length(ii.thrown) == 0) next
+      # add hdagHH from original data
+      yrXvars <- grepout(paste0(yrx, "$"), colnames(zid2))
+      yrXvars <- yrXvars[!grepl("^pc|Sib|hdsex|\\.agH", yrXvars)]
+      yrXvars0 <- gsub(paste0("\\.", yrx), "", yrXvars)
+      yrXvars1 <- yrXvars[!grepl("Sib", yrXvars)]
+      yrXvars10 <- gsub(paste0("\\.", yrx), "", yrXvars1)
+      # Get agHH def: In estimation, each agHH defs were renamed to "agHH".
+      yrXvars10 <- gsub("^agHH$", aghh.defs[1], yrXvars10)
+      yrXvars10 <- c("hdagHH", "isagHH", "ocagHH", "hdsex", "pcland", "pcnlasset", yrXvars10)
+      # Add covariates from original data. Conditioning on survey year is meaningless 
+      #   for asset and latrine and own piped water variables because I copied 
+      #   their baseline values to future years.
+      if (ii == 1) 
+        yzw.vars1 <- yzw[survey == 1999, c("uniquid", yrXvars10), with = F] else
+        yzw.vars1 <- yzw[survey == 2002, c("uniquid", yrXvars10), with = F]
+      setkey(yzw.vars1, uniquid); setkey(zid2, uniquid)
+      z12 <- yzw.vars1[zid2]
+      # agHH are demeaned, so drop and keep undemeaned agHHs from yzw.
+      z12[, agHH := NULL]
+      for (v2 in c("sex", "agHH0", "hdagHH", "isagHH", "ocagHH",
+        #"OldSibF", "OldSibM", #"OldAgSibF", "OldAgSibM", 
+        "hd.edulevel.primary", "hd.edulevel.secondary", 
+        "sp.edulevel.primary", "sp.edulevel.secondary")) {
+        V2 <- paste0(toupper(substr(v2, 1, 1)), substr(v2, 2, nchar(v2)))
+        z12[, (V2) := eval(parse(text = v2))]
+      }
+      # UD covariates: Created in SampleSelectionDemeaning.rnw. Need to get from zEm.1999
+      zud <- zEm.1999[, .(uniquid, tee, UDhdsex, UDnonmuslim, UDflooded, UDOldSibF, UDOldSibM)]
+      setkey(zud, uniquid, tee); setkey(z12, uniquid, tee); 
+      z12 <- zud[z12]
+      # HdagHH changes. tee == 2 has more HadgHH == 1. Use tee == 2 values.
+      z12[, HdagHH := HdagHH[tee==2], by = uniquid]
+      # 4002.04: totalland = 5 decimal, 5 members => pcland = 1 decimal
+      z12[, pclandDec := pcland]
+      #"per member nonland asset (1000 tk)",
+      # totalvalue is deflated with 1million (1000000). Multiply with 1000 to get 1000 Tk units.
+      z12[, pcnlasset1000 := pcnlasset*1000]
+      # Keep only rd 1 values. (Rd 1 values are copied already, do it again to make sure.)
+      z12[, pclandDec := pclandDec[1], by = uniquid]
+      z12[, pcnlasset1000 := pcnlasset1000[1], by = uniquid]
+      setnames(z12, c("schoolp"), c("Enrolled"), skip_absent = T)
+      z.0 <- z12[uniquid %in% c(ii.thrown, ii.kept), ]
+      z.1 <- z12[uniquid %in% ii.kept, ]
+      # binary variables
+      for (v in grepout("AgH|Hd|Is|Oc|^Sex|^Sp|^Ku|^Own", colnames(z12))) {
+        # z.0: One of zFm.1999, zEm.1999, zSm.1999
+        # z.1: obs in z1 that are also in the least-number data 
+        d1 <- as.numeric(unlist(z.0[tee == 1, v, with = F]))
+        d2 <- as.numeric(unlist(z.1[tee == 1, v, with = F]))
+        ttested <- t.test(d1, d2)
+        # equality of proportions test: Failures, successes are in rows, columns are groups
+        # note: mean values are subtracted but will not affect inference
+        proptest <- prop.test(cbind(table(d1), table(d2)))
+        # Fisher: smaller p value indicates unlikeliness of having same proportions
+        # Rate in least-number data is tested against the rate in original data
+        fishertest <- binom.test(sum(d2==1, na.rm = T), length(d2), mean(d1, na.rm = T))
+        SampleDiff <- rbind(SampleDiff, 
+          c(zSobj[jj], olders0, v, 
+            c(ttested$est, ttested$p.value, proptest$p.value, fishertest$p.value))
+        )
+      }
+      # continuous variables
+      for (v in c(varcompare2, varcompare3)) {
+        d1 <- as.numeric(unlist(z.0[tee == 1, v, with = F]))
+        d2 <- as.numeric(unlist(z.1[tee == 1, v, with = F]))
+        ttested <- t.test(d1, d2)
+        SampleDiff <- rbind(SampleDiff, 
+         c(zSobj[jj], olders0 , v, 
+            c(ttested$est, ttested$p.value, NA, NA))
+        )
+     }
+     colnames(SampleDiff) <- c("sample", "age", "variables", 
+         "original", "regression", "t", "chisquared", "binomial")
+       SampleDiff <- data.table(SampleDiff)
+     for (j in c("original", "regression", "t", "chisquared", "binomial")) 
+         set(SampleDiff, j = j, value = as.numeric(as.character(SampleDiff[[j]])))
+       Sample.Diff <- rbind(Sample.Diff, SampleDiff)
+       SDiff.print = copy(SampleDiff)
+     for (j in c("original", "regression", "t", "chisquared", "binomial")) 
+         SDiff.print[, (j) := formatC(eval(parse(text=j)), digits = 4, format = "f")]
+       setnames(SDiff.print, c("original", "regression", "t", "chisquared", "binomial"), 
+         c("original", paste0("\\mpage{", boxsize, 
+          "cm}{\\hfil DID with\\\\\\hfil covariates\\setlength{\\baselineskip}{8pt}}"), 
+          "$t$", "$\\chi^{2}$", "binomial"))
+     SDiff.print <- rbind(as.matrix(SDiff.print), 
+        c("", "", "n", nrow(z.0[tee == 1, ]), nrow(z.1[tee == 1, ]), "", "", ""))
+     SDiff.print <- a2b(SDiff.print, "NA", "")
+     write.tablev(latextab(SDiff.print[, -(1:2)], delimiterline = NULL, 
+        hcenter = c(4, rep(boxsize, ncol(SDiff.print)-3)),
+        hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(SDiff.print)-3)), 
+        hright = c("\\hfill", rep("$", ncol(SDiff.print)-3)),
+        headercolor = "gray90", alternatecolor = "paleblue"), 
+        paste0(pathsaveThisVer, "SampleDifferenceContrast_", olders0, 
+          "_", zSobj[jj], ".tex"), colnamestrue = F)
+    }  # s
+  }  # jj
+}  # ii
+saveRDS(Sample.Diff, paste0(pathsaveThisVer,
+   "SampleDiffRegressionAndOriginalDataTTests.rds"))
+
+
+<<orig reg sample difference, echo = F, warning = F>>=
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+zEm.1999 <- readRDS(paste0(pathsaveThisVer, "zEm1999.rds"))
+zEm.1999.old <- readRDS(paste0(pathsave0, "zEm1999.rds"))
+zSm.1999 <- readRDS(paste0(pathsaveThisVer, "zSm1999.rds"))
+zEp.2002 <- readRDS(paste0(pathsaveThisVer, "zEp2002.rds"))
+zEp.1999 <- readRDS(paste0(pathsaveThisVer, "zEp1999.rds"))
+zSp.2002 <- readRDS(paste0(pathsaveThisVer, "zSp2002.rds"))
+zSp.1999 <- readRDS(paste0(pathsaveThisVer, "zSp1999.rds"))
+# Recreate OldSib in zEm.1999.old
+  setorder(zEm.1999.old, hh, survey, -age)
+  zEm.1999.old[, c("schoolpF", "schoolpM", "SibF", "SibM") := 0L]
+  zEm.1999.old[grepl("1|f", sex), schoolpF := schoolp]
+  zEm.1999.old[grepl("0|^m", sex), schoolpM := schoolp]
+  zEm.1999.old[grepl("1|f", sex), SibF := 1L]
+  zEm.1999.old[grepl("0|^m", sex), SibM := 1L]
+  zEm.1999.old[sd == 1, OldSchSibF := cumsum(schoolpF), by = .(hh, survey)]
+  zEm.1999.old[sd == 1, OldSchSibM := cumsum(schoolpM), by = .(hh, survey)]
+  zEm.1999.old[sd == 1, OldSibF := cumsum(SibF), by = .(hh, survey)]
+  zEm.1999.old[sd == 1, OldSibM := cumsum(SibM), by = .(hh, survey)]
+  zEm.1999.old[sd == 1, OldSibF := OldSibF - SibF]
+  zEm.1999.old[sd == 1, OldSibM := OldSibM - SibM]
+  # sd == 0 entries of these variables: NA => 0 
+  for (vv in c("OldSibF", "OldSibM", "OldSchSibF", "OldSchSibM"))
+    zEm.1999.old[eval(parse(text=paste0("is.na(", vv, ")"))), (vv) := 0L]
+  zEm.1999.old[, c("schoolpF", "schoolpM", "SibF", "SibM") := NULL]
+samples <- c("main", "placebo")
+z23 <- c("z2", "z3")
+zsobj <- c("zmobj", "zpobj")
+zsobj2 <- c("zmobj2", "zpobj2")
+zpobj <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[c(1, 3)]
+zmobj <- c("zEm.1999", "zSm.1999")[1]
+zmobj2 <- c("zEm", "zSm")
+zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")[c(1, 3)]
+varcompare01 <- c("Enrolled", "agHH", "hdagHH", "program",
+  "sex", "nonmuslim", 
+  "kutchalatrine.yr2", "ownwater.yr2", 
+  "hd.edulevel.primary", "hd.edulevel.secondary", 
+  "sp.edulevel.primary", "sp.edulevel.secondary")
+varcompare2 <- c("age", "yield")
+varcompare3 <- c("OldSibF", "OldSibM", "pcland100", "pcnlasset1000")
+boxsize <- 1.2
+Sample.Diff <- NULL
+zi00N <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+for (ii in 1) {
+  zSobj <- get(zsobj[ii])
+  yrx <- yrXs[ii]
+  varcompare1 <- gsub("yr2", yrx, varcompare01)
+  if (any(grepl("p", zSobj))) 
+    varcompare1 <- varcompare1[!grepl("nonmu", varcompare1)]
+  dst0 <- vector("list", length = length(10:12)) # s
+  dst <- vector("list", length = length(zSobj)) # jj
+  for (jj in 1:length(zSobj)) {
+    dst[[jj]] <- dst0
+    for (s in 1:3) {
+      s0 <- (10:12)[s]
+      olders0 <- paste0("older", s0)
+      SampleDiff <- NULL
+      dd <- m <- 1; j <- 2; ge <- 3
+      zi <- zi00N[[ii]][[jj]][[s]][[j]][[ge]][[m]] # [[ii]][[jj]][[dd]][[s]][[j]][[ge]][[m]]
+      # least-number data
+      # pick the last item of data list which has the least num of obs (this is data to use for all specifications)
+      zid <- lapply(zi, "[[", "level.data")
+      zidd <- lapply(zi, "[[", "diff.data")
+      # most-number data
+      zid1 <- zid[[1]]
+      zidd1 <- zidd[[1]]
+      # least number data
+      zid <- zid[[length(zid)]]
+      zidd <- zidd[[length(zidd)]]
+      zid <- zid[uniquid %in% zidd[, uniquid], ]
+      zid1 <- zid1[uniquid %in% zidd1[, uniquid], ]
+      # thrown away obs: obs only found in most number data
+      ii.thrown <- unique(zid1[!(uniquid %in% zid[, uniquid]), uniquid])
+      # kept obs: obs kept in least number data
+      ii.kept <- unique(zid1[(uniquid %in% zid[, uniquid]), uniquid])
+      # if no obs is thron away, originl sample == regression sample
+      #if (length(ii.thrown) == 0) next
+      # original data: zEm1999
+      z1 = copy(get(zSobj[jj]))
+      # old data (ages 8- 20 years old), current zEm.1999 is 10-18
+      z1 = copy(zEm.1999.old)
+      z1[, tee := 1:.N, by = uniquid]
+#       zz1 <- unique(zEm.1999.old[, .(uniquid, survey, hdagHH, AgeIn1999)])
+#       zz1[hdagHH <= 0, HdagHH := 0L]
+#       zz1[hdagHH > 0, HdagHH := 1L]
+#       zz1[, hdagHH := NULL]
+#       setnames(zz1, "AgeIn1999", "Agein1999")
+#       setkey(zz1, uniquid, survey)
+#       setkey(z1, uniquid, survey)
+#       if (any(grepl("hdagHH", colnames(z1)))) z1[, hdagHH := NULL]
+#       # use zz1 (zEm.1999) as base to check how much obs are stripped in 
+#       # regression data 
+#       z2 <- z1[zz1]
+#       #z1 <- zz1[z1]
+#       # HdagHH changes. tee == 2 has more HadgHH == 1. Use tee == 2 values.
+      z2 = copy(z1)
+      table0(z2[, .(survey, hdagHH)])
+#      z2[, HdagHH := HdagHH[tee==2], by = uniquid]
+      setnames(z2, c("schoolp"), c("Enrolled"))
+      yrXvars <- grepout(paste0(yrx, "$"), colnames(z2))
+      yrXvars <- yrXvars[!grepl("^pc", yrXvars)]
+      yrXvars0 <- gsub(paste0("\\.", yrx), "", yrXvars)
+      z2[, (yrXvars0) := 0L]
+      for (yy in 1:length(yrXvars))
+        set(z2, i = which(z2[["tee"]] == 1 & z2[[yrXvars[yy]]] > 0), 
+          j = grep(paste0(yrXvars0[[yy]], "$"), colnames(z2)), value = 1L)
+      z2[, (yrXvars0) := .SD[tee == 1], by = uniquid, .SDcols = yrXvars0]
+      for (v2 in grepout("^agH|^sex$|^hda|^ocag|^hd\\..*y$|^sp\\..*y$|^ku|^own", yrXvars0)) {
+          V2 <- paste0(toupper(substr(v2, 1, 1)), substr(v2, 2, nchar(v2)))
+          z2[, (V2) := eval(parse(text = v2))]
+      }
+      #"per member land holding (decimal*1000)" (data = raw/(1000*1000))
+      #"per member nonland asset (1000 tk)",
+      z2[, pcland100 := eval(parse(text=paste0("pcland.", yrx, "*100")))]
+      z2[, pcnlasset1000 := eval(parse(text=paste0("pcnlasset.", yrx, "*1000")))]
+      z2[, pcland100 := pcland100[1], by = uniquid]
+      z2[, pcnlasset1000 := pcnlasset1000[1], by = uniquid]
+#      z2[, HdagHH := HdagHH[tee==2], by = uniquid]
+      # below z21 gives 735 obs as in the first manuscript table. z22 gives 689.
+      z21 <- z2[10 <= AgeIn1999 & AgeIn1999 <= 20 & survey == 1999, ]
+      z22 <- z2[10 <= AgeIn1999 & AgeIn1999 <= 18 & survey == 1999, ]
+      unlist(lapply(list(z21, z22), nrow))
+      # z.0: 
+      z.0 <- z21[uniquid %in% ii.thrown, ]
+      z.1 <- z21[uniquid %in% ii.kept, ]
+      # binary variables
+      for (v in grepout("^AgH|^Sex|^Hd|^Sp|^Ku|^Own", colnames(z2))) {
+        # z1: one of zFm.1999, zEm.1999, zSm.1999
+        # z.1: obs in z1 that are also in the least-number data 
+        d1 <- as.numeric(unlist(z21[tee == 1, v, with = F]))
+        d2 <- as.numeric(unlist(z.1[tee == 1, v, with = F]))
+        ttested <- t.test(d1, d2)
+        # equality of proportions test: Failures, successes are in rows, columns are groups
+        # note: mean values are subtracted but will not affect inference
+        proptest <- prop.test(cbind(table(d1), table(d2)))
+        # Fisher: smaller p value indicates unlikeliness of having same proportions
+        # Rate in least-number data is tested against the rate in original data
+        fishertest <- binom.test(sum(d2==1), length(d2), mean(d1, na.rm = T))
+        SampleDiff <- rbind(SampleDiff, 
+          c(zSobj[jj], olders0, v, 
+            c(ttested$est, ttested$p.value, proptest$p.value, fishertest$p.value))
+        )
+      }
+      # continuous variables
+      for (v in c(varcompare2, varcompare3)) {
+        d1 <- as.numeric(unlist(z2[tee == 1, v, with = F]))
+        d2 <- as.numeric(unlist(z.1[tee == 1, v, with = F]))
+        ttested <- t.test(d1, d2)
+        SampleDiff <- rbind(SampleDiff, 
+         c(zSobj[jj], olders0 , v, 
+            c(ttested$est, ttested$p.value, NA, NA))
+        )
+      }
+      colnames(SampleDiff) <- c("sample", "age", "variables", 
+        "original", "regression", "t", "chisquared", "binomial")
+      SampleDiff <- data.table(SampleDiff)
+      for (j in c("original", "regression", "t", "chisquared", "binomial")) 
+        set(SampleDiff, j = j, value = as.numeric(as.character(SampleDiff[[j]])))
+      source(paste0(pathprogram, "substitution_table.R"))
+      rn <- SampleDiff[, variables]
+      for (ss in 1:nrow(sbt)) {
+        if (any(grepl(sbt[ss, "org"], rn)))
+          rn[grepl(sbt[ss, "org"], rn)] <- sbt[ss, "changedto"]
+      }
+      SampleDiff[, variables := rn]
+      # reorder
+      reo <- "Enr|gricul.*old|rain|high|low|Yi|Prog|Age|Sex|^age$|d ed.*pr|d ed.*sec|e ed.*pr|e ed.*sec|sex|bro|sis|holdi|asse|wat|toi|Mus|Flo"
+      reo <- unlist(strsplit(reo, "\\|"))
+      reo2 <- NULL
+      for (rr in reo) reo2 <- c(reo2, grep(rr, unlist(SampleDiff[, 3])))
+      #reo2 <- c(t(cbind(reo2, reo2+1)))
+      SampleDiff <- SampleDiff[reo2, ]
+      Sample.Diff <- rbind(Sample.Diff, SampleDiff)
+      SDiff.print = copy(SampleDiff)
+      for (j in c("original", "regression", "t", "chisquared", "binomial")) 
+        SDiff.print[, (j) := formatC(eval(parse(text=j)), digits = 4, format = "f")]
+      setnames(SDiff.print, c("original", "regression", "t", "chisquared", "binomial"), 
+        c("original", #paste0("\\begin{minipage}{", boxsize, 
+         #"cm}\\hfil DID with\\\\\\hfil covariates\\setlength{\\baselineskip}{8pt}\\end{minipage}"), 
+         "regression", 
+         "\\hfil$t$", "\\hfil$\\chi^{2}$", "\\hfil binomial"))
+      SDiff.print <- rbind(as.matrix(SDiff.print), 
+        c("", "", "n", nrow(z21[tee == 1, ]), nrow(z.1[tee == 1, ]), "", "", ""))
+      SDiff.print <- a2b(SDiff.print, "NA", "")
+      SDiff.print2 <- SDiff.print[, -(1:2)]
+      ltb <- latextab(SDiff.print2, delimiterline = NULL, 
+        hcenter = c(4, rep(boxsize, ncol(SDiff.print2)-1)),
+        hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(SDiff.print2)-1)), 
+        hright = c("\\hfill", rep("$", ncol(SDiff.print2)-1)),
+        addseparatingcols = 2, separatingcolwidth = .1, 
+        separatingcoltitle = c("\\textsf{Means}", "\\textsf{$p$-values (\\%)}"),
+        headercolor = NULL, alternatecolor = NULL) 
+        #headercolor = "gray90", alternatecolor = "paleblue")
+      ltb <- c(
+          ltb[1, ], "\\hline",
+          ltb[2:(nrow(ltb)-1), ], "\\hline",
+          ltb[nrow(ltb), ]
+        )
+      ltb <- ltb[!grepl("Hdag|head def", ltb)]
+      ltb <- gsub("NA", "", ltb)
+      ltb <- gsub("agri", "Agri", ltb)
+      write.tablev(ltb, 
+        paste0(pathsaveThisVer, "OLD_SampleDifferenceContrast_", olders0, 
+          "_", zSobj[jj], ".tex"), colnamestrue = F)
+    }  # s
+  }  # jj
+}  # ii
+saveRDS(Sample.Diff, paste0(pathsaveThisVer,
+   "OLD_SampleDiffRegressionAndOriginalDataTTests.rds"))
+#Sample.Diff <- readRDS(paste0(pathsaveThisVer,
+#   "SampleDiffRegressionAndOriginalDataTTests.rds"))
+@
+
+<<Table 1 ag nonag difference AgNonAgDiffTableForJHR, echo = F, warning = F>>=
+# use yzw to get undemeaned dummies
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+zE = copy(yzw[grepl("111|110", exist), ])
+yrXs <- c("yr2", "yr3")
+varcompare01 <- c("Enrolled", "agHH", "hdagHH", "program",
+  "sex", "hdsex", "UDnonmuslim", "UDflooded",
+  "kutchalatrine.yr2", "ownwater.yr2", 
+  "hd.edulevel.primary", "hd.edulevel.secondary", 
+  "sp.edulevel.primary", "sp.edulevel.secondary")
+varcompare2 <- c("Age", "yield")
+varcompare3 <- c("pclandDec", "pcnlasset1000", 
+  "rainfallMeanY", "highMeanY", "lowMeanY",
+  "UDOldSibF", "UDOldSibM" #,"OldAgSibF", "OldAgSibM",
+)
+boxsize <- 1.2
+Sample.Diff <- NULL
+zi00 <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+s0 <- 10
+for (ii in 1) {
+  yrx <- yrXs[ii]
+  varcompare1 <- gsub("yr2", yrx, varcompare01)
+  for (m in 1:4) {
+      SampleDiff <- NULL
+      jj <- s <- 1; j <- 2; ge <- 3
+      zi <- zi00[[ii]][[jj]][[s]][[j]][[ge]][[m]]          # [[ii]][[jj]][[dd]][[s]][[j]][[ge]][[m]]
+      # age s=10/all children j/agHHdef m. There is no cluster option layer for 1st run results.
+      zid <- lapply(zi, "[[", "level.data")
+      zidd <- lapply(zi, "[[", "diff.data")
+      # most-number data
+      zidd1 <- zidd[[1]]
+      zid1 <- zid[[1]][uniquid %in% zidd1[, uniquid], ] # this has only a part of covariates
+      zid2 <- zid[[length(zid)]] # this has all covariates
+      zid2[, tee := 1:.N, by = uniquid]
+      zid2[, Age := age2^(.5)]
+      # least number data
+      zidd <- zidd[[length(zidd)]]
+      z1 <- zid2[uniquid %in% zidd[, uniquid], ]
+      # thrown away obs: obs only found in most number data
+      ii.thrown <- unique(zid2[!(uniquid %in% zidd[, uniquid]), uniquid])
+      # kept obs: obs kept in least number data
+      ii.kept <- unique(zid2[(uniquid %in% zidd[, uniquid]), uniquid])
+      # if no obs is thron away, originl sample == regression sample
+      #if (length(ii.thrown) == 0) next
+      # yrx variables: demeaned => undemeaned (retrieve from yzw data)
+      yrXvars <- grepout(paste0(yrx, "$"), colnames(z1))
+      # variables except OldSib (copied already as undemeaned UDOldSib...)
+      yrXvars <- yrXvars[!grepl("^pc|Sib|hdsex|\\.agH", yrXvars)]
+      yrXvars1 <- gsub(paste0("\\.", yrx), "", yrXvars)
+      yrXvars10 <- gsub("^agHH$", aghh.defs[m], yrXvars1)
+      yrXvars10 <- c("rainfallMeanY", "highMeanY", "lowMeanY", "hdsex", "pcland", "pcnlasset", yrXvars10)
+      yzw.vars1 <- yzw[survey == 1999, c("uniquid", yrXvars10), with = F]
+      # base: z1 (obs used in FDestimation), not zid2 (most numbered data in fdestimation)
+      setkey(yzw.vars1, uniquid); setkey(z1, uniquid)
+      z12 <- yzw.vars1[z1]
+      # UD covariates: Created in SampleSelectionDemeaning.rnw. Need to get from zEm.1999
+      zud <- zEm.1999[, .(uniquid, tee, UDhdsex, UDnonmuslim, UDflooded, UDOldSibF, UDOldSibM)]
+      setkey(zud, uniquid, tee); setkey(z12, uniquid, tee); 
+      z12 <- zud[z12]
+      z12[, pclandDec := pcland/100] # in acre
+      z12[, pclandDec := pcland*100] # in decimal
+      z12[, pcnlasset1000 := pcnlasset*1000] # in 1000 BDT
+      z12[, pclandDec := pclandDec[1], by = uniquid]
+      z12[, pcnlasset1000 := pcnlasset1000[1], by = uniquid]
+      setnames(z12, c("schoolp"), c("Enrolled"), skip_absent = T)
+      #for (yy in 1:length(yrXvars1))
+      #  set(zid, i = which(zid[["tee"]] == 1 & zid[[yrXvars[yy]]] > 0), 
+      #    j = grep(paste0("^", yrXvars0[[yy]], "$"), colnames(zid)), value = 1L)
+      #zid[, (yrXvars0) := .SD[tee == 1], by = uniquid, .SDcols = yrXvars0]
+      for (v2 in grepout("^agH|^sex|^hd\\.|^sp|^ku|^own", yrXvars10)) {
+          V2 <- paste0(toupper(substr(v2, 1, 1)), substr(v2, 2, nchar(v2)))
+          z12[, (V2) := eval(parse(text = v2))]
+      }
+      z.0 <- z12[eval(parse(text=aghh.defs[m])) == 0L & tee == 1, ]
+      z.1 <- z12[eval(parse(text=aghh.defs[m])) == 1L & tee == 1, ]
+      z01 <- z12[tee == 1, ]
+      # binary variables
+      for (v in grepout("^Enr|LHS|^Sex|^Hd|^Sp|^Ku|^Own|^UDn|^UDfl|^UDhds", colnames(z.1))) {
+        # z1: one of zFm.1999, zEm.1999, zSm.1999
+        # z.1: obs in z1 that are also in the least-number data 
+        d0 <- as.numeric(unlist(z.0[, v, with = F]))
+        d1 <- as.numeric(unlist(z.1[, v, with = F]))
+        d01 <- as.numeric(unlist(z01[, v, with = F]))
+        mean01 <- mean(d01, na.rm = T)
+        ttested <- t.test(d1, d0)
+        # equality of proportions test: Failures, successes are in rows, columns are groups
+        # note: mean values are subtracted but will not affect inference
+        proptest <- prop.test(cbind(table(d1), table(d0)))
+        # Fisher: smaller p value indicates unlikeliness of having same proportions
+        # Rate in least-number data is tested against the rate in original data
+        fishertest <- binom.test(sum(d1==1), length(d1), mean(d0, na.rm = T))
+        SampleDiff <- rbind(SampleDiff, 
+          c(zSobj[jj], paste0("older", s0), v, mean01, 
+            c(ttested$est, ttested$p.value, proptest$p.value, fishertest$p.value))
+        )
+      }
+      # continuous variables
+      for (v in c(varcompare2, varcompare3)) {
+        d0 <- as.numeric(unlist(z.0[, v, with = F]))
+        d1 <- as.numeric(unlist(z.1[, v, with = F]))
+        d01 <- as.numeric(unlist(z01[, v, with = F]))
+        mean01 <- mean(d01, na.rm = T)
+        ttested <- t.test(d1, d0)
+        SampleDiff <- rbind(SampleDiff, 
+         c(zSobj[jj], paste0("older", s0), v, mean01,
+            c(ttested$est, ttested$p.value, NA, NA))
+        )
+      }
+      # substitute variable names
+      source(paste0(pathprogram, "substitution_table.R"))
+      colnames(SampleDiff) <- c("sample", "age", "variables", "overall",
+        "agHH", "nonagHH", "t", "chisquared", "binomial")
+      SampleDiff <- data.table(SampleDiff)
+      rn <- SampleDiff[, variables]
+      for (ss in 1:nrow(sbt)) {
+        if (any(grepl(sbt[ss, "org"], rn)))
+          rn[grepl(sbt[ss, "org"], rn)] <- sbt[ss, "changedto"]
+      }
+      SampleDiff[, variables := rn]
+      SampleDiff <- data.table(SampleDiff)
+      for (j in c("overall", "agHH", "nonagHH", "t", "chisquared", "binomial")) 
+        set(SampleDiff, j = j, value = as.numeric(as.character(SampleDiff[[j]])))
+      Sample.Diff <- rbind(Sample.Diff, SampleDiff)
+      SDiff.print = copy(SampleDiff)
+      for (j in c("overall", "agHH", "nonagHH", "t", "chisquared", "binomial")) 
+        SDiff.print[, (j) := formatC(eval(parse(text=j)), digits = 4, format = "f")]
+      SDiff.print <- rbind(as.matrix(SDiff.print), 
+        c("", "", "n", nrow(z01), nrow(z.1[tee == 1, ]), nrow(z.0[tee == 1, ]), "", "", ""))
+      SDiff.print <- a2b(SDiff.print, "NA", "")
+      write.tablev(
+        latextab(SDiff.print[, -(1:2)], delimiterline = NULL, 
+          hcenter = c(4, rep(boxsize, ncol(SDiff.print)-3)),
+          hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(SDiff.print)-3)), 
+          hright = c("\\hfill", rep("$", ncol(SDiff.print)-3)),
+          headercolor = "gray90", alternatecolor = "paleblue")
+        ,  paste0(pathsaveThisVer, "AgNonAgDiff", c("", "is", "hd", "oc")[m], "older10.tex")
+        ,  colnamestrue = F)
+      if (ii == 1 & m == 1)
+        write.tablev(
+          latextab(SDiff.print[, -c(1:2, 8:9)], delimiterline = NULL, 
+            hcenter = c(5, rep(boxsize, ncol(SDiff.print)-5)),
+            hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(SDiff.print)-5)), 
+            hright = c("\\hfill", rep("$", ncol(SDiff.print)-5)),
+            headercolor = "gray90", alternatecolor = "paleblue")
+          ,  paste0(pathsaveThisVer, "AgNonAgDiffTableForJHR.tex")
+          ,  colnamestrue = F)
+      
+  }  # m
+}  # ii
+saveRDS(Sample.Diff, paste0(pathsaveThisVer,"SampleDiffAgNonAg.rds"))
+<<Table 1 regress ag nonag difference AgNonAgDiffCRSE, echo = F, warning = F>>=
+# use yzw to get undemeaned dummies
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+zE = copy(yzw[grepl("111|110", exist), ])
+yrXs <- c("yr2", "yr3")
+varcompare01 <- c("Enrolled", "agHH", "hdagHH", "program",
+  "sex", "hdsex", "UDnonmuslim", "UDflooded",
+  "kutchalatrine.yr2", "ownwater.yr2", 
+  "hd.edulevel.primary", "hd.edulevel.secondary", 
+  "sp.edulevel.primary", "sp.edulevel.secondary")
+varcompare2 <- c("Age", "yield", "program")
+varcompare3 <- c("pclandDec", "pcnlasset1000", 
+  "rainfallMeanY", "highMeanY", "lowMeanY",
+  "UDOldSibF", "UDOldSibM" #,"OldAgSibF", "OldAgSibM",
+)
+boxsize <- 1.2
+Sample.Diff <- NULL
+zi00 <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+s0 <- 10
+for (ii in 1) {
+  yrx <- yrXs[ii]
+  varcompare1 <- gsub("yr2", yrx, varcompare01)
+  for (m in 1:4) {
+      SampleDiff <- NULL
+      jj <- s <- m <- 1; j <- 2; ge <- 3
+      zi <- zi00[[ii]][[jj]][[s]][[j]][[ge]][[m]]          
+      zid <- lapply(zi, "[[", "level.data")
+      zidd <- lapply(zi, "[[", "diff.data")
+      # most-number data
+      zidd1 <- zidd[[1]]
+      zid1 <- zid[[1]][uniquid %in% zidd1[, uniquid], ] # this has only a part of covariates
+      zid2 <- zid[[length(zid)]] # this has all covariates
+      zid2[, tee := 1:.N, by = uniquid]
+      zid2[, Age := age2^(.5)]
+      # least number data
+      zidd <- zidd[[length(zidd)]]
+      z1 <- zid2[uniquid %in% zidd[, uniquid], ]
+      # thrown away obs: obs only found in most number data
+      ii.thrown <- unique(zid2[!(uniquid %in% zidd[, uniquid]), uniquid])
+      # kept obs: obs kept in least number data
+      ii.kept <- unique(zid2[(uniquid %in% zidd[, uniquid]), uniquid])
+      # yrx variables: demeaned => undemeaned (retrieve from yzw data)
+      yrXvars <- grepout(paste0(yrx, "$"), colnames(z1))
+      # variables except OldSib (copied already as undemeaned UDOldSib...)
+      yrXvars <- yrXvars[!grepl("^pc|Sib|hdsex|\\.agH", yrXvars)]
+      yrXvars1 <- gsub(paste0("\\.", yrx), "", yrXvars)
+      yrXvars10 <- gsub("^agHH$", aghh.defs[m], yrXvars1)
+      yrXvars10 <- c("rainfallMeanY", "highMeanY", "lowMeanY", "hdsex", "pcland", "pcnlasset", yrXvars10)
+      yzw.vars1 <- yzw[survey == 1999, c("uniquid", yrXvars10), with = F]
+      # base: z1 (obs used in FDestimation), not zid2 (most numbered data in fdestimation)
+      setkey(yzw.vars1, uniquid); setkey(z1, uniquid)
+      z12 <- yzw.vars1[z1]
+      # UD covariates: Created in SampleSelectionDemeaning.rnw. Need to get from zEm.1999
+      zud <- zEm.1999[, .(uniquid, tee, UDhdsex, UDnonmuslim, UDflooded, UDOldSibF, UDOldSibM)]
+      setkey(zud, uniquid, tee); setkey(z12, uniquid, tee); 
+      z12 <- zud[z12]
+      z12[, pclandDec := pcland/100] # in acre
+      z12[, pclandDec := pcland*100] # in decimal
+      z12[, pcnlasset1000 := pcnlasset*1000] # in 1000 BDT
+      z12[, pclandDec := pclandDec[1], by = uniquid]
+      z12[, pcnlasset1000 := pcnlasset1000[1], by = uniquid]
+      setnames(z12, c("schoolp"), c("Enrolled"), skip_absent = T)
+      for (v2 in grepout("^agH|^sex|^hd\\.|^sp|^ku|^own", yrXvars10)) {
+          V2 <- paste0(toupper(substr(v2, 1, 1)), substr(v2, 2, nchar(v2)))
+          z12[, (V2) := eval(parse(text = v2))]
+      }
+      z12[, c("AgHH", "NonAgHH") := 0L]
+      z12[eval(parse(text=aghh.defs[m])) == 0L, NonAgHH := 1L]
+      z12[eval(parse(text=aghh.defs[m])) == 1L, AgHH := 1L]
+      z01 <- z12[tee == 1, ]
+      z.0 <- z01[eval(parse(text=aghh.defs[m])) == 0L, ]
+      z.1 <- z01[eval(parse(text=aghh.defs[m])) == 1L, ]
+      ClusterVec <- as.numeric(z01[, thana])
+      SampleDiff <- NULL
+      # binary variables
+      for (v in grepout("^Enr|LHS|^Sex|^Hd|^Sp|^Ku|^Own|^UDn|^UDfl|^UDhds", colnames(z.1))) {
+        form1 <- paste(v, "~ -1 + AgHH + NonAgHH")
+        rg1 <- lm(as.formula(form1), data = z01)
+        ci1 <- clubSandwich::conf_int(rg1, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+          cluster = ClusterVec, coefs = "All", p_values = T)
+        form2 <- paste(v, "~", aghh.defs[m])
+        rg2 <- lm(as.formula(form2), data = z01)
+        ci2 <- clubSandwich::conf_int(rg2, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+          cluster = ClusterVec, coefs = "All", p_values = T)
+        form3 <- paste(v, "~ +1")
+        rg3 <- lm(as.formula(form3), data = z01)
+        ci3 <- clubSandwich::conf_int(rg3, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+          cluster = ClusterVec, coefs = "All", p_values = T)
+        d0 <- as.numeric(unlist(z.0[, v, with = F]))
+        d1 <- as.numeric(unlist(z.1[, v, with = F]))
+        d01 <- as.numeric(unlist(z01[, v, with = F]))
+        mean01 <- mean(d01, na.rm = T)
+        ttested <- t.test(d1, d0)
+        SampleDiff <- rbind(SampleDiff, 
+          rbind(
+            c(zSobj[jj], paste0("older", s0), v, 
+              mean01, ttested$est, 
+              ttested$p.value, ci2[2, "p_val"])
+          , c("", "", paste0("se$_{", v, "}$"), ci3$SE, ci2[, "SE"], "", "")
+          )
+        )
+      }
+      # continuous variables
+      for (v in c(varcompare2, varcompare3)) {
+        form1 <- paste(v, "~ -1 + AgHH + NonAgHH")
+        rg1 <- lm(as.formula(form1), data = z01)
+        ci1 <- clubSandwich::conf_int(rg1, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+          cluster = ClusterVec, coefs = "All", p_values = T)
+        form2 <- paste(v, "~", aghh.defs[m])
+        rg2 <- lm(as.formula(form2), data = z01)
+        ci2 <- clubSandwich::conf_int(rg2, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+          cluster = ClusterVec, coefs = "All", p_values = T)
+        form3 <- paste(v, "~ +1")
+        rg3 <- lm(as.formula(form3), data = z01)
+        ci3 <- clubSandwich::conf_int(rg3, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+          cluster = ClusterVec, coefs = "All", p_values = T)
+        d0 <- as.numeric(unlist(z.0[, v, with = F]))
+        d1 <- as.numeric(unlist(z.1[, v, with = F]))
+        d01 <- as.numeric(unlist(z01[, v, with = F]))
+        mean01 <- mean(d01, na.rm = T)
+        std01 <- var(d01, na.rm = T)^(.5)
+        ttested <- t.test(d1, d0)
+        SampleDiff <- rbind(SampleDiff, 
+          rbind(
+            c(zSobj[jj], paste0("older", s0), v, 
+              mean01, ttested$est, 
+              ttested$p.value, ci2[2, "p_val"])
+          , c("", "", paste0("se$_{", v, "}$"), ci3$SE, ci2[, "SE"], "", "")
+          )
+        )
+      }
+      # substitute variable names
+      source(paste0(pathprogram, "substitution_table.R"))
+      colnames(SampleDiff) <- c("sample", "age", "variables", "overall",
+        "agHH", "nonagHH", "t", "Satterthwaite")
+      SampleDiff <- data.table(SampleDiff)
+      rn <- SampleDiff[, variables]
+      for (ss in 1:nrow(sbt)) {
+        if (any(grepl(sbt[ss, "org"], rn)))
+          rn[grepl(sbt[ss, "org"], rn)] <- sbt[ss, "changedto"]
+      }
+      SampleDiff[, variables := rn]
+      SampleDiff <- data.table(SampleDiff)
+      for (j in c("overall", "agHH", "nonagHH", "t", "Satterthwaite")) 
+        set(SampleDiff, j = j, value = as.numeric(as.character(SampleDiff[[j]])))
+      Sample.Diff <- rbind(Sample.Diff, SampleDiff)
+      # reorder
+      reo <- "Enr|rain|high|low|Yi|Prog|Age|Sex|d ed|e ed|sex|bro|sis|hold|asse|wat|toi|Mus|Flo"
+      reo <- unlist(strsplit(reo, "\\|"))
+      reo2 <- NULL
+      for (rr in reo) reo2 <- c(reo2, grep(rr, unlist(SampleDiff[, 3])))
+      reo2 <- c(t(cbind(reo2, reo2+1)))
+      SampleDiff <- SampleDiff[reo2, ]
+      SDiff.print = copy(SampleDiff)
+      for (j in c("overall", "agHH", "nonagHH", "t", "Satterthwaite")) 
+        SDiff.print[, (j) := formatC(eval(parse(text=j)), digits = 4, format = "f")]
+      SDiff.print <- rbind(as.matrix(SDiff.print), 
+        c("", "", "n", nrow(z01), nrow(z.1[tee == 1, ]), nrow(z.0[tee == 1, ]), "", ""))
+      SDiff.print <- a2b(SDiff.print, "   NA", "")
+      iispace <- which(
+        SDiff.print[, 3]=="" & 
+          !grepl("interaction with|^n$|bar.R|thana dum|mean at|raw DID", SDiff.print[, 3])
+          )
+      iispace <- iispace-1
+      iispace2 <- iispace[seq(2, length(iispace), 2)]
+      for (kk in c("overall", "agHH", "nonagHH")) 
+        SDiff.print[iispace+1, kk] <- 
+          paste0("(", 
+            formatC(as.numeric(SDiff.print[iispace+1, kk]), digits = 3, format = "f")
+          , ")")
+      for (kk in c("t", "Satterthwaite")) 
+        SDiff.print[iispace, kk] <- 
+          paste0("[", 
+            formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = "f")
+          , "]")
+      ltb <- latextab(SDiff.print[, -(1:2)], delimiterline = NULL, 
+          hcenter = c(4, rep(boxsize, ncol(SDiff.print)-3)),
+          hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(SDiff.print)-3)), 
+          hright = c("\\hfill", rep("$", ncol(SDiff.print)-3)),
+          headercolor = "gray90", 
+          addseparatingcols = 3, separatingcolwidth = .1, 
+          separatingcoltitle = c("\\textsf{Means}", "\\textsf{$p$-values (\\%)}"),
+          adjlskiprows = iispace, adjustlineskip = "-.8ex",
+          alternatecolorManual = c(iispace2, iispace2+1),
+          alternatecolorManualColor = "gray80"
+          )
+      ltb[3, ] <- gsub("\\\\\\\\", "", ltb[3, ])
+      write.tablev(ltb
+        ,  paste0(pathsaveThisVer, "AgNonAgDiff", c("", "is", "hd", "oc")[m], "CRSE.tex")
+        ,  colnamestrue = F)
+      ltb <- latextab(SDiff.print[, -(1:2)], delimiterline = NULL, 
+          hcenter = c(5, rep(boxsize, ncol(SDiff.print)-3)),
+          hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(SDiff.print)-3)), 
+          hright = c("\\hfill", rep("$", ncol(SDiff.print)-3)),
+          headercolor = NULL, 
+          addseparatingcols = 3, separatingcolwidth = .1, 
+          separatingcoltitle = c("\\textsf{Means}", "\\textsf{$p$-values (\\%)}"),
+          adjlskiprows = iispace, adjustlineskip = "-.5ex",
+          alternatecolorManual = c(iispace2, iispace2+1),
+          alternatecolorManualColor = NULL
+          )
+      ltb[3, ] <- gsub("\\\\\\\\", "", ltb[3, ])
+      write.tablev(ltb
+        ,  paste0(pathsaveThisVer, "AgNonAgDiff", c("", "is", "hd", "oc")[m], "CRSE_JHR.tex")
+        ,  colnamestrue = F)
+  }  # m
+}  # ii
+saveRDS(Sample.Diff, paste0(pathsaveThisVer,"SampleDiffAgNonAgCRSE.rds"))
+@
+
+<<contrast ag def difference AgDefComparisonCRSE AgDefComparisonCRSE_JHR, echo = F, warning = F>>=
+# use yzw to get undemeaned dummies
+yzw <- qread(paste0(pathsave0, "DataForJHR.qs"))
+yzw[, HeadAge := age[grepl("head", reltohead)][1], by = hh]
+yzw[, HeadSex := sex[grepl("head", reltohead)][1], by = hh]
+zE = copy(yzw[grepl("111|110", exist), ])
+yrXs <- c("yr2", "yr3")
+varcompare01 <- c("Enrolled", "agHH", "hdagHH", "program",
+  "sex", "hdsex", "UDnonmuslim", "UDflooded",
+  "kutchalatrine.yr2", "ownwater.yr2", 
+  "hd.edulevel.primary", "hd.edulevel.secondary", 
+  "sp.edulevel.primary", "sp.edulevel.secondary")
+varcompare2 <- c("Age", "yield", "program")
+varcompare3 <- c("pclandDec", "pcnlasset1000", 
+  "rainfallMeanY", "highMeanY", "lowMeanY",
+  "UDOldSibF", "UDOldSibM" #,"OldAgSibF", "OldAgSibM",
+)
+boxsize <- 1.2
+Sample.Diff <- NULL
+zi00 <- qread(paste0(pathsaveThisVer, "DID_N_MainResults.qs"))
+resultsN <- qread(paste0(pathsaveThisVer, "FD_N_MainCRCoVSelected_results.qs"))
+ii <- jj <- s <- j <- 1
+s0 <- 10
+aghh.defs2 <- c(aghh.defs, "ocagHHold")
+yrx <- yrXs[ii]
+varcompare1 <- gsub("yr2", yrx, varcompare01)
+jj <- s <- m <- dd <- 1; j <- clnum <- 2; ge <- 3
+zi <-         zi00[[ii]][[jj]][[s]][[j]][[ge]][[m]]          # [[ii]][[jj]][[dd]][[s]][[j]][[ge]][[m]]
+# age s=10/all children j/agHHdef m. There is no cluster option layer for 1st run results.
+zid <- lapply(zi, "[[", "level.data")
+zidd <- lapply(zi, "[[", "diff.data")
+# most-number data
+zidd1 <- zidd[[1]]
+zid1 <- zid[[1]][uniquid %in% zidd1[, uniquid], ] # this has only a part of covariates
+zid2 <- zid[[length(zid)]] # this has all covariates
+zid2[, tee := 1:.N, by = uniquid]
+zid2[, Age := age2^(.5)]
+# least number data
+zidd <- zidd[[length(zidd)]]
+z1 <- zid2[uniquid %in% zidd[, uniquid], ]
+# thrown away obs: obs only found in most number data
+ii.thrown <- unique(zid2[!(uniquid %in% zidd[, uniquid]), uniquid])
+# kept obs: obs kept in least number data
+ii.kept <- unique(zid2[(uniquid %in% zidd[, uniquid]), uniquid])
+# yrx variables: demeaned => undemeaned (retrieve from yzw data)
+yrXvars <- grepout(paste0(yrx, "$"), colnames(z1))
+# variables except OldSib (copied already as undemeaned UDOldSib...)
+yrXvars <- yrXvars[!grepl("^pc|Sib|hdsex|\\.agH", yrXvars)]
+yrXvars1 <- gsub(paste0("\\.", yrx), "", yrXvars)
+yrXvars10 <- gsub("^agHH$", aghh.defs[1], yrXvars1)
+yrXvars10 <- c("rainfallMeanY", "highMeanY", "lowMeanY", "hdsex", "pcland", "pcnlasset", 
+  "isagHH", "hdagHH", "ocagHH", "ocagHHold", "aglabHH", "HeadAge", "HeadSex", yrXvars10)
+yzw.vars1 <- yzw[survey == 1999, c("uniquid", yrXvars10), with = F]
+#yzw.vars <- unique(yzw.vars[, .(hh, agHH0, isagHH, hdagHH, ocagHH, ocagHHold, aglabHH,
+#  pcland, pcnlasset, HeadSex, hd.edulevel.primary, hd.edulevel.secondary, HeadAge)])
+# base: z1 (obs used in FDestimation), not zid2 (most numbered data in fdestimation)
+setkey(yzw.vars1, uniquid); setkey(z1, uniquid)
+z12 <- yzw.vars1[z1]
+# UD covariates: Created in SampleSelectionDemeaning.rnw. Need to get from zEm.1999
+zud <- zEm.1999[, .(uniquid, tee, UDhdsex, UDnonmuslim, UDflooded, UDOldSibF, UDOldSibM)]
+setkey(zud, uniquid, tee); setkey(z12, uniquid, tee); 
+z12 <- zud[z12]
+z12[, pclandDec := pcland/100] # in acre
+z12[, pclandDec := pcland*100] # in decimal
+z12[, pcnlasset1000 := pcnlasset*1000] # in 1000 BDT
+z12[, pclandDec := pclandDec[1], by = uniquid]
+z12[, pcnlasset1000 := pcnlasset1000[1], by = uniquid]
+setnames(z12, c("schoolp"), c("Enrolled"), skip_absent = T)
+setnames(z12, c("LHS"), c("Enrolled"), skip_absent = T)
+for (v2 in grepout("^agH|^sex|^hd\\.|^sp|^ku|^own", yrXvars10)) {
+    V2 <- paste0(toupper(substr(v2, 1, 1)), substr(v2, 2, nchar(v2)))
+    z12[, (V2) := eval(parse(text = v2))]
+}
+CI3 <- NULL
+z13 <- z12[tee == 1, ]
+z13[, hh := as.integer(gsub("\\..*", "", uniquid))]
+for (v in c(grepout("^Enr|^Sex|^Hd|Head|^Agl|^UDn|^UDfl", colnames(z13)), 
+    "program", "pclandDec", "pcnlasset1000")) {
+  z01 <- z13
+  if (v != "Enrolled") z01 <- unique(z13[, c("thana", "hh", aghh.defs2, v), with = F])
+  ClusterVec <- as.numeric(z01[, thana])
+  for (m in 1:length(aghh.defs2)) {
+    # mean by agHH defs
+    z02 <- z01[eval(parse(text=aghh.defs2[m])) == 1L, ]
+    ClusterVec2 <- as.numeric(z02[, thana])
+    form3 <- paste(v, "~ -1 +", aghh.defs2[m])
+    rg3 <- lm(as.formula(form3), data = z02)
+    ci3 <- clubSandwich::conf_int(rg3, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+      cluster = ClusterVec2, coefs = "All", p_values = T)
+    ci3 <- data.table(ci3)
+    ci3[, ag := aghh.defs2[m]]
+    ci3[, Coef := "mean"]
+    ci3[, Variable := v]
+    CI3 <- rbindlist(list(CI3, ci3))
+  }
+  # regress v on agHH0 and ocagHH, which is same as v ~ ocagHH
+  # Intercept: mean of agHH0 == 1L & ocagHH == 0L
+  # ocagHH: deviation from Intecept of agHH0 == 1L & ocagHH == 1L
+  z03 <- z01[agHH0 == 1L, ]
+  ClusterVec3 <- as.numeric(z03[, thana])
+  form4 <- paste(v, "~ ocagHH")
+  rg3 <- lm(as.formula(form4), data = z03)
+  ci3 <- clubSandwich::conf_int(rg3, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+    cluster = ClusterVec3, coefs = "All", p_values = T)
+  ci3 <- data.table(ci3)
+  ci3[, ag := Coef]
+  ci3[, Coef := paste(aghh.defs[c(1, 4)], collapse = " vs. ")]
+  ci3[, Variable := v]
+  CI3 <- rbindlist(list(CI3, ci3), use.names = T, fill = T)
+  # regress v on agHH0 and ocagHHold
+  z04 <- z01[agHH0 == 1L | ocagHHold == 1L, ]
+  ClusterVec4 <- as.numeric(z04[, thana])
+  form5 <- paste(v, "~ -1 +  agHH0 + ocagHHold")
+  rg3 <- lm(as.formula(form5), data = z04)
+  ci3 <- clubSandwich::conf_int(rg3, vcov = "CR2", level = 0.95, test = "Satterthwaite", 
+    cluster = ClusterVec4, coefs = "All", p_values = T)
+  ci3 <- data.table(ci3)
+  ci3[, ag := Coef]
+  ci3[, Coef := paste(aghh.defs2[c(1, 5)], collapse = " vs. ")]
+  ci3[, Variable := v]
+  CI3 <- rbindlist(list(CI3, ci3), use.names = T, fill = T)
+}
+#CI3[, .(Variable, Coef, ag, beta)]
+setnames(CI3, c("Coef", "ag"), c("Type", "Group"))
+CI3 <- CI3[, .(Variable, Type, Group, beta, p_val, CI_L, CI_U)]
+source(paste0(pathprogram, "substitution_table.R"))
+rn <- CI3[, Variable]
+for (ss in 1:nrow(sbt)) {
+  if (any(grepl(sbt[ss, "org"], rn)))
+    rn[grepl(sbt[ss, "org"], rn)] <- sbt[ss, "changedto"]
+}
+CI3[, variable := rn]
+# reorder
+reo <- "Enr|rain|high|low|Yi|Prog|Age|Sex|l.pr|l.sec|sex|bro|sis|hold|land|asse|wat|toi|usli|flo|glab"
+reo <- unlist(strsplit(reo, "\\|"))
+reo2 <- NULL
+for (rr in reo) reo2 <- c(reo2, grep(rr, unlist(CI3[, Variable])))
+CI3 <- CI3[reo2, ]
+CI3[, beta := formatC(beta, digits = 3, format = "f")]
+CI3[, CI_L := formatC(CI_L, digits = 2, format = "f")]
+CI3[, CI_U := formatC(CI_U, digits = 2, format = "f")]
+CI3[, p_val := formatC(p_val*100, digits = 2, format = "f")]
+CITab <- NULL
+for (v in unique(CI3[, Variable])) {
+  ci4 <- CI3[grepl(paste0("^", v, "$"), Variable)]
+  CITab <- rbind(CITab,
+    cbind(
+      rbind(
+        ci4[grepl("mean", Type), beta]
+      , paste0("\\mbox{\\tiny $[", ci4[grepl("mean", Type), CI_L], ",", ci4[grepl("mean", Type), CI_U], "]$}")
+      )
+    ,
+      rbind(
+        ci4[grepl("vs", Type) & grepl("oc", Group), p_val]
+      , paste0("\\mbox{\\tiny $[", ci4[grepl("vs", Type) & grepl("oc", Group), CI_L], ",", 
+          ci4[grepl("vs", Type) & grepl("oc", Group), CI_U], "]$}")
+      )
+    )
+  )
+}
+CITab <- data.table(CITab)
+CITab[, variable := rep(unique(CI3[, variable]), each = 2)]
+setcolorder(CITab, c("variable", paste0("V", 1:7)))
+setnames(CITab, c("variable", aghh.defs2, "ocagHH==0", "ocagHHold==0"))
+CITab.print = copy(CITab)
+CITab.print[seq(2, nrow(CITab), 2), variable := ""]
+zH <- unique(z13[, c("thana", "hh", aghh.defs2, "pclandDec"), with = F])
+CITab.print <- rbind(as.matrix(CITab.print), 
+    c("n (individual)", nrow(z13[agHH0 == 1L, ]), nrow(z13[isagHH == 1L, ]), 
+      nrow(z13[hdagHH == 1L, ]), nrow(z13[ocagHH == 1L, ]), nrow(z13[ocagHHold == 1L, ]), 
+      nrow(z13[agHH0 == 1L & ocagHH == 0L, ]), nrow(z13[agHH0 == 1L & ocagHHold == 0L, ]))
+  , 
+    c("n (household)", nrow(zH[agHH0 == 1L, ]), nrow(zH[isagHH == 1L, ]), 
+      nrow(zH[hdagHH == 1L, ]), nrow(zH[ocagHH == 1L, ]), nrow(zH[ocagHHold == 1L, ]), 
+      nrow(zH[agHH0 == 1L & ocagHH == 0L, ]), nrow(zH[agHH0 == 1L & ocagHHold == 0L, ]))
+    )
+iispace <- which(CITab.print[, "variable"]=="")
+iispace <- iispace-1
+iispace2 <- iispace[seq(2, length(iispace), 2)]
+ltb <- latextab(CITab.print, delimiterline = NULL, 
+    hcenter = c(4, rep(1.1, ncol(CITab.print)-3), rep(4.0, 2)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(CITab.print)-1)), 
+    hright = c("\\hfill", rep("$", ncol(CITab.print)-1)),
+    headercolor = "gray90", 
+    addseparatingcols = 5, separatingcolwidth = .1, 
+    separatingcoltitle = c("\\textsf{Means}", 
+      "\\begin{minipage}{7cm}\\textsf{$p$ values (\\%) and CI [95\\%]\\\\ of deviations}\\setlength{\\baselineskip}{8pt}\\end{minipage}"),
+    adjlskiprows = iispace, adjustlineskip = "-.8ex",
+    alternatecolorManual = c(iispace2, iispace2+1),
+    alternatecolorManualColor = "gray80"
+    )
+write.tablev(ltb
+  ,  paste0(pathsaveThisVer, "AgDefComparisonCRSE.tex")
+  ,  colnamestrue = F)
+CITab.print2 <- CITab.print[, !grepl("HHol|==", colnames(CITab.print))]
+ltb2 <- latextab(CITab.print2, delimiterline = NULL, 
+    hcenter = c(4, rep(1.1, ncol(CITab.print2)-1)),
+    hleft = c("\\scriptsize", rep("\\hfil\\scriptsize$", ncol(CITab.print2)-1)), 
+    hright = c("\\hfill", rep("$", ncol(CITab.print2)-1)),
+    headercolor = "gray90", 
+    adjlskiprows = iispace, adjustlineskip = "-.8ex",
+    alternatecolorManual = c(iispace2, iispace2+1),
+    alternatecolorManualColor = "gray80"
+    )
+write.tablev(ltb2
+  ,  paste0(pathsaveThisVer, "AgDefComparisonCRSE_JHR.tex")
+  ,  colnamestrue = F)
+saveRDS(CI3, paste0(pathsaveThisVer,"AgDefCompasironCI.rds"))
+<<results = "hide">>=
+# below may give errors in knitr because of paste0("\"", agelb, "\""), age)
+for (agelb in 10:12) 
+paste(
+agelb,  
+"years and older: A first-difference estimator with standard errors clustered at \\textit{thana} level. Enrollment rates in 1999, 2002 for", 
+agelb, 
+"and older are \\Sexpr{Enr.Agewise[grepl(\"zEm.1999\", sample) & grepl(agelb, age)  & grepl(\"all\", HHtype) & grepl(\"def\", agHHdef) & grepl(\"1\", agHH), rate]} for agricultural households,",
+"\\Sexpr{Enr.Agewise[grepl(\"zEm.1999\", sample) & grepl(agelb, age) & grepl(\"all\", HHtype) & grepl(\"def\", agHHdef) & grepl(\"0\", agHH), rate]} for non-agriculutural households,", 
+"respectively, with a difference-in-differences of \\Sexpr{Enrchg.Agewise[grepl(\"zEm.1999\", sample) & grepl(agelb, age) & grepl(\"all\", HHtype) & grepl(\"default\", agHHdef), AgNonag]}."
+)
+@
+
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics of main estimation, 10-18 years old, direct offspring\label{tab destat zEm1999}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.8}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "SampleDescriptiveStat_older10_zEm.1999.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.8}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.}\\
+Notes: & 1. & All information is of year 1999.\\
+& 2. & Agricultural household are defined as at least one adult member claiming that main income source as agriculture or occupation as agriculture. Program membership is 1 if holding a membership to anti-poverty programs. Age and sex are of children.\\
+& 3. & \Sexpr{memocovariates} \Sexpr{memo4}
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics of placebo estimation, 10-18 years old in 2002, direct offspring\label{tab destat zEp2002}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.8}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "SampleDescriptiveStat_older10_zEp.2002.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.8}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.}\\
+Notes: & 1. & All information is of year 1999 except for \textsf{Enrolled, Yield, Temperature, Rainfall, Program membership}.\\
+& 2. & Agricultural household are defined as at least one adult member claiming that main income source as agriculture or occupation as agriculture. Program membership is 1 if holding a membership to anti-poverty programs. Age and sex are of children.\\
+& 3. & \Sexpr{memocovariates} \Sexpr{memo4}
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics by agHHs vs. nonagHHs, agHH0\label{tab destat by agHH0 CRSE}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.70}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "AgNonAgDiffCRSE.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.7}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data. All information is of year 1999.}\\
+Notes: & 1. & Columns: For each variables, top rows show means and $p$ values. Bottom rows show standard errors of means. Standard errors are clustered at thana level and Satterthwaite correction for degree of freedom is applied to account for small number of clusters. Agricultural households are defined as at least one adult member claiming that main income source or occupation as agriculture (laborer, tenant, owner farmer). Column headed by \textsf{t} shows $p$ values of zero difference using standard $t$ tests. Column headed by \textsf{Satterthwaite} shows $p$ values of zero difference with cluster robust standard errors with Satterthwaite corrections.\\
+& 2. & Rows:  \Sexpr{memocovariatesForDestat}
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics by different agHH definitions\label{tab destat by agHH defs CRSE}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.70}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "AgDefComparisonCRSE.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.7}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& Compiled from IFPRI data. All information is of year 1999.\\
+Notes: & For each variables, top rows show means and $p$ values. Bottom rows show 95\% confidence intervals. Standard errors are clustered at thana level and Satterthwaite correction for degree of freedom is applied to account for small number of clusters. \textsf{isagHH} is at least one adult member claiming that main income source as agriculture. \textsf{hdagHH} is household head reports that main income source as agriculture. \textsf{ocagHH} is at least one adult member claiming that occupation as agriculture. \textsf{agHH0} is a union of \textsf{isagHH}, \textsf{hdagHH}, and \textsf{ocagHH}. Column headed by \textsf{ocagHH == 0} and \textsf{ocagHHold == 0} show $p$ values in percentage of zero difference and 95\% confidence intervals of differences between \textsf{ocagHH} and \textsf{agHH0} using cluster robust standard errors with Satterthwaite corrections.
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+
+
+\begin{itemize}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item	\textsc{\normalsize Table \ref{tab destat by agHH defs CRSE}} shows contrasts between different definitions of agricultural households. \textsf{isagHH} is a household with at least one adult member claiming that main income source as agriculture. \textsf{hdagHH} is a household whose head reports that main income source is agriculture. \textsf{ocagHH} is a household at least one adult member claiming that occupation as agriculture. \textsf{agHH0} is a union of \textsf{isagHH}, \textsf{hdagHH}, and \textsf{ocagHH}. Under the panel headed by \textsf{Means}, means of respective groups for selected variables are shown. Under the column headed by \textsf{ocagHH vs. agHH0} and \textsf{ocagHHold vs. agHH0} show $p$ values in percentage of zero difference and 95\% confidence intervals of differences between \textsf{ocagHH} and \textsf{agHH0} using cluster robust standard errors with Satterthwaite corrections. Number of observations for these columns are the number of \textsf{ocagHH==0} and \textsf{ocagHHold=0}. Smaller number of \textsf{ocagHHold} implies greater overlap with \textsf{agHH0}. 
+\item	One can see that \textsf{ocagHH} differs from the rest of agricultural household definitions. %They have lower enrollment rates, smaller female headed households, smaller proportion of heads with secondary education, smaller per member land holding, and smaller per member non land asset holding. In other words, \textsf{ocagHH} is relatively poorer, its head is less educated, and children's school enrollment rate is lower. We also note that they are fewer in numbers that there are less than a half of other agricultural household definitions. They may be poorer subsample of agricultural households. 
+\item	After inspecting the data I received from Abu-san and original stata file, I found an error in Abu-san's data that some agricultural occupations are deleted. With this deletion, only agricultural day laborer remained in agriculture related occupation. This is why we have fewer number of observations in \textsf{ocagHH}. 
+\item	I corrected the data file using original stata files and updated the occupation based agricultural housheolds definition (\textsf{ocagHHold}). I found the updated definition similar to \textsf{agHH0}.
+\end{itemize}
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics by different agHH definitions for JHR\label{tab destat by agHH defs CRSE JHR}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.70}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "AgDefComparisonCRSE_JHR.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.7}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& Compiled from IFPRI data. All information is of year 1999.\\
+Notes: & For each variables, top rows show means. Bottom rows show 95\% confidence intervals. Standard errors are clustered at thana level and Satterthwaite correction for degree of freedom is applied to account for small number of clusters. \textsf{isagHH} is at least one adult member claiming that main income source as agriculture. \textsf{hdagHH} is household head reports that main income source as agriculture. \textsf{ocagHHold} is at least one adult member claiming that occupation as agriculture. \textsf{agHH0} is a union of \textsf{isagHH}, \textsf{hdagHH}, and \textsf{ocagHHold}. 
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics by agHHs vs. nonagHHs, agHH0\label{tab destat zEm1999 by agHH0}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.8}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "AgNonAgDiff", c("", "is", "hd", "oc")[1], "older10.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.8}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.}\\
+Notes: & 1. & All information is of year 1999.\\
+& 2. & Agricultural household are defined as at least one adult member claiming that main income source or occupation as agriculture (laborer, tenant, owner farmer). \textsf{Program} membership is 1 if holding a membership to anti-poverty programs. \textsf{Age} and \textsf{sex} are of children. \textsf{Flood} is 1 in thanas Aailjhar,  Chokoria, Kalia, Nilphamary Sadar, Mohadebpur. \\
+& 3. & \Sexpr{memocovariates} \Sexpr{memo4}
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics by agHHs vs. nonagHHs, hdagHH\label{tab destat zEm1999 by hdagHH}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.8}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "AgNonAgDiff", c("", "is", "hd", "oc")[3], "older10.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.8}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.}\\
+Notes: & 1. & All information is of year 1999.\\
+& 2. & Agricultural household are defined as household head reports the main income source as agriculture (laborer, tenant, owner farmer). \textsf{Program} membership is 1 if holding a membership to anti-poverty programs. \textsf{Age} and \textsf{sex} are of children. \textsf{Flood} is 1 in thanas Aailjhar,  Chokoria, Kalia, Nilphamary Sadar, Mohadebpur.\\
+& 3. & \Sexpr{memocovariates} \Sexpr{memo4}
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Descriptive statistics by  by agHHs vs. nonagHHs: occupation\label{tab destat zEm1999 all by agHH occ}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.8}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+paste0(pathsaveThisVer, "AgNonAgDiff", c("", "is", "hd", "oc")[4], "older10.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.8}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.}\\
+Notes: & 1. & All information is of year 1999.\\
+& 2. & Agricultural household are defined as at least one adult member claiming that occupation is agriculture (laborer, tenant, owner farmer). \textsf{Program} membership is 1 if holding a membership to anti-poverty programs. \textsf{Age} and \textsf{sex} are of children. \textsf{Flood} is 1 in thanas Aailjhar,  Chokoria, Kalia, Nilphamary Sadar, Mohadebpur.\\
+& 3. & \Sexpr{memocovariates} \Sexpr{memo4}
+\end{tabular}
+\end{minipage}\\ \vspace{2ex}
+
+
+We have smaller differences in original and regression data in \textsf{zEm1999}.
+
+\hspace{-.5cm}\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Original vs. regression data contrasts, 10-18 years old,  direct offspring\label{tab origregcontrast2}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.8}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{paste0(pathsaveThisVer, "Old_SampleDifferenceContrast_older10_zEm.1999.tex")}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.8}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.}\\
+Notes: & 1. & All information is of year 1999. Column headed by $t$ shows $p$ values of equal means for both data sets using $t$ tests. Column headed by $\chi^{2}$ shows $p$ values of equal proportions. Column headed by \textsf{binomial} shows $p$ values of two-sided test for one proportion being equal to another proportion under presumed Bernoulli trials. \\
+& 2. & Agricultural household are defined as at least one adult member claiming that main income source as agriculture. Program membership is 1 if holding a membership to anti-poverty programs. Age and sex are of children.\\
+& 3. & \Sexpr{memocovariates} \Sexpr{memo4}
+\end{tabular}
+\end{minipage}
+
+
+
+
+\subsection{Attrition}
+
+<<>>=
+library(clubSandwich)
+pathsource00 <- paste0(pathsource, "/ffe/2000/Data/HouseholdData/STATA/")
+fn <- list.files(pathsource00)
+fn0 <- list.files(pathsource00, full.names = T)
+pathsource03 <- paste0(pathsource, "/ffe/2003/Data/HouseholdData/STATA/")
+fn <- list.files(pathsource03)
+fn3 <- list.files(pathsource03, full.names = T)
+pathsource07 <- paste0(pathsource, "/ffe/2007/Data/HouseholdData/STATA/")
+fn <- list.files(pathsource07)
+fn7 <- list.files(pathsource07, full.names = T)
+# cover
+hd1 <-  data.table(foreign::read.dta(grepout("c00", fn0)))
+hd1 <- hd1[, .(hhnum, thana)]
+# roster
+ros1 <- data.table(foreign::read.dta(grepout("a1", fn0)))
+# rd 2 has hhid = hh used in uniquid
+# uniquid = paste0(4000+hhid, ".", putzeroontop(mid/100))
+ros2 <- data.table(foreign::read.dta(grepout("a1", fn3)))
+ros3 <- data.table(foreign::read.dta(grepout("rost", fn7)))
+# ros1 and ros2 have hhnum in common. id = hhnum-mid
+# ros2 and ros3 have hhidn in common. id2 = hhidn-mid
+ros1[, id := paste0(hhnum, "-", mid)]
+ros2[, id := paste0(hhnum, "-", mid)]
+ros2[, id2 := paste0(hhidn, "-", mid)]
+ros3[, id2 := paste0(hhidn, "-", mid)]
+ros1[, rd2 := 0L]
+ros1[id %in% ros2[, id], rd2 := 1L]
+ros2[, rd3 := 0L]
+ros2[id2 %in% ros3[, id2], rd3 := 1L]
+ros1[, rd3 := 0L]
+ros1[id %in% ros2[rd3==1L, id], rd3 := 1L]
+ros1[, exist := paste0(1, rd2, rd3)]
+ros1[, exist := factor(exist)]
+# attach uniquid in ros1
+ros2[, uniquid := paste0(4000+hhidn, ".", putzeroontop(mid))]
+rs2id <- ros2[, .(id, uniquid)]
+setkey(rs2id, id); setkey(ros1, id)
+ros1 <- rs2id[ros1]
+# ros1 at this point: same as RosRd1 <- qread(paste0(pathsaveThisVer, "OriginalRd1RosterFileWithUniquid.qs"))
+# agHH defined at HH level
+	#	isource agri HH
+ros1[, isagHH := hhnum %in% hhnum[grep("Agri|Tena", isource)]]
+ros1[, isagHH := hhnum %in% hhnum[grep("^1$|^6[12]$", isource)]]
+	#	occup agri HH
+ros1[, ocagHH := hhnum %in% hhnum[grep("Agri|Tenan|farm", occup)]]
+	#	owner or cultivator household as ownagHH. A subset of isagHH.
+ros1[, ownagHH := hhnum %in% hhnum[grep("OwnL|Tena", isource)]]
+ros1[, ownagHH := hhnum %in% hhnum[grep("6[12]", isource)]]
+ros1[, agHH0 := isagHH|ocagHH]
+# head and spouse education
+ros1[, c("hd.primary", "hd.secondary", "sp.primary", "sp.secondary") := NA]
+ros1[grepl("head", rhhold) & grepl("s[1-5]", educa) & !grepl("ad", educa), hd.primary := 1L]
+ros1[grepl("head", rhhold) & grepl("6|7|8|9|S|A", educa), hd.secondary := 1L]
+ros1[grepl("spo", rhhold) & grepl("s[1-5]", educa) & !grepl("ad", educa), sp.primary := 1L]
+ros1[grepl("spo", rhhold) & grepl("6|7|8|9|S|A", educa), sp.secondary := 1L]
+for (v in c("hd.primary", "hd.secondary", "sp.primary", "sp.secondary") ) {
+  ros1[, (v) := eval(parse(text=paste0(v, "[!is.na(", v, ")][1]"))), by = hhnum]
+  ros1[eval(parse(text=paste0("is.na(", v, ")"))), (v) := 0L]
+}
+# assets
+d6a <- data.table(foreign::read.dta(grepout("6a", fn0)))
+d6b <- data.table(foreign::read.dta(grepout("6b", fn0)))
+d6b[, TotalValue := sum(value, na.rm = T), by = hhnum]
+d6b[, num := 1:.N, by = hhnum]
+d6b2 <- d6b[num == 1, .(hhnum, TotalValue)]
+setnames(d6a, "total", "TotalDecimal")
+d6a2 <- d6a[, .(hhnum, TotalDecimal)]
+# merge files
+setkey(d6a2, hhnum); setkey(d6b2, hhnum); 
+as1 <- d6a2[d6b2]
+setkey(ros1, hhnum); setkey(hd1, hhnum)
+ros1 <- hd1[ros1]
+asr <- as1[ros1]
+asr[, TotalValue := TotalValue/1000]
+# attrition rates asset holding by agHH at individual level
+asr[, .(Land=mean(TotalDecimal, na.rm = T), Asset=mean(TotalValue), 
+  hd.primary = mean(hd.primary), hd.secondary = mean(hd.secondary),
+  sp.primary = mean(sp.primary), sp.secondary = mean(sp.secondary),
+  exist=mean(grepl("^11", exist))), by = agHH0]
+asr[grepl("^10", exist), .(Land=mean(TotalDecimal, na.rm = T), Asset=mean(TotalValue),
+  hd.primary = mean(hd.primary), hd.secondary = mean(hd.secondary),
+  sp.primary = mean(sp.primary), sp.secondary = mean(sp.secondary)), 
+  by = agHH0]
+asr[, attrit := 0L]
+asr[grepl("^10", exist), attrit := 1L]
+# attrition rates asset holding by agHH at HH level
+asrH <- asr[, .(attrit, agHH0, TotalDecimal, TotalValue, 
+  hd.primary, hd.secondary, sp.primary, sp.secondary, exist, thana, num=1:.N), 
+  by = hhnum][num==1, ]
+asrH[, .(Land=mean(TotalDecimal, na.rm = T), Asset=mean(TotalValue), 
+  hd.primary = mean(hd.primary), hd.secondary = mean(hd.secondary),
+  sp.primary = mean(sp.primary), sp.secondary = mean(sp.secondary),
+  exist=mean(grepl("^11", exist))), by = agHH0]
+asrH[grepl("^10", exist), .(Land=mean(TotalDecimal, na.rm = T), Asset=mean(TotalValue),
+  hd.primary = mean(hd.primary), hd.secondary = mean(hd.secondary),
+  sp.primary = mean(sp.primary), sp.secondary = mean(sp.secondary)
+  ), by = agHH0]
+atlm1 <- lm(data = asr, 
+  attrit ~ (TotalValue+TotalDecimal+hd.primary+hd.secondary+sp.primary+sp.secondary)*agHH0)
+atlm2 <- lm(data = asrH, 
+  attrit ~ (TotalValue+TotalDecimal+hd.primary+hd.secondary+sp.primary+sp.secondary)*agHH0)
+LZ2 <- clx(atlm2, cluster = asrH[- as.numeric(summary(atlm2)$na), thana])
+Satt2 <- coef_test(atlm2, vcov = "CR2", cluster = asrH[- as.numeric(summary(atlm2)$na), thana], 
+  test = "Satterthwaite")
+Sattcov <- clubSandwich::vcovCR(atlm2, 
+  cluster = asrH[- as.numeric(summary(atlm2)$na), thana], type = "CR2")
+#coef_test(atlm2, vcov = Sattcov, coefs = "All")
+# constraint matrix Cb = 0: C is 1 for (2, 2), (3, 3), ... elements
+C0 <- diag(length(atlm2$coeff))
+rownames(C0) <- names(atlm2$coeff)
+C.All <- C0[-1, ]
+C.Ag <- paste0(grepout("agHH", names(atlm2$coeff)), "=0")
+C.Ag <- C0[grep("agHH", names(atlm2$coeff)), ]
+# Below gives an error due to singularity of cov matrix
+# clubSandwich::Wald_test(atlm2, vcov = Sattcov, constraints = C.All)
+library(multcomp)
+# "p value of the global test is the minimum p value of the partial tests"
+# in multcomp_additionalexample.pdf p.2.
+# glht only allows a OLS cov matrix. No option to feed vcov of choice.
+F.all <- multcomp::glht(atlm2, linfct = C.All, alternative = "two.sided")
+F.ag <- multcomp::glht(atlm2, linfct = C.Ag, alternative = "two.sided")
+p.all <- summary(F.all)
+p.ag <- summary(F.ag)
+print(LZ2)
+options(width = 120)
+print(Satt2)
+options(width = 100)
+Ftest.all <- summary(F.all, test = Ftest())$test
+Ftest.ag <- summary(F.ag, test = Ftest())$test
+print(data.frame(Fstat = Ftest.all$fstat, dof = Ftest.all$df, pval = Ftest.all$pval))
+print(p.all)
+print(data.frame(Fstat = Ftest.ag$fstat, dof = Ftest.ag$df, pval = Ftest.ag$pval))
+print(p.ag)
+@
+<<>>=
+thesecols <- c("attrit", "TotalValue", "TotalDecimal", 
+  "hd.primary", "hd.secondary", "sp.primary", "sp.secondary")
+AttritComp <- NULL
+for (kk in thesecols) {
+  if (kk == "attrit") {
+    d0 <- asrH[agHH0==0, kk, with = F]
+    d1 <- asrH[agHH0==1, kk, with = F]
+  } else {
+    d0 <- asrH[grepl("^10", exist) & agHH0==0, kk, with = F]
+    d1 <- asrH[grepl("^10", exist) & agHH0==1, kk, with = F]
+  }
+  ttestK <- t.test(d1, d0)
+  AttritComp <- rbind(AttritComp,
+    cbind(kk, var(d1, na.rm = T)^(.5), var(d0, na.rm = T)^(.5),
+      round(-diff(unlist(ttestK["estimate"])), 3), # -diff = -(y - x) = AgHH - nonagHH
+      t(as.numeric(unlist(lapply(ttestK[c("estimate", "conf.int", "stderr", "p.value")], round, 4))))
+    )
+  )
+}
+AttritComp <- data.table(AttritComp)
+setnames(AttritComp, c("variable", "se.agHH", "se.nonagHH", "AgNonag", "agHH", "nonagHH", 
+  "lb95", "ub95", "se", "pvalue"))
+ac1 <- AttritComp[, .(variable, agHH, nonagHH, AgNonag)]
+ac2 <- AttritComp[, .(variable, se.agHH, se.nonagHH, pvalue)]
+# ac1[grepl("TotalV", variable), agHH := formatC(as.numeric(agHH), digits = 0, format = "f")]
+# ac1[grepl("TotalV", variable), nonagHH := formatC(as.numeric(nonagHH), digits = 0, format = "f")]
+# ac1[grepl("TotalV", variable), AgNonag := formatC(as.numeric(AgNonag), digits = 0, format = "f")]
+# ac2[grepl("TotalV", variable), se.agHH := 
+#   paste0("(", formatC(as.numeric(se.agHH), digits = 0, format = "f"),")")]
+ ac2[, se.agHH := 
+   paste0("(", formatC(as.numeric(se.agHH), digits = 3, format = "f"),")")]
+# ac2[grepl("TotalV", variable), se.nonagHH := 
+#   paste0("(", formatC(as.numeric(se.nonagHH), digits = 0, format = "f"),")")]
+ ac2[, se.nonagHH := 
+   paste0("(", formatC(as.numeric(se.nonagHH), digits = 3, format = "f"),")")]
+ac2[, pvalue := 
+  paste0("[", formatC(as.numeric(pvalue)*100, digits = 2, format = "f"),"]")]
+newAC <- NULL
+for (r in 1:nrow(ac1))
+  newAC <- rbind(newAC, rbindlist(list(ac1[r, ], ac2[r, ]), use.names = F))
+
+dtsatt <- data.table(Satt2)
+dtsatt[, Pstar := "\\phantom{^{*}}"]
+dtsatt[p_Satt<.1, Pstar := "^{*}"]
+dtsatt[p_Satt<.05, Pstar := "^{**}"]
+dtsatt[p_Satt<.01, Pstar := "^{***}"]
+dfsatt <- data.frame(Satt2)[, c("beta", "SE", "p_Satt")]
+tbsatt <- tabstarP(dfsatt, DispSE = T)
+sta <- matrix(rep(dtsatt[, Pstar], each = 2), ncol = 2)
+sta[seq(2, nrow(sta), 2), ] <- ""
+dfsatt <- data.frame(variables = rownames(tbsatt)[1:14], 
+  Base=paste0(tbsatt[1:14, ], sta[, 1]), AddagHH=paste0(tbsatt[-(1:14), ], sta[ ,2]))
+dfsatt2 <- rbind("", "", dfsatt)
+newAC2 <- rbind(newAC[1:2, ], t(rep("", 4)), t(rep("", 4)), newAC[-(1:2), ], use.names = F)
+matatt <- cbind(newAC2, dfsatt2[, -1])
+matatt[, variable := 
+rep(c("Attrition", "(Intercept)", "Total asset holding (BDT1000)", "Total landholding (decimal)", 
+  "Head primary education", "Head secondary education", 
+  "Spouse primary education", "Spouse secondary education"
+  ), each = 2)]
+matatt[seq(2, nrow(matatt), 2), variable := ""]
+matatt[, variable := paste("\\makebox[3.5cm]{\\hfill", variable, "}")]
+setnames(matatt, c("AgNonag", "AddagHH"), c("agHH - NonagHH", "Base $\\times$ agHH"))
+TabAttrit <- latextab(as.matrix(matatt),
+  hleft = "\\footnotesize\\hfil$", hcenter = c(3.5, rep(1.95, ncol(matatt)-1)), 
+  hright = "$", 
+  headercolor = "gray80", adjustlineskip = "-.8ex", delimiterline= NULL,
+  alternatecolor2 = "gray90",
+  addseparatingcols = 3, separatingcolwidth = .2,
+  separatingcoltitle = c("\\textsf{Descriptive statistics}", "\\textsf{OLS estimates}"),
+  addsubcoltitlehere = T)
+write.tablev(TabAttrit,  
+  paste0(pathsaveThisVer, "AttritionEstimation.tex")
+  , colnamestrue = F)
+@
+
+\begin{minipage}[t]{14cm}
+\hfil\textsc{\normalsize Table \refstepcounter{table}\thetable: Attrition comparison by agHHs vs. nonagHHs\label{tab attrition comparison}}\\
+\setlength{\tabcolsep}{1pt}
+\renewcommand{\arraystretch}{.8}
+\hfil\begin{tikzpicture}
+\node (tbl) {\input{\Sexpr{
+  paste0(pathsaveThisVer, "AttritionEstimation.tex")
+}}};
+\end{tikzpicture}\\
+\renewcommand{\arraystretch}{.8}
+\setlength{\tabcolsep}{1pt}
+\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.25cm}<{}>{\scriptsize}p{12.5cm}<{\hfill}}
+Source:& \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.}\\
+Notes: & 1. & Attrition is true if a household is missing in round 2. All covariates are of round 1.\\
+& 2. & \textsf{Descriptive statistics} panel shows attriter's characteristics. For each baseline covariates, top rows show the means and bottom rows show the standard errors in columns (1) and (2), respectively. In column (3), top rows show mean differences and bottom rows show associated $p$ values of mean differences in per centage. \textsf{OLS estimation} panel shows results from linear probability model of attrition on baseline variables and their interaction with the agricultural household dummy. Top rows show point estimates and bottom rows show standard errors. Estimates of nonag HHs are shown in (4) and interaction terms of each variables with ag HH are shown in (5). Number of observations for LPM is $\Sexpr{atlm2$df.res}$, $\bar{R}=\Sexpr{round(summary(atlm2)$r.sq, 3)}$. Standard errors are clustered at the Thana level with a Satterthwaite correction for a small number of clusters. $*$ indicates a $p$ value between 5\% and 10\%. 
+\end{tabular}
+\end{minipage}
+
+\begin{itemize}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item	\textsc{\normalsize Table \ref{tab attrition comparison}} shows descriptive statistics of attrition and linear probability of attrition. In \textsf{Descriptive statistics} panel shows attriter's characteristics. For each baseline covariates, top rows show the means and bottom rows show the standard errors in columns (1) and (2), respectively. In column (3), top rows show mean differences and bottom rows show associated $p$ values of mean differences in per centage. \textsf{OLS estimation} panel shows results from linear probability model of attrition on baseline variables and their interaction with the agricultural household dummy. Top rows show point estimates and bottom rows show standard errors. Estimates of nonag HHs are shown in (4) and interaction terms of each variables with ag HH are shown in (5). 
+\item	Based on linear probability estimation, attrition seems random between agHHs and nonag HHs at the household level. There is an indication that smaller land holders of agHHs may be more prone to attrit at the rate of 3\% per one acre reduction in landholding. 
+\item	The implied magnitude of correlation between landholding and attrition is small given the mean landholding of agHHs is 1.46 acre. In addition, it is not easy to guess the direction of the bias it gives to enrollment rates: When smaller landholding has smaller labor demand for children therefore higher enrollment rates, their attrition can understate enrollment rates. When smaller landholders, or less wealthy households, stop schooling early that results in lower enrollment rates, their attrition can overstate enrollment rates. Given the small magnitude of possible impacts that may potentially cancel out each other and a relatively large $p$ value associated with it, we restrict our attention to the complete panel portion of the data. We also note that we include landholding as a covariate in the main estimation.
+\end{itemize}
+
+

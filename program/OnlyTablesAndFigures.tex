@@ -1,0 +1,269 @@
+%  setwd("c:/data/ramadan/Submit2024/program"); library(knitr); library(data.table); knit("OnlyTablesAndFigures.rnw", "OnlyTablesAndFigures.tex"); system("platex OnlyTablesAndFigures"); system("pbibtex OnlyTablesAndFigures"); system("dvipdfmx OnlyTablesAndFigures")
+
+% : cannot coerce type 'closure' to vector of type 'character': This error shows up 
+% when nonexisting column name was specified in 
+% Enr.Agewise[grepl("zEm.1999", sample) & grepl("wise", AgeGrouping) & grepl("1", agHH) & 
+%  Age>=8 & Age<=18 & survey == 1, rate] 
+% When an error ``zEm1'' not found happens, check all estimation is OK to produce \textsf{FD\_sameN\_results.rds} and the chunk \textsf{main sample size check} does not produce null results.
+% zmobj2 <- c("zEm", "zSm"); zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")
+
+
+\input{c:/migrate/R/knitrPreamble/knitr_preambleLetter.rnw}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+
+\usepackage{url}
+\usepackage{tgtermes}
+\usepackage[T1]{fontenc}
+\fontfamily{qtm}\selectfont
+\usepackage{tikz}
+\usetikzlibrary{calc, arrows, decorations, decorations.pathreplacing, backgrounds}
+\usepackage{adjustbox}
+
+\renewcommand\Routcolor{\color{gray30}}
+\renewcommand{\labelenumii}{\theenumii.}
+\setlength{\baselineskip}{12pt}
+
+\tikzstyle{toprow} =
+[
+top color = gray!20, bottom color = gray!50, thick
+]
+\tikzstyle{maintable} =
+[
+top color = blue!1, bottom color = blue!10, draw = white
+%top color = green!1, bottom color = green!20, draw = white
+]
+\tikzset{
+%Define standard arrow tip
+>=stealth',
+%Define style for different line styles
+help lines/.style={dashed, thick},
+axis/.style={<->},
+important line/.style={thick},
+connection/.style={thick, dotted},
+}
+
+\begin{document}
+
+\hfil Tables for 2024 submission\\
+\hfil\MonthDY\\
+\hfil{\footnotesize\currenttime}\\
+\hfil Seiro Ito
+
+\tableofcontents 
+
+
+
+
+
+
+
+
+
+
+\begin{Schunk}
+\begin{Sinput}
+readLines(tabfiles[1])[1:10]
+\end{Sinput}
+\begin{Soutput}
+ [1] "\\begin{tabular}{>{\\scriptsize}p{3cm}<{\\hfill}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{$}p{0.1cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{$}p{0.1cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}>{\\hfil\\scriptsize$}p{1.3cm}<{$}}"
+ [2] "\\hline"                                                                                                                                                                                                                                                                                                                                                                                            
+ [3] "\\makebox[3cm]{\\scriptsize\\hfil }&\\multicolumn{3}{c}{\\makebox[4cm]{\\scriptsize \\textsf{Boys+girls}}}&&\\multicolumn{3}{c}{\\makebox[4cm]{\\scriptsize \\textsf{Boys}}}&&\\multicolumn{3}{c}{\\makebox[3.1cm]{\\scriptsize \\textsf{Girls}}} \\\\[-1ex]"                                                                                                                                       
+ [4] "\\cline{2-4} \\cline{6-8} \\cline{10-12} \\\\[-1ex]"                                                                                                                                                                                                                                                                                                                                                
+ [5] "&\\textsf{Spec 1} & \\textsf{Spec 2} & \\textsf{Spec 3}&&\\textsf{Spec 1} & \\textsf{Spec 2} & \\textsf{Spec 3}&&\\textsf{Spec 1} & \\textsf{Spec 2} & \\textsf{Spec 3}\\\\"                                                                                                                                                                                                                        
+ [6] "A. Age lowerbound: 10& (1)&(2)&(3)&&(4)&(5)&(6)&&(7)&(8)&(9) \\\\"                                                                                                                                                                                                                                                                                                                                  
+ [7] "Agricultural HH * year 2002 & -0.0561^{\\phantom{***}} & -0.0661^{*\\phantom{**}} & -0.0899^{**\\phantom{*}} &  & -0.1290^{\\phantom{***}} & -0.1550^{**\\phantom{*}} & -0.1441^{***} &  & \\phantom{-}0.0105^{\\phantom{***}} & -0.0268^{\\phantom{***}} & -0.0503^{\\phantom{***}}\\\\[-1ex]"                                                                                                     
+ [8] "\\hspace{1em}  & (27.5) & (6.0) & (1.1) &  & (12.4) & (1.6) & (0.4) &  & (88.6) & (71.4) & (53.2)\\\\[-1ex]"                                                                                                                                                                                                                                                                                        
+ [9] "\\hspace{1em}  & \\mbox{\\tiny [-0.169, 0.057]} & \\mbox{\\tiny [-0.136, 0.004]} & \\mbox{\\tiny [-0.151, -0.029]} &  & \\mbox{\\tiny [-0.305, 0.047]} & \\mbox{\\tiny [-0.270, -0.040]} & \\mbox{\\tiny [-0.221, -0.067]} &  & \\mbox{\\tiny [-0.159, 0.180]} & \\mbox{\\tiny [-0.196, 0.143]} & \\mbox{\\tiny [-0.237, 0.136]}\\\\"                                                               
+[10] "\\underline{\\phantom{mm}} * Older sisters &  &  & -0.0228^{\\phantom{***}} &  &  &  & -0.0840^{*\\phantom{**}} &  &  &  & \\phantom{-}0.0080^{\\phantom{***}}\\\\[-1ex]"                                                                                                                                                                                                                           
+\end{Soutput}
+\end{Schunk}
+
+
+\section{Main text tables}
+
+\begin{table}[b]\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main estimation results 1999-2002\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/MainOlder10ByGenderResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main estimation results 1999-2002, by school level\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/MainOlder10ByGenderByAgeGroup2ResultsConcise.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006, 1999 and 2002 cohorts\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/PlaceboOlder10ByGenderResultsConcise.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Alternative mechanisms, flood and non-Muslims\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/MainOlder10MuslimFloodResultsConcise.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Other schooling outcomes, grade progression and days absent\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/MainOlder10NumGradeDaysAbsentResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+\clearpage
+
+\section{Appendix figures and tables}
+
+\subsection{Main}
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Impacts by age lowerbound, 1999-2002\label{GenderAgeGroup2Impacts}}\\
+\hfil \includegraphics[height=.3\paperheight]{../draft/Figures/App_MainVsPlaceboPlotsByAgeLBByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+<<<<<<< HEAD
+Notes:& 1. 10-18, 11-18, 12-18 indicate age range of each sample. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+=======
+Notes:& 1. 10-18, 11-18, 12-18 indicate age range of each sample. The coefficients are for agricultural HH $\times$ year 2002.\\[-1ex]
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+\end{tabular}
+%\end{minipage}
+\end{figure}
+<<<<<<< HEAD
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Impacts by age group, 1999-2002, 6-17 years old in 1999\label{GenderAgeGroup2Impacts}}\\
+\hfil \includegraphics[height=.23\paperheight]{../draft/Figures/GenderAgeGroup2Impacts.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+Notes:& 1. ``pri'' and ``sec'' mean enrolled in primary and secondary grades, aged 6-10 and 11-17 years in 1999, respectively. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+
+=======
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Impacts by age group, 1999-2002, 6-17 years old in 1999\label{GenderAgeGroup2Impacts}}\\
+\hfil \includegraphics[height=.23\paperheight]{../draft/Figures/GenderAgeGroup2Impacts.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+Notes:& 1. ``pri'' and ``sec'' mean enrolled in primary and secondary grades, aged 6-10 and 11-17 years in 1999, respectively. The coefficients are for agricultural HH $\times$ year 2002.\\[-1ex]
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+
+
+
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main results 1999-2002\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/App_Main1999Older10ByGenderByAgHHdefResultsConcise.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. Panels A. - D. give estimates under different agricultural household definitions. A: income source base, B: Head's reply base, C: Occupation base, D: All combined (with ``or'' operations). For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main results 1999-2002\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/Main1999Older10ByGenderByAgHHdefResults1.tex}\\\renewcommand{\arraystretch}{1}\end{table}, \addtocounter{table}{-1}, \begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main results 1999-2002 (continued)\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-3cm}\hfil\begin{tikzpicture}\node (tbl) {\input{../draft/Tables/Main1999Older10ByGenderByAgHHdefResults2.tex}};\input{c:/data/ramadan/save/tablecolortemplate.tex}\end{tikzpicture}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. Panels A. - D. give estimates under different agricultural household definitions. A: income source base, B: Head's reply base, C: Occupation base, D: All combined (with ``or'' operations). For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+
+
+\clearpage
+\subsection{Robustness}
+
+\subsubsection{Placebo}
+
+
+<<<<<<< HEAD
+=======
+
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Impacts by main/placebo by gender and by agricutural household definition\label{App_MainVsPlaceboPlotsByAgdefByGender}}\\
+\hfil \includegraphics[height=.3\paperheight]{../draft/Figures/App_MainVsPlaceboPlotsByAgdefByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+<<<<<<< HEAD
+Notes:& 1. ``pri'' and ``sec'' mean enrolled in primary and secondary grades, aged 6-10 and 11-17 years in 1999, respectively. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+=======
+Notes:& 1. Each row shows the estimates under different agricultural household definitions. A: income source base, B: Head's reply base, C: Occupation base, D: All combined (with ``or'' operations). Each column shows estimates using gender subsamples and full sample. The coefficients are for agricultural HH $\times$ year 2002 for main data and agricultural HH $\times$ year 2006 for placebo 2002 and placebo 1999 data.\\[-1ex]
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+
+
+<<<<<<< HEAD
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006, 1999 and 2002 cohorts\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../save/PlaceboOlder10ByGenderResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH + year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+=======
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006, 1999 and 2002 cohorts\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/PlaceboOlder10ByGenderResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+
+
+\subsubsection{Age group}
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Estimation results 1999-2002, by school level\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/App_MainGenderAgeGroup2WithInteractionsResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main estimation results 1999-2002, by different age lowerbound\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/App_Main1999ByGenderByAgeLBResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+\clearpage
+\subsubsection{Non-Muslims, Flooded}
+
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Alternative mechanisms, flood and non-Muslims\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../save/MainOlder10MuslimFloodResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+\clearpage
+\subsubsection{Other schooling outcomes}
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Other outcomes by gender, 1999-2002\label{NumGradesDaysAbsentPlots}}\\
+<<<<<<< HEAD
+\hfil \includegraphics[width=.75\paperwidth]{../draft/Figures/App_NumGradesDaysAbsentPlotsByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+Notes:& 1. Grades: Number of grades, Days: Days absent. Days absent does not have placebo tests. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+=======
+\hfil \includegraphics[height=.3\paperheight]{../draft/Figures/App_NumGradesDaysAbsentPlotsByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.5cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.} \\[-1ex]
+Notes:& 1. & Grades: Number of grades, Days: Days absent. Rows are for number of grades impacts, number of grades placebo impacts, and days absent impacts.  Panel of ``Days, placebo'' is not shown because there is no placebo test for it. Columns are for boys subsample, girls subsample, and full sample. \textsf{complete}: Complete panel sample, \textsf{incomplete}: Incomplete panel sample, \textsf{cross section 1999}: 1999 cross section estimate of incomplete panel sample, \textsf{cross section 2002}: 2002 cross section estimate of incomplete panel sample. The coefficients are for agricultural HH $\times$ year 2002 for ``Grades'', ``Days absent'' rows and agricultural HH $\times$ year 2006 for ``Grades, placebo'' row.\\[-1ex]
+& 2. & Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. & Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+<<<<<<< HEAD
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Other schooling outcomes, grade progression and days absent\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../save/MainOlder10NumGradeDaysAbsentResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH + year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+=======
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Other schooling outcomes, grade progression and days absent\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../draft/Tables/MainOlder10NumGradeDaysAbsentResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+
+
+\clearpage
+\subsection{Placebo}
+
+%\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../save/PlaceboOlder10ByGenderByAgHHdefResults1.tex}\\\renewcommand{\arraystretch}{1}\end{table}, \addtocounter{table}{-1}, \begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006 (continued)\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-3cm}\hfil\begin{tikzpicture}\node (tbl) {\input{../save/PlaceboOlder10ByGenderByAgHHdefResults2.tex}};\input{c:/data/ramadan/save/tablecolortemplate.tex}\end{tikzpicture}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+%\addtocounter{table}{-1}
+%\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006 (continued)\label{zEm.1999.10.sameN}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{../save/PlaceboOlder10ByGenderByAgHHdefResults3.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
+
+\begin{Schunk}
+\begin{Sinput}
+lapply(tabfiles, subnums, num2, num1)
+lapply(tabfiles, subnums, num4, num3)
+lapply(tabfiles, subnums, num6, num5)
+lapply(tabfiles, subnums, num8, num7)
+\end{Sinput}
+\end{Schunk}
+
+
+\end{document}

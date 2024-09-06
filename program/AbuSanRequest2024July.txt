@@ -1,0 +1,12 @@
+1. Please replace all the tables (Table 1/2/3/4/5/A1/A2/A3/A4/A5/A7/A8/A9/A10/A11 and Figure 5/A2/A3/A4/A5/A6) based on a concsistent Agricultural houseohld definition, which I prefer to be the "AgHH: Head's reply" based on definiation (which is Table A8, panel A). Let's use this definition for our main estimates consistenetly and we will use alternative estimates such as AgHH: Income Sources and  AgHH: Operating land holding in the Appendix for robustness checks. This definition provides is more standard andprovide more convincing estimates and also we used this definition before for our main regression (also IFPRI uses this) and also employed for the India sample. 
+2. Please provide Stardard errors after all estimates. Currently the estimates shows p-values but with star sign we can always tell the range of the p-values. Reporting Standard errors are more stadnard in the jounal. 
+3. I have different opinion on putting india data releated discussion under section 3. I would like to keep it where it is now unless the reviewers ask us to move it.
+
+4. Finally I am confused what exactly used under program membership definiation. If we used FFE and Non-FFE damueeis in the regression then we should not used "any program memebrship dummy". Currently Any Program memebrship dummy is reported in many estimates. Please correct it accordingly. 
+5. Finally I could not see the updates estimates in the Github link you have shared before.
+
+
+
+ 
+1., the workload is substantial for almost no change. Results are very similar between income based and head reply based. In addition, I do not believe the head reply to be the standard in the literature (I do not think there is anything standard on it) when you have an objective measure in income. I think it suffices to state in the main text and show in the appendix that results do not change when we use the head's reply. We can consider when the ref asks for it. It is a different def from the India sample but there many things that are different between the two and India results are there to show something similar to the main results, so there is no urgent need to use the same def.
+

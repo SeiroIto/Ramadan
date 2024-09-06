@@ -1,0 +1,28 @@
+\contentsline {section}{\numberline {I}Sample selection}{2}{section.64}%
+\contentsline {subsection}{\numberline {I.1}Summary}{2}{subsection.65}%
+\contentsline {subsection}{\numberline {I.2}Selecting samples: \textsf {exist == \{111, 110\}}}{4}{subsection.66}%
+\contentsline {subsection}{\numberline {I.3}Create demeaned dummies and their interaction terms}{5}{subsection.86}%
+\contentsline {subsection}{\numberline {I.4}Clustered SEs}{7}{subsection.173}%
+\contentsline {section}{\numberline {II}Preparing regressors}{8}{section.215}%
+\contentsline {section}{\numberline {III}Understanding characteristics of sample used in main results}{8}{section.233}%
+\contentsline {subsection}{\numberline {III.1}Summary statitistics}{8}{subsection.234}%
+\contentsline {subsection}{\numberline {III.2}Attrition}{24}{subsection.654}%
+\contentsline {section}{\numberline {IV}Estimation}{31}{section.975}%
+\contentsline {subsection}{\numberline {IV.1}Main and placebo estimation}{31}{subsection.976}%
+\contentsline {subsubsection}{\numberline {IV.1.1}Main and placebo}{31}{subsubsection.979}%
+\contentsline {subsubsection}{\numberline {IV.1.2}Progression (number of added grades)}{49}{subsubsection.1937}%
+\contentsline {subsubsection}{\numberline {IV.1.3}Days absent in June-August}{58}{subsubsection.2456}%
+\contentsline {subsection}{\numberline {IV.2}Subsample estimation: age groups, non Muslims, flood}{75}{subsection.3384}%
+\contentsline {subsubsection}{\numberline {IV.2.1}Age wise subsamples}{75}{subsubsection.3385}%
+\contentsline {subsubsection}{\numberline {IV.2.2}Non Muslims estimation}{86}{subsubsection.4040}%
+\contentsline {subsubsection}{\numberline {IV.2.3}Flooded areas estimation}{97}{subsubsection.4637}%
+\contentsline {section}{\numberline {V}Results}{111}{section.5396}%
+\contentsline {subsection}{\numberline {V.1}Main}{111}{subsection.5420}%
+\contentsline {subsubsection}{\numberline {V.1.1}Main}{111}{subsubsection.5421}%
+\contentsline {subsubsection}{\numberline {V.1.2}Placebo}{124}{subsubsection.5450}%
+\contentsline {subsubsection}{\numberline {V.1.3}Other outcomes}{134}{subsubsection.5459}%
+\contentsline {subsubsection}{\numberline {V.1.4}Gender subsamples}{139}{subsubsection.5464}%
+\contentsline {subsection}{\numberline {V.2}Selected main results for JHR}{152}{subsection.5477}%
+\contentsline {subsubsection}{\numberline {V.2.1}Unflooded and non-Muslims}{217}{subsubsection.7666}%
+\contentsline {subsubsection}{\numberline {V.2.2}Grade progression and days absent}{219}{subsubsection.7698}%
+\contentsline {subsection}{\numberline {V.3}Age wise}{225}{subsection.8053}%

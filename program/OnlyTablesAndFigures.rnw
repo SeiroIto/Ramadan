@@ -1,0 +1,455 @@
+%  setwd("c:/data/ramadan/Submit2024/program"); library(knitr); library(data.table); knit("OnlyTablesAndFigures.rnw", "OnlyTablesAndFigures.tex"); system("platex OnlyTablesAndFigures"); system("pbibtex OnlyTablesAndFigures"); system("dvipdfmx OnlyTablesAndFigures")
+
+% : cannot coerce type 'closure' to vector of type 'character': This error shows up 
+% when nonexisting column name was specified in 
+% Enr.Agewise[grepl("zEm.1999", sample) & grepl("wise", AgeGrouping) & grepl("1", agHH) & 
+%  Age>=8 & Age<=18 & survey == 1, rate] 
+% When an error ``zEm1'' not found happens, check all estimation is OK to produce \textsf{FD\_sameN\_results.rds} and the chunk \textsf{main sample size check} does not produce null results.
+% zmobj2 <- c("zEm", "zSm"); zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")
+
+
+\input{c:/migrate/R/knitrPreamble/knitr_preambleLetter.rnw}
+\makeatletter
+\g@addto@macro{\UrlBreaks}{\UrlOrds}
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+
+\usepackage{url}
+\usepackage{tgtermes}
+\usepackage[T1]{fontenc}
+\fontfamily{qtm}\selectfont
+\usepackage{tikz}
+\usetikzlibrary{calc, arrows, decorations, decorations.pathreplacing, backgrounds}
+\usepackage{adjustbox}
+
+\renewcommand\Routcolor{\color{gray30}}
+\renewcommand{\labelenumii}{\theenumii.}
+\setlength{\baselineskip}{12pt}
+
+\tikzstyle{toprow} =
+[
+top color = gray!20, bottom color = gray!50, thick
+]
+\tikzstyle{maintable} =
+[
+top color = blue!1, bottom color = blue!10, draw = white
+%top color = green!1, bottom color = green!20, draw = white
+]
+\tikzset{
+%Define standard arrow tip
+>=stealth',
+%Define style for different line styles
+help lines/.style={dashed, thick},
+axis/.style={<->},
+important line/.style={thick},
+connection/.style={thick, dotted},
+}
+
+\begin{document}
+
+\hfil Tables for 2024 submission\\
+\hfil\MonthDY\\
+\hfil{\footnotesize\currenttime}\\
+\hfil Seiro Ito
+
+\tableofcontents 
+
+
+<<option setting 1, cache = F, child='c:/migrate/R/knitrPreamble/knitr_initial_option_setting_chunk.rnw'>>=
+<<set-options2, source = T, echo = F, cache = F, inline = T, warning = F, tidy = T, message = F, include = F>>=
+opts_knit$set(base.dir = 'c:/data/ramadan/program/program/')
+## Important switch: Demeaning level ##
+DemeanAtIndividualLevel <- F
+if (DemeanAtIndividualLevel)
+  dir.create(pathsaveThisVer <- paste0(pathsaveThisVer, "IndivDemeaned/"))
+opts_chunk$set(
+  fig.path='figure/', 
+  cache.path='OnlyTablesAndFigures/cache/', 
+  cache = F, echo = T, results = 'markup', 
+  par=TRUE, 'reindent.spaces' = 0,
+  tidy.opts=list(blank=FALSE, width.cutoff=40)
+)
+file.remove(list.files("c:/data/ramadan/Submit2024/program/OnlyTablesAndFigures/cache", full.names = T))
+options(digits = 6, width = 80)
+color_block = function(color) {
+  function(x, options) sprintf(
+  '{\\color{%s}\\begin{verbatim}%s\\end{verbatim}}', 
+  color, x)
+}
+render_listings()	#	it changes "<-" to real arrows, etc., prettifying
+knit_hooks$set(
+#  warning = color_block('magenta'),
+#  error = color_block('red'),
+  par = function(before, options, envir){if (before) par(mar=c(4,4,.1,.1),cex.lab=.95,cex.axis=.9,mgp=c(2,.7,0),tcl=-.3)})
+@
+<<paths functions, echo = F>>=
+# below gives substitution table sbt
+source(paste0(pathprogram, "substitution_table.R"))
+# agHH defs, minAge, maxAge
+source(paste0(pathprogram, "DefinitionsAndParameters.R")) 
+dropunbalanced <- function(Z, idcol = "uniquid", returnDT = F) {
+#	drop unbalanced obs (fast operation using data.table)
+  require(data.table)
+  dZ <- data.table(Z)
+  setkeyv(dZ, idcol)
+  dZ[, period := .N, by = idcol]
+  # keep only individuals with largest round numbers
+  dZ <- dZ[period == max(period), ]
+  dZ <- dZ[, period := NULL]
+  if (returnDT) dZ else data.frame(dZ)
+}
+source(paste0(pathprogram, "tabulate_est.R"))
+source(paste0(pathprogram, "EstimatorFunctions.R"))
+#source("c:/seiro/settings/Rsetting/functions.R")
+@
+
+<<TableFootnotes, echo = F>>=
+source("../program/TableFootnotePieces.R")
+source("TabGeneric.R")
+TabFNLine1Continue <- "\\\\"
+TabFNLine1 <- paste("\\\\[-1ex] Notes:& ", SpecMemo1)
+TabFNLine2 <- ""
+AddToTabFNT <- "" 
+TabHead2 <- gsub("2em", "3cm", TabHead2)
+@
+
+<<run gsub column width 1.5cm to 1.3cm, eval = T, echo = F, results = "hide">>=
+tabfiles <- list.files("../draft/Tables/", full.names = T)
+num1 <- "1.5cm"
+num2 <- "1.3cm"
+subnums <- function(x, num1, num2) {
+  xx <- readLines(x)
+  xx <- lapply(xx, function(z) gsub(num1, num2, z))
+  write.tablev(unlist(xx), x, F)
+}
+lapply(tabfiles, subnums, num1, num2)
+num3 <- "3.25cm"
+num4 <- "3cm"
+lapply(tabfiles, subnums, num3, num4)
+num5 <- "-.5ex"
+num6 <- "-1ex"
+lapply(tabfiles, subnums, num5, num6)
+num7 <- "4.5cm"
+num8 <- "4cm"
+lapply(tabfiles, subnums, num7, num8)
+@
+<<>>=
+readLines(tabfiles[1])[1:10]
+@
+
+
+\section{Main text tables}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F, Position = "b",
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "ByGenderResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Main estimation results 1999-2002")
+}
+
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "ByGenderByAgeGroup2ResultsConcise")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Main estimation results 1999-2002, by school level")
+}
+
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderResultsConcise")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Placebo estimation 2002-2006, 1999 and 2002 cohorts")
+}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "MuslimFloodResultsConcise")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Alternative mechanisms, flood and non-Muslims")
+}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "NumGradeDaysAbsentResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Other schooling outcomes, grade progression and days absent")
+}
+
+\clearpage
+
+\section{Appendix figures and tables}
+
+\subsection{Main}
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Impacts by age lowerbound, 1999-2002\label{GenderAgeGroup2Impacts}}\\
+\hfil \includegraphics[height=.3\paperheight]{../draft/Figures/App_MainVsPlaceboPlotsByAgeLBByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+<<<<<<< HEAD
+Notes:& 1. 10-18, 11-18, 12-18 indicate age range of each sample. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+=======
+Notes:& 1. 10-18, 11-18, 12-18 indicate age range of each sample. The coefficients are for agricultural HH $\times$ year 2002.\\[-1ex]
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Impacts by age group, 1999-2002, 6-17 years old in 1999\label{GenderAgeGroup2Impacts}}\\
+\hfil \includegraphics[height=.23\paperheight]{../draft/Figures/GenderAgeGroup2Impacts.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+<<<<<<< HEAD
+Notes:& 1. ``pri'' and ``sec'' mean enrolled in primary and secondary grades, aged 6-10 and 11-17 years in 1999, respectively. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+=======
+Notes:& 1. ``pri'' and ``sec'' mean enrolled in primary and secondary grades, aged 6-10 and 11-17 years in 1999, respectively. The coefficients are for agricultural HH $\times$ year 2002.\\[-1ex]
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+
+<<<<<<< HEAD
+=======
+<<TableFootnotes for agdef, echo = F>>=
+TabFNLine1 <- paste("\\\\[-1ex] Notes:& ", SpecMemoAgdef)
+@
+
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/App_", AgeCutoff = "Older10", Sample = "Main1999", 
+    CRSEMethod = "ByGenderByAgHHdefResultsConcise")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Main results 1999-2002")
+}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = T,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Main1999", 
+    CRSEMethod = "ByGenderByAgHHdefResults1")
+  ,
+  TABFilePath2 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Main1999", 
+    CRSEMethod = "ByGenderByAgHHdefResults2")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Main results 1999-2002")
+}
+
+
+
+\clearpage
+\subsection{Robustness}
+
+\subsubsection{Placebo}
+
+<<<<<<< HEAD
+=======
+<<TableFootnotes for placebo, echo = F>>=
+TabFNLine1 <- paste("\\\\[-1ex] Notes:& ", SpecMemo1)
+@
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Impacts by main/placebo by gender and by agricutural household definition\label{App_MainVsPlaceboPlotsByAgdefByGender}}\\
+\hfil \includegraphics[height=.3\paperheight]{../draft/Figures/App_MainVsPlaceboPlotsByAgdefByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+<<<<<<< HEAD
+Notes:& 1. ``pri'' and ``sec'' mean enrolled in primary and secondary grades, aged 6-10 and 11-17 years in 1999, respectively. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+=======
+Notes:& 1. Each row shows the estimates under different agricultural household definitions. Income source base, head's reply base, occupation base, and all combined (with ``or'' operations). Each column shows estimates using gender subsamples and full sample. The coefficients are for agricultural HH $\times$ year 2002 for main data and agricultural HH $\times$ year 2006 for placebo 2002 and placebo 1999 data.\\[-1ex]
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Placebo estimation 2002-2006, 1999 and 2002 cohorts")
+}
+
+
+\subsubsection{Age group}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/App_", AgeCutoff = "", Sample = "Main", 
+    CRSEMethod = "GenderAgeGroup2WithInteractionsResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Estimation results 1999-2002, by school level")
+}
+
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/App_", AgeCutoff = "", Sample = "Main1999", 
+    CRSEMethod = "ByGenderByAgeLBResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Main estimation results 1999-2002, by different age lowerbound")
+}
+
+\clearpage
+\subsubsection{Non-Muslims, Flooded}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "MuslimFloodResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Alternative mechanisms, flood and non-Muslims")
+}
+
+\clearpage
+\subsubsection{Other schooling outcomes}
+
+\begin{figure}
+%\hspace{-2em}\begin{minipage}[t]{13cm}
+\hfil\textsc{\footnotesize Figure \refstepcounter{figure}\thefigure: Other outcomes by gender, 1999-2002\label{NumGradesDaysAbsentPlots}}\\
+<<<<<<< HEAD
+\hfil \includegraphics[width=.75\paperwidth]{../draft/Figures/App_NumGradesDaysAbsentPlotsByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & Compiled from IFPRI data. \\[-1ex]
+Notes:& 1. Grades: Number of grades, Days: Days absent. Days absent does not have placebo tests. The coefficients are dummies for agri-HH $\times$ year 2002.\\[-1ex]
+& 2. Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+=======
+\hfil \includegraphics[height=.3\paperheight]{../draft/Figures/App_NumGradesDaysAbsentPlotsByGender.pdf}\\
+\renewcommand{\arraystretch}{1}
+\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\hfill\scriptsize}p{.5cm}<{}>{\scriptsize}p{11cm}<{\hfill}}
+Source: & \multicolumn{2}{l}{\scriptsize Compiled from IFPRI data.} \\[-1ex]
+Notes:& 1. & Grades: Number of grades, Days: Days absent. Rows are for number of grades impacts, number of grades placebo impacts, and days absent impacts.  Panel of ``Days, placebo'' is not shown because there is no placebo test for it. Columns are for boys subsample, girls subsample, and full sample. \textsf{complete}: Complete panel sample, \textsf{incomplete}: Incomplete panel sample, \textsf{cross section 1999}: 1999 cross section estimate of incomplete panel sample, \textsf{cross section 2002}: 2002 cross section estimate of incomplete panel sample. The coefficients are for agricultural HH $\times$ year 2002 for ``Grades'', ``Days absent'' rows and agricultural HH $\times$ year 2006 for ``Grades, placebo'' row.\\[-1ex]
+& 2. & Specifications 1 - 3 correspond to the same specifications in \textsc{Table \ref{base10}}. \\[-1ex]
+& 3. & Error bars are 95\% confidence intervals using standard errors clustered at thana level with a Satterthwaite correction for small number of clusters.
+>>>>>>> 41dec8f560b653fb2373d27136c157ebc2dfddbe
+\end{tabular}
+%\end{minipage}
+\end{figure}
+
+\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../draft/Tables/", AgeCutoff = "Older10", Sample = "Main", 
+    CRSEMethod = "NumGradeDaysAbsentResults")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Other schooling outcomes, grade progression and days absent")
+}
+
+
+\clearpage
+\subsection{Placebo}
+
+%\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = T,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderByAgHHdefResults1")
+  ,
+  TABFilePath2 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderByAgHHdefResults2")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Placebo estimation 2002-2006")
+}
+%\addtocounter{table}{-1}
+%\Sexpr{
+DisplayEstTable(
+  TwoContinuedTables = F,
+  TABFilePath1 = TabFilePathF(
+    FolderPath = "../save/", AgeCutoff = "Older10", Sample = "Placebo", 
+    CRSEMethod = "ByGenderByAgHHdefResults3")
+  ,
+  TABHead2=TabHead2NoTIKZ,
+  TABFoot1 = TabFoot1NoTIKZ, 
+  TABTitle="Placebo estimation 2002-2006 (continued)")
+}
+
+<<run gsub column width 1.3cm to 1.5cm, eval = F, results = "hide">>=
+lapply(tabfiles, subnums, num2, num1)
+lapply(tabfiles, subnums, num4, num3)
+lapply(tabfiles, subnums, num6, num5)
+lapply(tabfiles, subnums, num8, num7)
+@
+
+
+\end{document}

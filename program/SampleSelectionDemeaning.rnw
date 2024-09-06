@@ -1,0 +1,195 @@
+\section{Sample selection}
+
+Note that we use the balanced portion of the panel between round 1 and 2. 
+
+\subsection{Summary}
+
+\textsf{zFm.1999} is \textbf{\textsf{F}}ull sample, for \textbf{\textsf{m}}ain estimation to check 1999-2002 changes, with cohorts of ages 10-19 in \textbf{\textsf{1999}}. \textsf{zFm.2002} is full sample, for \textbf{\textsf{m}}ain estimation to check 1999-2002 changes, with cohorts of ages 10-18 in \textbf{\textsf{2002}}, or cohorts of ages 7-15 in \textbf{\textsf{1999}}. \textsf{zFp.2002} is full sample, for \textbf{\textsf{p}}lacebo estimation to check 2002-2006 changes, with cohorts of ages 10-18 in 2002. 
+Idea on selecting sample:
+\begin{description}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item[zF, fulll]	Original sample with no selection. We do not use this full sample.
+\item[zE, exist $==$ \{110, 111\}]	This sample excludes the individuals who do not appear in the roster of round 1. There are two possible reasons for such individuals to appear only in the later rounds: Measurement errors in the first round and new members who joined households in later rounds. We do not consider lack of entry in the rounds 2 and 3 as measurement errors, because they appear twice which makes measurement errors unlikely. If we trust the round 1 information on roster more than the later rounds, this is the sample to use. If the members appear only in the later rounds are new members who joined households, we should not include these individuals because they were not the original household members at round 1. 
+%\item[zS, spattern $!$= 000]	A glance at \textsf{spattern-age2002} tabulation shows that \textsf{spattern = 000} are of elder ages who might have finished schooling. So we can ignore \textsf{spattern = 000} with above 18 or so on schooling issues. Another reason for dropping them is they do not contribute to identification. Dropping these also drops significant portion of \textsf{exist=\{001\}}. 
+\end{description}
+
+Another layer of sample selection is direct offspring of household heads. We discard extended household portion of families because we cannot use parental covariates, and there is a chance parents outside households may be making schooling decisions.
+
+Placebo testing of nonexisting 2002 effects:
+\begin{description}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item[Same age group]	10-max year olds in 2002 (same age group, different individuals) are estimated for 2002 effects that are presumed not to exist. Larger standard errors despite larger sample size relative to main results. Point estimates are also smaller, leading to estimates with higher p values. Use subsample defined by \textsf{AgeInRangeR2==T}.
+\item[Same individuals]	10-max year olds in 1999 (same individuals) are estimated for 2002 effects that are presumed not to exist. Smaller sample size and smaller point estimates relative to main results lead to not statistically significant results. Use subsample defined by \textsf{AgeInRangeR1==T}.
+%\item[Younger cohorts]	8-12 year olds in 2002 who were too young (5-9 year olds) to have been exposed to hypothesised impacts in 1999 are estimated for 2002 effects that are presumed not to exist. Smaller sample size and smaller point estimates relative to main results lead to not statistically significant results.
+\end{description}
+
+Falsification testing of other mechahisms affecting enrollment rates:
+\begin{description}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item[Non-muslims]	Non-muslims are least affected with Ramadan except for exam schedule changes. Including a non-muslim dummy and its interaction with an agricultural household dummy does not affect main estimates. Estimates are not statistically significant.
+\item[Flood]	Some villages are exposed to flood in 2002. Including a flood dummy and its interaction with an agricultural household dummy does not affect main estimates. Estimates are often statistically significant and reduce the point estimates of main coefficient, but main coefficient remains statistically significant.
+\end{description}
+Robustness:
+\begin{itemize}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item	Use of full set of controls does not affect results.
+\item	Use of a different definition for agricultural households does not affect results.
+\item	Use of different age lowerbound does not affect results.
+\item	Gender heterogeneity exists. Impacts are large for boys.
+\item	Agewise heterogeneity is sometimes present but does not affect results for the category of 10-15 year olds (hence overall effects for agricultural households exist).
+\end{itemize}
+
+
+\subsection{Selecting samples: \textsf{exist == \{111, 110\}}}
+
+\textsf{zEp.YYYY}: \textsf{p}lacebo test sample (data of 2002-2006) for cohort (of ages 10-18) defined in year \textsf{YYYY} with attrition augmentation pattern \textsf{E$=111|110$}. Create demeaned dummy interaction terms (process not shown).
+
+<<read data>>=
+library(data.table); library(bit64)
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+setkey(yzw, uniquid, survey)
+# below gives function for tabulation and saving
+source(paste0(pathprogram, "tabulate_est.R"))
+zF <- yzw
+<<Selecting samples>>=
+#zF[, (grepout("yr\\d", colnames(zF))) := NULL]
+zF[, Dummy1999 := as.numeric(survey==1999)]
+zF[, Dummy2002 := as.numeric(survey==2002)]
+zF[, Dummy2006 := as.numeric(survey==2006)]
+zF[, Dummy1999 := Dummy1999 - mean(Dummy1999)]
+zF[, Dummy2002 := Dummy2002 - mean(Dummy2002)]
+zF[, Dummy2006 := Dummy2006 - mean(Dummy2006)]
+zE <- zF[grepl("111|110", exist), ]
+# switch HHtype definition between sd and sd2
+if (Usesd2) setnames(zE, c("sd", "sd2"), c("sd0", "sd"))
+zE[, exist := droplevels(exist)]
+@
+%Definitions: In the original sample, \textsf{exist} is either 001, 110, 111. 
+
+Full sample: \textsf{exist}=\{111, 110, 001\}. Exist sample: Keep if complete between up to rd 2, or \textsf{exist= \{111, 110\}}).
+
+
+\subsection{Create demeaned dummies and their interaction terms}
+
+<<variables to interact with yrX, eval = T, echo = F>>=
+# this chunk is needed to use \Sexpr{iitrend} in the text.
+thesevar.strings <- "sp.edule|^dummy\\d|kut|water|flood|Sib"
+thesevar <- gsub("\\_", "\\\\_", grepout(thesevar.strings, colnames(yzw)))
+thesevar <- unique(gsub(".yr.", "", thesevar))
+iidd <- grepout("^DummyAge[gG]|DummyEdu|sex|Sib|hd.edule|nonmusl", colnames(yzw)) # demographic
+iidist <- grepout("^dummy[A-Z]", colnames(yzw)) # districts
+# trend: To control heterogenous trends = X*yrX
+iitrend <- c(aghh.defs, iidd, iidist, thesevar)
+@
+Create age and year dummies and age wise interactions (age*agHH). Demean these interacting dummy variables: \textsf{\footnotesize \Sexpr{iitrend[order(iitrend)]}} (process not shown). 
+<<variables to interact with yrX 2, echo = F>>=
+thesevar.strings <- "sp.edule|^dummy\\d|kut|water|flood"
+thesevar <- gsub("\\_", "\\\\_", grepout(thesevar.strings, colnames(yzw)))
+thesevar <- unique(gsub(".yr.", "", thesevar))
+iidd <- grepout("^D.*Age[gG]|Sib|pc|D.*Edu|sex|hd.edule|sp.edu|nonmusl|flood|latr|water", colnames(yzw)) # demographic
+iidd <- iidd[!grepl("^D.*\\.1$", iidd)]
+iidist <- grepout("^dummy[A-Z]", colnames(yzw)) # districts
+#iidy <- grepout("^dummy\\d", colnames(yzw)) # year
+#iiag <- grepout("agHH", colnames(yzw)) # agHH definitions
+# real valued time varying covariates
+# trend: To control heterogenous trends = X*yrX
+iitrend <- unique(c(aghh.defs, iidd, iidist, thesevar))
+# slope: To estimate heterogenous impacts = X*agHH*yrX
+iislope <- iidd
+# Note slope variaables are a subset of trend variables.
+@
+Demeaning needs to be done separately for each sample because means differ between samples. 
+<<save zEm.1999 etc and create dummy agHH yrX interactions >>=
+for (ss in "E") {
+  zXobjs <- gsub("X", ss, c("zXp.1999", "zXp.2002", "zXm.1999", "zXm.2002"))
+  zX <- get(paste0("z", ss))
+  # read zE
+  # placebo testing samples: drop 1999 entries while choosing cohorts
+  #   zXp.1999: 2002 effects on AgeInRangeR1 (AgeInRange in 1999) cohorts
+  assign(zXobjs[1], 
+    zX[uniquid %in% uniquid[AgeInRangeR1 == 1] & survey != 1999, ])
+  #   zXp.2002: 2002 effects on AgeInRangeR2 (AgeInRange in 2002) cohorts
+  assign(zXobjs[2], 
+    zX[uniquid %in% uniquid[AgeInRangeR2 == 1] & survey != 1999, ])
+  # main esitmation samples: drop 2006 entries while choosing cohorts
+  #   zXm.1999: 1999 effects on AgeInRangeR1 (AgeInRange in 1999) cohorts
+  assign(zXobjs[3], 
+    zX[uniquid %in% uniquid[AgeInRangeR1 == 1] & survey != 2006, ])
+  #   zXm.2002: 1999 effects on AgeInRangeR2 (AgeInRange in 2002) cohorts
+  assign(zXobjs[4], 
+    zX[uniquid %in% uniquid[AgeInRangeR2 == 1] & survey != 2006, ])
+  for (k in 1:length(zXobjs)) {
+    zXobj <- get(zXobjs[k])
+    # keep original (undemeaned) level of x as UDx
+    ## Note: Using (paste0("UD", iitrend)) := eval(parse(text=iitrend)) gives wrong values...
+    zXobj[, (paste0("UD", iitrend)) := .SD, .SDcol = iitrend]
+    for (m in 1:length(aghh.defs))
+    {
+      aghhvec <- as.numeric(unlist(zXobj[, aghh.defs[m], with = F]))
+      # create x.yr2. x.yr3 for all covariates
+      zXobj[, (paste0(rep(iitrend, each = 2), c(".yr2", ".yr3"))) := 
+        eval(parse(text = 
+          paste0("list(", paste(rep(iitrend, each = 2), collapse = ","), ")")
+        ))]
+      # demean all dummies (iitrend): x1 is a dummy variable, x2_{t} is a time varying variable
+      #   y_{t}=ci+a0+a1*x1+a2*x2_{t}+a3*x1*x2_{t}+e_{t}
+      # ci is individual effects of i. Other i suffix (xi, d1i, ...) is omitted. Denote mX as X-mean(X),
+      #   y_{t}=mean(y_{t})+mci+a1*mx1+a2*mx2_{t}+a3*mx1*mx2_{t}+me_{t}
+      # Denote DX_{t} = X_{t}-X_{t-1}.
+      #   Dy_{t}=Dmean(y_{t})+a2*Dmx2_{t}+a3*mx1*Dmx2_{t}+Dme_{t}.
+      # I will first demean iitrend for all periods and keep only 1 period when 
+      # estimating FD.
+      if (DemeanAtIndividualLevel){
+        # demeaning with individual mean
+         iiid <- zXobj[, uniquid]
+         for (eye in iiid) {
+           ey <- grep(eye, iiid)
+           for (j in c(iitrend, paste0(rep(iitrend, each = 2), c(".yr2", ".yr3"))))
+             set(zXobj, i = ey, j = j, value = zXobj[[j]][ey] - mean(zXobj[[j]][ey], na.rm = T))
+         }
+      } else {
+        # demeaning with overall mean
+        for (j in c(iitrend, paste0(rep(iitrend, each = 2), c(".yr2", ".yr3"))))
+          set(zXobj, j = j, value = zXobj[[j]] - mean(zXobj[[j]], na.rm = T))
+      }
+      # Create demeaned interactions: demeaned dummies * demeaned yrX
+      # and name them as DUMMY.yr2, DUMMY.yr3
+      # Only variables in iidd: sex, ages, age groups, class groups
+      zXobj[, (paste0(iitrend, ".yr2")) := 
+        lapply(1:length(iitrend), function(i) 
+          ## NOTE: Previously, eval(parse(text=paste0(iitrend[i], "*Dummy1999"))), because yr2 was defined as 1999
+          eval(parse(text=paste0(iitrend[i], "*Dummy2002")))
+        )]
+      zXobj[, (paste0(iitrend, ".yr3")) := 
+        lapply(1:length(iitrend), function(i) 
+          eval(parse(text=paste0(iitrend[i], "*Dummy2006")))
+        )]
+      # Triple interactions
+      zXobj[, (paste0(iislope, ".", aghh.defs[m], ".yr2")) := 
+        lapply(1:length(iislope), function(i) 
+          eval(parse(text=paste0(iislope[i], "*", aghh.defs[m], "*Dummy2002")))
+        )]
+      zXobj[, (paste0(iislope, ".", aghh.defs[m], ".yr3")) := 
+        lapply(1:length(iislope), function(i) 
+          eval(parse(text=paste0(iislope[i], "*", aghh.defs[m], "*Dummy2006")))
+        )]
+    }
+    if (grepl("m", zXobjs[k])) 
+      zXobj[, grepout("yr3", colnames(zXobj)) := NULL] else
+      zXobj[, grepout("yr2", colnames(zXobj)) := NULL]
+    if (grepl("99", zXobjs[k])) 
+      zXobj[, grepout("2002", colnames(zXobj)) := NULL] else
+      zXobj[, grepout("1999", colnames(zXobj)) := NULL]
+    assign(zXobjs[k], zXobj)
+    saveRDS(zXobj, paste0(pathsaveThisVer, gsub("\\.", "", zXobjs[k]), ".rds"))
+  }
+  saveRDS(zX, paste0(pathsaveThisVer, "z", ss, ".rds"))
+}
+@
+In \textsf{Create2RoundPanel.rnw}, \textsf{totalland} (decimal) is deflated with 1 million (1,000,000), or 10000 acre units. Then, I reflated it back to original decimal units and further divided with 100 to make it to acre units. \textsf{totalvalue} is also deflated with 1,000,000 or in million BDT units. To get values in 1000 BDT units, multiply with 1000. 
+
+\subsection{Clustered SEs}
+
+We use BRL of CRSE \citep{BellMcCaffrey2002, ImbensKolesar2016, PustejovskyTipton2018}. We do not use WCB as it is not recommended in DID setting \citep{CanaySantosShaikh2021}.
+
+

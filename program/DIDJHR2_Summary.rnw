@@ -1,0 +1,140 @@
+<<>>=
+memocovariates <- "Time variant covariates: \\textsf{yield} is Thana level paddy yield. \\textsf{program} is an indicator variable for a various school program recipient. \\textsf{mean high temperature} is mean annual temperature of the daily high, \\textsf{mean low temperature} is mean annual temperature of the daily low. \\textsf{mean rainfall} is mean annual rainfall of daily rainfall. All weather covariates are measured at Thana level. Time invariant are all measured in 1999 and are interacted with year 2002: \\textsf{agricultural household} is an indicator variable if a member in a household's primary income is agriculture (agricultural work or tenancy) or occupation is agricultural work (own land, agricultural labor, tenant, other agricultural works). \\textsf{sex (female = 1)} is an indicator variable of child gender. \\textsf{head primary, head secondary, spouse primary, spouse secondary} are indicator variables for the respective highest educational achievement. \\textsf{head sex (female = 1)} is an indicator variable of household head's gender. \\textsf{number of older brothers/sisters} are respective number of older siblings of each child. \\textsf{per member land holding} is per member land holding of the household in acres. \\textsf{per member nonland asset} is per member nonland asset values in 1000 Takas. \\textsf{own piped water, structured toilet} are indicator variables of household ownership of each facilities. All dummy variables are demeaned." 
+memocovariatesForDestat <- "\\textsf{Enrolled} is an indicator variable for enrollment at school. \\textsf{Mean high temperature} is mean annual temperature of the daily high, \\textsf{Mean low temperature} is mean annual temperature of the daily low. \\textsf{Mean rainfall} is mean annual rainfall of daily rainfall. All weather covariates are measured at Thana level. \\textsf{Yield} is Thana level paddy yield. \\textsf{Program} is an indicator variable for household's program enrollment for any of antipoverty, school support programs. \\textsf{Age} is age of child in 1999.  \\textsf{Sex (female = 1)} is an indicator variable of child's gender. \\textsf{Head primary, Head secondary, Spouse primary, Spouse secondary} are indicator variables for the respective highest educational attainment. \\textsf{Head sex (female = 1)} is an indicator variable of household head's gender. \\textsf{Number of older brothers/sisters} are respective number of older siblings of each child. \\textsf{Per member land holding} is per member land holding of the household in decimal. \\textsf{Per member nonland asset} is per member nonland asset values in 1000 Takas. \\textsf{Own piped water, Structured toilet} are indicator variables of household ownership of each facilities. \\textsf{Non-Muslim} is an indicator variable for households with heads who do not identify oneself as a Muslim. \\textsf{Flood} is an indicator variable of thanas with reported flood, Aailjhar,  Chokoria, Kalia, Nilphamary Sadar, Mohadebpur. "
+memo3 <- "$t$ tests compare means. For binary variables, $\\chi^{2}$ tests assess the difference in proportions, binomial tests are Fisher's exact tests that examine if the proportion in regression data is equal to the proportion in original data."
+memo4 <- "Number of sample is cross sectional units per survey round. "
+@
+
+\begin{enumerate}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item	Run \textsf{CreateVariablesIn2RoundPanel.rnw} to create 1999-2002 panel. Run \textsf{Construct3RoundPanelMetAssoc.rnw} to merge with 2006 and production/weather. Then run this file. 
+	\begin{itemize}
+	\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+	\item	\textsf{CreateVariablesIn2RoundPanel.rnw}: Key variables and dummy interactions are created.
+	\item	\textsf{Construct3RoundPanelMetAssoc.rnw}: Merged with rd 3 data and weather/production data.
+	\end{itemize}
+\item	If need to redefine age range, do it in Construct3RoundPanelMetAssoc.rnw, then redefine in this file and run this file.
+%\item	 When an error ``zEm1'' not found happens, check all estimation is OK to produce \textsf{FD\_sameN\_results.rds} and the chunk \textsf{main sample size check} does not produce null results.
+\end{enumerate}
+Use 2002-1999 differences. Keep only one data set per estimation, so number of observation is determined by the most demanding specification that has least number of observations. Ages: 10 - \Sexpr{maxAge}.
+\begin{dinglist}{43}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item	\textsf{DID1} takes a first difference by using \textsf{diff}, which computes x[t, ] - x[t-1, ], to eliminate fixed effects. Returns level and differenced data sets for each specifications.
+\item	\textsf{DID2} takes a first difference data set. 
+\item	We expect the Ramadan school holiday impacts to be positive for the agricultural households in 1999, or $b_{3}>0$ with $t=1999, 2002$. 
+\[
+\begin{aligned}
+y_{t}&=b_{0}+b_{1}I[t=1999]+b_{2}I[D=1]+b_{3}I[t=1999]I[D=1]+e_{t},\\
+\Delta y_{1999}&=y_{1999}-y_{2002}=b_{1}I[t=1999]+b_{3}I[t=1999]I[D=1]+\Delta e_{1999}.
+\end{aligned}
+\]
+First-differencing using \textsf{DID1} is equivalent to $-\Delta y_{1999}=y_{2002}-y_{1999}=-b_{1}I[t=1999]-b_{3}I[t=1999]I[D=1]-\Delta e_{1999}$. So the estimate on $I[t=1999]I[D=1]$ is negative.
+\item	To get back to $\Delta y_{1999}=y_{1999}-y_{2002}=b_{1}I[t=1999]+b_{3}I[t=1999]I[D=1]+\Delta e_{1999}$, I will just multiply $-1$ to the estimates. We use the switch \textsf{opposite.time.order = T, F}
+to change the signs. If T, it is 1999-2002 differences.
+\item	We take 2002 dummy as yr2 ($r_{t}$ in main text). We use t - (t-1) differencing for FD estimates. 
+\end{dinglist}
+
+\begin{description}
+\vspace{1.0ex}\setlength{\itemsep}{1.0ex}\setlength{\baselineskip}{12pt}
+\item[spattern]	A schooling history indicator, binary indicators for schooling in each round is pasted together, so 111 indicates always goers and 110 indicates out of school at round 3. 
+\item[exist]	A survey response history indicator where we pasted the binary indicator of survery response in each period. Value of \textsf{110} is attrition at round 3, \textsf{001} indicates first observed in round 3. There is no \textsf{101} by definition because an individual will never be observed after attrition. \textsf{001} sample from 2006 data does not have school program information for 1999, 2002, so we will not use them. This leaves us with the sample of \textsf{110, 111}. 
+\end{description}
+
+
+% One can define a function to align comments: https://tex.stackexchange.com/a/216137
+\setlength{\baselineskip}{10pt}
+\begin{algorithm}
+\caption{Structure of estimation procedure}
+\DontPrintSemicolon
+\SetAlgoNoLine
+samples $\leftarrow$ c("main", "placebo")\;
+\tcc{main data: (Exist \{110, 111\} or spattern $\neq$ 000) $\times$ baseline year 1999}
+\tcc{placebo data: (Exist \{110, 111\} or spattern $\neq$ 000) $\times$ (baseline year 1999 [too young children] or 2002 [same age range born 3 years later])}
+zmobj $\leftarrow$ c("zEm.1999", "zSm.1999") \tcc*[r]{main data sets}
+zpobj $\leftarrow$ c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")  \tcc*[r]{placebo data sets}
+agecutoff $\leftarrow$ 1:3\;
+z23 $\leftarrow$ c("z2", "z3")\;
+aghh.defs $\leftarrow$ c("agHH0", "isagHH", "hdagHH", "ocagHH")\;
+Clustering $\leftarrow$ c("LiangZeger", "Satterthwaite", "WildClusterBoot")\;
+\For( \tcc*[f]{choose main or placebo sample}){ii in 1:length(samples)}{
+  zSobj $\leftarrow$ c("zmobj", "zpobj")[ii]\;
+  \For(\tcc*[f]{choose data in main/placebo data sets}){jj in 1:length(zSobj)}{
+     z1 $\leftarrow$ changehyphen(get(zSobj[jj]))\;
+     \For(\tcc*[f]{lower age cutoff: 10 - 12}){s in agecutoff}{
+        s0 $\leftarrow$ (10:12)[s]\;
+        iiid $\leftarrow$ s0 $\leqslant$ AgeInYYYY $\leqslant$ 18\;
+        z2 $\leftarrow$ z1[uniquid \% in\% iiid \& survey $!=$ cutout.year, ]\;
+        z3 $\leftarrow$ z2[sd == 1, ] \tcc*[r]{nuclear family}
+        \For(\tcc*[f]{nuclear or extended family}){j in 1:length(z23)}{
+          zz0 $\leftarrow$ get(z23[j])\;
+          \For(\tcc*[f]{ag HH definitions}){m in 1:length(aghh.defs)}{
+            agHH $\leftarrow$ aghh.defs[m]\;
+            \For(\tcc*[f]{small number of cluster correction}){cl in 1:3}{
+              clustering choice $\leftarrow$ Clustering[cl]\;
+	            \For(){k in 1:length(regressorsS)}{
+	              do estimation with k-th set of covariates\;
+	            }
+            }
+          }
+        }
+     }
+   }
+}
+
+\end{algorithm}
+\ULforem % enable auto underline
+
+
+
+<<>>=
+Usesd2 <- F
+DemeanAtIndividualLevel <- F
+@
+
+\Sexpr{knit_child(paste0(pathprogram, "SampleSelectionDemeaning.rnw"))}
+
+
+<<read data chunk, results = 'hide'>>=
+Take19992002Diff <- F
+yzw <- readRDS(paste0(pathsave0, "DataForJHR.rds"))
+yzw[, pcland := pcland*1000000] # in decimal 
+yzw[, pcland := pcland/100] # in acre
+zF <- yzw
+zE <- zF[grepl("111|110", exist), ]
+# spattern is created as: paste0(sch1999, sch2002, sch2006)
+zS <- zF[!(grepl("000", spattern)), ]
+Samples <- paste0("z", c("F", "E", "S"))
+subSamples <- c("zp.1999", "zm.1999", "zp.2002", "zm.2002")
+for (S in Samples) {
+  z.sample <- get(S)
+  # AgeInRange: 10-20
+  zs99 <- z.sample[uniquid %in% uniquid[AgeInRangeR1 == 1], ]
+  zs02 <- z.sample[uniquid %in% uniquid[AgeInRangeR2 == 1], ]
+  zm.1999 <- zs99[survey != 2006, ]
+  zm.2002 <- zs02[survey != 2006, ]
+  zp.1999 <- zs99[survey != 1999, ]
+  zp.2002 <- zs02[survey != 1999, ]
+  assign(paste0(S, "p.1999"), zp.1999)
+  assign(paste0(S, "p.2002"), zp.2002)
+  assign(paste0(S, "m.1999"), zm.1999)
+  assign(paste0(S, "m.2002"), zm.2002)
+  cohort.yrs <- c(rep(1999, 2), rep(2002, 2))
+  for (i in 1:length(subSamples)) {
+    zss1 <- get(subSamples[i])
+    zss2 <- zss1
+    zss20 <- dropunbalanced(zss2, returnDT = T)
+    cat("dimension of original ", subSamples[i], dim(zss1), "\n")
+    cat(paste("dimension of zss2 after keeping only", minAge, "-", maxAge, "year olds:"), 
+    dim(zss1)[1], "==>", dim(zss2)[1], "\n")
+    cat("dimension of zss2 after keeping only balanced portion:", 
+    dim(zss2)[1], "==>", dim(zss20)[1], "\n")
+    # subXSamples: zFp.1999, zEp.1999, ..., zFm.2002, ..., zSm.2002, ...
+    subXSamples <- gsub("z", S, subSamples[i])
+    assign(paste0(subXSamples, ".1"), zss1)
+    assign(paste0(subXSamples, ".2"), zss2)
+    assign(paste0(subXSamples, ".20"), zss20)
+  }
+}
+@
+
+
