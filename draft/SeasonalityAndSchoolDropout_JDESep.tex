@@ -1,56 +1,4 @@
-%  source("c:/data/ramadan/program/path.R"); library(knitr); library(data.table); setwd(pathdraft <- paste0(path0, "Submit2024/draft/")); knit("SeasonalityAndSchoolDropout_JDE.rnw", "SeasonalityAndSchoolDropout_JDE.tex")
-
-\documentclass[12pt,letterpaper]{article}\usepackage[]{graphicx}\usepackage[table]{xcolor}
-% maxwidth is the original width if it is less than linewidth
-% otherwise use linewidth (to make sure the graphics do not exceed the margin)
-\makeatletter
-\def\maxwidth{ %
-  \ifdim\Gin@nat@width>\linewidth
-    \linewidth
-  \else
-    \Gin@nat@width
-  \fi
-}
-\makeatother
-
-\definecolor{fgcolor}{rgb}{0.345, 0.345, 0.345}
-\newcommand{\hlnum}[1]{\textcolor[rgb]{0.686,0.059,0.569}{#1}}%
-\newcommand{\hlsng}[1]{\textcolor[rgb]{0.192,0.494,0.8}{#1}}%
-\newcommand{\hlcom}[1]{\textcolor[rgb]{0.678,0.584,0.686}{\textit{#1}}}%
-\newcommand{\hlopt}[1]{\textcolor[rgb]{0,0,0}{#1}}%
-\newcommand{\hldef}[1]{\textcolor[rgb]{0.345,0.345,0.345}{#1}}%
-\newcommand{\hlkwa}[1]{\textcolor[rgb]{0.161,0.373,0.58}{\textbf{#1}}}%
-\newcommand{\hlkwb}[1]{\textcolor[rgb]{0.69,0.353,0.396}{#1}}%
-\newcommand{\hlkwc}[1]{\textcolor[rgb]{0.333,0.667,0.333}{#1}}%
-\newcommand{\hlkwd}[1]{\textcolor[rgb]{0.737,0.353,0.396}{\textbf{#1}}}%
-\let\hlipl\hlkwb
-
-\usepackage{framed}
-\makeatletter
-\newenvironment{kframe}{%
- \def\at@end@of@kframe{}%
- \ifinner\ifhmode%
-  \def\at@end@of@kframe{\end{minipage}}%
-  \begin{minipage}{\columnwidth}%
- \fi\fi%
- \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
- \colorbox{shadecolor}{##1}\hskip-\fboxsep
-     % There is no \\@totalrightmargin, so:
-     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
- \MakeFramed {\advance\hsize-\width
-   \@totalleftmargin\z@ \linewidth\hsize
-   \@setminipage}}%
- {\par\unskip\endMakeFramed%
- \at@end@of@kframe}
-\makeatother
-
-\definecolor{shadecolor}{rgb}{.97, .97, .97}
-\definecolor{messagecolor}{rgb}{0, 0, 0}
-\definecolor{warningcolor}{rgb}{1, 0, 1}
-\definecolor{errorcolor}{rgb}{1, 0, 0}
-\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
-
-\usepackage{alltt}
+\documentclass[12pt,letterpaper]{article}
 \usepackage[capposition=top]{floatrow}
 \usepackage{epsfig}
 \usepackage{amsmath}
@@ -99,12 +47,9 @@
 \newcommand{\bfm}{\ensuremath{\mbox{\bf m}}}
 \newcommand{\0}{\ensuremath{\mbox{\boldmath $0$}}}
 \newcommand{\defeq}{\mathrel{\mathop:}=}
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+
+
 \begin{document}
-
-
-
-
 
 \singlespacing
 
@@ -395,10 +340,8 @@ Our estimation indicates that the impact of the annual final exam coinciding wit
 \textsc{\small Table \ref{MainByGenderByAgeLBResults}} in Appendix \ref{app_a4}, present similar estimations with higher age cutoffs of 11-18 and 12-18 years. Panels B and C of \textsc{Table \ref{MainByGenderByAgeLBResults}} indicate a stronger impact for children older than 10-18 years. These estimates suggest that, in 2002, the enrollment rates of children from agricultural households declined more severely than those from non-agricultural households because of conflicting academic and agricultural calendars.
 
 
-\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main regression estimates with 10-18 years old in 1999\label{base10}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/MainOlder10ByGenderResults.tex}\\
-\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] 
-Notes:&  \textsf{Agricultural households * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$.  Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.,  Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). $P$ values in percentages are shown in braces. 95\% confidence intervals are shown in square brackets.   
-\end{tabular} \end{table}
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Main regression estimates with 10-18 years old in 1999\label{base10}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/MainOlder10ByGenderResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agri HH * yr 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. Each estimate is followed by a $p$ value in percentage in brackets. The standard errors are clustered at the thana level with a correction for the small number of clusters using bias-reduced linearization (BRL) of \citet{PustejovskyTipton2018} whose 95\% confidence interval (CI) is reported in the square bracket. 
+For each panel, the first columns (columns 1, 4, and 7) report the simple DID estimates. The second columns (columns 2, 5, and 8) add time-varying individual-level characteristics (age squared, recipient of FFE and non-FEE programs) plus time-varying thana level controls (yield, mean rainfall, mean high temperature, mean low temperature) and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. The third columns (columns 3, 6, and 9) add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.  \end{tabular} \end{table}
 
 
 In \textsc{\small Table \ref{base10}}, we also estimate the impacts disaggregated by gender. In Columns (4)-(6), the boys subsample indicates a stronger negative impact than the boys+girls sample. The conflicting calendar impact implies a -12.9 to -15.5 percentage point decline in enrollment rates for boys from agricultural households. 
@@ -427,12 +370,7 @@ Notes:& 1. ``pri'' and ``sec'' mean enrolled in primary and secondary grades, ag
 In this sub-section, we conduct placebo tests employing 2002-2006 panel data based on the fact that the 1999 favorable calendar returned to a normal (unfavorable) routine in 2002. Hence, the school enrollment rate should follow the common trend between the treatment and control groups, since there was no shift in the academic calendar between 2002 and 2006. We test this using two cohorts: 10-18 years old in 1999 (1999 cohort) and 10-18 years old in 2002 (2002 cohort). Given there is a significant sample overlap (13-18 in 2002), we treat the 2002 cohort as our main placebo check. 
 
 
-\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006, 1999 and 2002 cohorts\label{Placebo10}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/PlaceboOlder10ByGenderResults.tex}\\
-\renewcommand{\arraystretch}{1}
-\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} 
-Source:& Compiled from IFPRI data. \\[-1ex]
-Notes:&   \textsf{Agricultural households * year 2006} is an interaction term of agricultural household dummy and year 2006 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2006 dummy with Thana fixed effects. Third columns add interactions of year 2006 dummy and baseline individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2006 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$.  Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2006 interaction terms to avoid multicollinearity.,  Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). $P$ values in percentages are shown in braces. 95\% confidence intervals are shown in square brackets.  
-\end{tabular} \end{table}
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Placebo estimation 2002-2006, 1999 and 2002 cohorts\label{Placebo10}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/PlaceboOlder10ByGenderResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.   \end{tabular} \end{table}
 
 Table \ref{Placebo10} provides the results of two sets of placebo tests. All regression specifications follow those of \textsc{Table \ref{base10}}. In Panel A, we report the first placebo test using 10-18-year-old in 2002 (2002 cohort). Our coefficient of interest $\hat{\gamma}$ has a smaller point estimate relative to the main results with larger standard errors, leading to large $p$ values.\footnote{The point estimates are all negative, indicating children from agricultural households tend to drop out earlier even when exam-harvest overlap is absent. Consistent with our brawn-based interpretation that female labor is not a perfect substitute for male labor to work in the field, we obtain negative estimates on the triple interaction terms of the number of older female siblings with $p$ values ranging between 7.2\% and 8.9\%. This implies that children from agricultural households are naturally disadvantaged in schooling even if there is no change in exam-harvest overlap when the household demographic structure is unfavorable. } The estimation results using gender subsamples are also similar. The second set of tests in Panel B. use the same individuals (10-18 years old in 1999) as the main estimation but observed in the later rounds of data. Most of the estimates are negative but statistically indistinguishable from zero. 
 
@@ -453,11 +391,7 @@ Columns (7)-(9) present the estimates of the impacts on the average monthly abse
 
 In columns (10)-(12), the sample consists of continuing school students and uses only the cross-section sample of 1999 (asked on absence of 2000 in 2000). Columns (10)-(12), the sample consists of continuing school students and uses only the cross-section sample of 2002 (asked on absence of 2003 in 2003). We use two cross section samples in these estimates to see if the labor demand increase may affect absence. In both samples, the survey asked about the absence during the planting season. In the year 2000 sample, we see zero impacts. Point estimates are small and change the signs by specification, and $p$ values are large. In the 2003 sample, the point estimates are positive and larger, with the $p$ values ranging between 10.5 to 17.6\%. This shows that children of agricultural households were more absent in the planting season of 2003, but not so in the planting season of 2000. This is consistent with the decision that having a favorable final exam schedule in 2000 induced the students not to go to planting work, while they went to planting work in 2003 when the final exam schedule was unfavorable. We interpret the results as an indication that children are forward looking that the regular school attendance in the months well before final exam schedule can also be affected. 
 
-\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Other schooling outcomes, grade progression and days absent\label{NumGradesDaysAbsentResults}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/MainOlder10NumGradeDaysAbsentResults.tex}\\\renewcommand{\arraystretch}{1}
-\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} 
-Source:& Compiled from IFPRI data. \\[-1ex] 
-Notes:&  \textsf{Agricultural households * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. Panel under Number of grades shows impacts on grade progression. Panel under Days absent shows impacts monthly absent days from school in April - June (boro planting season) of respective years. See also the footnote of \textsc{\footnotesize Table \ref{base10}}. 
-\end{tabular} \end{table}
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Other schooling outcomes, grade progression and days absent\label{NumGradesDaysAbsentResults}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/MainOlder10NumGradeDaysAbsentResults.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity., \\   \end{tabular} \end{table}
 
 Our estimates indicate that children from agricultural households systematically missed more (about 28\%) school days, on average, during July-August, which overlaps with the local \textit{Aman} paddy planting time (see section \ref{sec.rice}). Gender sub-sample estimation (reported in Appendix Table X) shows this absenteeism impact predominantly comes from boys. On average, boys from agricultural households missed school about 1.2-2.5 days more per month in 2002 during the planting time (from the base of 2.5 absent days for non-agriculture household students, an increment equivalent to 48-100\%). 
 
@@ -469,12 +403,7 @@ In Table \ref{FloodNonMuslimResultsConcise}, we report two tests to check the pl
 
 It is possible that our estimates primarily capture the impact of fasting and festivities during \textit{Ramadan}, which may diminish children's capacity to learn and pass annual exams. To verify this empirically, we compare Muslim and non-Muslim households. As non-Muslims do not fast and are less prone to be affected by festivities, this exercise helps us disentangle the impact of festivities. Columns (1)-(3) of Table \ref{FloodNonMuslimResultsConcise} present estimates using a non-Muslim dummy and its interaction with the year 2002 and the year 2002*agricultural household. We can observe that our main coefficient of interest does not differ from those in Table \ref{base10}. For non-Muslims, the statistically imprecise point estimates suggest that \textit{Ramadan} before the exam in 2002, fasting before the final exams, and post-\textit{Ramadan} festivities are not plausible mechanisms leading to lower enrollment rates for children from agricultural households.
 
-\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Alternative mechanisms, flood and non-Muslims\label{FloodNonMuslimResultsConcise}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/MainOlder10MuslimFloodResultsConcise.tex}\\
-\renewcommand{\arraystretch}{1}
-\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} 
-Source:& Compiled from IFPRI data. \\[-1ex] 
-Notes:&  \textsf{Agricultural households * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. Panel headed by Non Muslims shows impacts with non-Muslim dummy and its interactions. Panel headed by Flooded shows impacts with Flooded dummy and its interactions. See also the footnote of \textsc{\footnotesize Table \ref{base10}}. 
-\end{tabular} \end{table}
+\begin{table}\hfil\textsc{\footnotesize Table \refstepcounter{table}\thetable: Alternative mechanisms, flood and non-Muslims\label{FloodNonMuslimResultsConcise}}\\\setlength{\tabcolsep}{.5pt}\renewcommand{\arraystretch}{.675}\hspace{-2em}\hfil\input{Tables/MainOlder10MuslimFloodResultsConcise.tex}\\\renewcommand{\arraystretch}{1}\hfil\begin{tabular}{>{\hfill\scriptsize}p{1cm}<{}>{\scriptsize}p{12cm}<{\hfill}} Source:& Compiled from IFPRI data. \\[-1ex] Notes:&   \textsf{Agricultural HH * year 2002} is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and \textsf{Thana trends} that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head's and spouse's education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) $\bfx_{i}r_{t}$, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy $\bfx_{i}r_{t}D_{i}$. Rows of $\underline{\phantom{mm}}*x$ show estimates of the triple interaction term of $x_{i}$, or $x_{i}r_{t}D_{i}$. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.   \end{tabular} \end{table}
 
 
 Another possible confounding mechanism that can explain the estimated results is the impact of a natural disaster that systematically affected agricultural households more in 2002. If this is true, then our estimates capture the impact of natural disasters on school dropouts. In 2002, several districts were affected by the monsoon flash floods.\footnote{Flood-affected districts were Chandpur, Sherpur and Tangail. More information on flood monsoon based flash floods is provided in te following website \url{https://reliefweb.int/report/bangladesh/bangladesh-monsoon-floods-2004-post-flood-needs-assessment-summary-report} } Columns (4)-(6) of Table \ref{FloodNonMuslimResultsConcise} assess the effects of flooding using a dummy variable of flooded areas and its interaction with the year 2002, and triple interaction with the year 2002 * agricultural household. The triple interaction of flood-affected areas indicates no statistically discernible impact, suggesting that natural disasters such as floods are not plausible impact mechanisms.

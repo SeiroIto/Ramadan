@@ -352,7 +352,7 @@ margin-left: 2em;
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年09月06日 11:43</h4>
+<h4 class="date">2024年09月12日 11:36</h4>
 
 
 <div id="TOC">
@@ -566,7 +566,9 @@ zpobj &lt;- c(&quot;zEp.2002&quot;, &quot;zSp.2002&quot;, &quot;zEp.1999&quot;, 
 zmobj &lt;- c(&quot;zEm.1999&quot;, &quot;zSm.1999&quot;)[1]
 zmobj2 &lt;- c(&quot;zEm&quot;, &quot;zSm&quot;)
 zpobj2 &lt;- c(&quot;zEp2&quot;, &quot;zSp2&quot;, &quot;zEp9&quot;, &quot;zSp9&quot;)[c(1, 3)]
-ii &lt;- jj &lt;- s &lt;- m &lt;- 1; j &lt;- 2; ge &lt;- 3
+ii &lt;- jj &lt;- s &lt;- 1; j &lt;- 2; 
+#### agHH def: 3=Head&#39;s reply (previously, 1=agHH0)
+m &lt;- ge &lt;- 3
 zSobj &lt;- get(zsobj[ii])
 yrx &lt;- c(&quot;yr2&quot;, &quot;yr3&quot;)[ii]
 s0 &lt;- (10:12)[s]
@@ -693,29 +695,68 @@ colnames(SampleDiff) &lt;- c(&quot;sample&quot;, &quot;age&quot;, &quot;variable
   &quot;agHH&quot;, &quot;nonagHH&quot;, &quot;t&quot;, &quot;Satterthwaite&quot;)
 SampleDiff &lt;- data.table(SampleDiff)
 rn &lt;- SampleDiff[, variables]
-for (ss in 1:nrow(sbt)) {
-  if (any(grepl(sbt[ss, &quot;org&quot;], rn)))
-    rn[grepl(sbt[ss, &quot;org&quot;], rn)] &lt;- sbt[ss, &quot;changedto&quot;]
+Rn &lt;- read.table(text = &quot;
+  &#39;Child is enrolled (yes = 1)&#39; LHS
+  &#39;Age of child&#39; Age
+  &#39;Sex of child (female = 1)&#39; Sex
+  &#39;HH head sex (female = 1)&#39; UDhdsex
+  &#39;HH head education: primary&#39; Hd.edulevel.primary
+  &#39;HH head spouse education: primary&#39; Sp.edulevel.primary
+  &#39;HH head education: secondary&#39; Hd.edulevel.secondary
+  &#39;HH head spouse education: secondary&#39; Sp.edulevel.secondary
+  &#39;Number of older brothers per child&#39; UDOldSibM
+  &#39;Number of older sisters per child&#39; UDOldSibF
+  &#39;Per-member land holding (decimal)&#39; pclandDec
+  &#39;Per-member non-land asset (1000 Tk)&#39; pcnlasset1000
+  &#39;HH has piped water supply&#39; Ownwater
+  &#39;HH has sanitary latrine (structured toilet)&#39; Kutchalatrine
+  &#39;HH is non-Muslim&#39; UDnonmuslim
+  &#39;HH receives Food-for-Work (FFW) program&#39; FFWProgram
+  &#39;HH receives non-FFW program&#39; NonFFWProgram
+  &#39;HH receives a program&#39; program
+  &#39;Mean rainfall (millimeters)&#39; rainfallMeanY
+  &#39;Mean high temperature (Celsius)&#39; highMeanY
+  &#39;Mean low temperature (Celsius)&#39; lowMeanY
+  &#39;Paddy yield (in 000 metric tons)&#39; yield
+  &#39;Flooded (=1)&#39; UDflooded
+&quot;)
+Rn &lt;- data.table(Rn)
+setnames(Rn, c(&quot;changedto&quot;, &quot;org&quot;))
+rnseq &lt;- NULL
+for (ss in 1:nrow(Rn)) {
+  iist &lt;- paste0(&quot;^&quot;, Rn[[&quot;org&quot;]][ss], &quot;$&quot;)
+  if (any(iii &lt;- grepl(iist, rn))) {
+    rnseq &lt;- c(rnseq, grep(iist, rn))
+    rn[iii] &lt;- Rn[ss, changedto]
+  }
 }
+rn[seq(2, length(rn), 2)] &lt;- &quot;&quot;
+#### for (ss in 1:nrow(sbt)) {
+####   if (any(grepl(sbt[ss, &quot;org&quot;], rn)))
+####     rn[grepl(sbt[ss, &quot;org&quot;], rn)] &lt;- sbt[ss, &quot;changedto&quot;]
+#### }
 rn &lt;- gsub(&quot;^se.*&quot;, &quot;&quot;, rn)
 SampleDiff[, variables := rn]
-SampleDiff &lt;- data.table(SampleDiff)
+SampleDiff &lt;- data.table(SampleDiff[c(t(data.table(rnseq, rnseq+1))), ])
 for (j in c(&quot;overall&quot;, &quot;agHH&quot;, &quot;nonagHH&quot;, &quot;t&quot;, &quot;Satterthwaite&quot;)) 
   set(SampleDiff, j = j, value = as.numeric(as.character(SampleDiff[[j]])))
-#### reorder
-reo &lt;- paste0(&quot;Enr|rain|high|low|[Yy]i|[pP]rog|[Aa]ge|[Ss]ex|&quot;,
-  &quot;d ed|e ed|pri|seco|bro|sis|sibl|hold|asse|wat|toi|latr|Mus|Flo&quot;)
-reo &lt;- unlist(strsplit(reo, &quot;\\|&quot;))
-reo2 &lt;- NULL
-for (rr in reo) reo2 &lt;- c(reo2, grep(rr, unlist(SampleDiff[, 3])))
-reo2 &lt;- c(t(cbind(reo2, reo2+1)))
-SampleDiff &lt;- SampleDiff[reo2, ]
+#### #### reorder
+#### reo &lt;- paste0(&quot;Enr|LHS|rain|high|low|[Yy]i|[pP]rog|[Aa]ge|[Ss]ex|&quot;,
+####   &quot;d ed|e ed|pri|seco|bro|sis|sibl|hold|asse|wat|toi|latr|Mus|Flo&quot;)
+#### reo &lt;- unlist(strsplit(reo, &quot;\\|&quot;))
+#### reo2 &lt;- NULL
+#### for (rr in reo) reo2 &lt;- c(reo2, grep(rr, unlist(SampleDiff[, 3])))
+#### reo2 &lt;- c(t(cbind(reo2, reo2+1)))
+#### SampleDiff &lt;- SampleDiff[reo2, ]
 SDiff.print = copy(SampleDiff)
+if (any(grepl(&quot;LHS&quot;, SampleDiff[, variables]))) 
+  SDiff.print[grepl(&quot;LHS&quot;, variables), variables := &quot;Enrollment&quot;]
 for (j in c(&quot;overall&quot;, &quot;agHH&quot;, &quot;nonagHH&quot;, &quot;t&quot;, &quot;Satterthwaite&quot;)) 
   SDiff.print[, (j) := formatC(eval(parse(text=j)), digits = 4, format = &quot;f&quot;)]
 SDiff.print &lt;- rbind(as.matrix(SDiff.print), 
   c(&quot;&quot;, &quot;&quot;, &quot;n&quot;, nrow(z01), nrow(z.1[tee == 1, ]), nrow(z.0[tee == 1, ]), &quot;&quot;, &quot;&quot;))
 SDiff.print &lt;- a2b(SDiff.print, &quot;   NA&quot;, &quot;&quot;)
+#### Parenthesize the std
 iispace &lt;- which(
   SDiff.print[, 3]==&quot;&quot; &amp; 
     !grepl(&quot;interaction with|^n$|bar.R|thana dum|mean at|raw DID&quot;, SDiff.print[, 3])
@@ -727,15 +768,40 @@ for (kk in c(&quot;overall&quot;, &quot;agHH&quot;, &quot;nonagHH&quot;))
     paste0(&quot;(&quot;, 
       formatC(as.numeric(SDiff.print[iispace+1, kk]), digits = 3, format = &quot;f&quot;)
     , &quot;)&quot;)
+#### Bracket p values
 for (kk in c(&quot;t&quot;, &quot;Satterthwaite&quot;)) 
   SDiff.print[iispace, kk] &lt;- 
     paste0(&quot;[&quot;, 
       formatC(as.numeric(SDiff.print[iispace, kk])*100, digits = 2, format = &quot;f&quot;)
     , &quot;]&quot;)
+#### LaTeX table
+ltb &lt;- latextab(SDiff.print[, -(1:2)], delimiterline = NULL, 
+    hcenter = c(5, rep(2, ncol(SDiff.print)-3)),
+    hleft = c(&quot;\\scriptsize&quot;, rep(&quot;\\hfil\\scriptsize$&quot;, ncol(SDiff.print)-3)), 
+    hright = c(&quot;\\hfill&quot;, rep(&quot;$&quot;, ncol(SDiff.print)-3)),
+    headercolor = NULL, 
+    addseparatingcols = 3, separatingcolwidth = .1, 
+    separatingcoltitle = c(&quot;\\textsf{Means}&quot;, &quot;\\textsf{$p$-values (\\%)}&quot;),
+    adjlskiprows = iispace, adjustlineskip = &quot;-.5ex&quot;,
+    alternatecolorManual = c(iispace2, iispace2+1),
+    alternatecolorManualColor = NULL
+    )</code></pre>
+<pre><code>You need to specify alternatecolorManualColor.</code></pre>
+<pre class="r SeiroBenign"><code>ltb[3] &lt;- gsub(&quot;\\\\\\\\&quot;, &quot;&quot;, ltb[3])
+ltb &lt;- c(
+    ltb[1:grep(&quot;^Child.*nrolled&quot;, ltb)-1],
+    &quot;\\hline\\multicolumn{7}{l}{\\scriptsize HH level variables}\\\\\\hline&quot;,
+    ltb[grep(&quot;^Child.*nrolled&quot;, ltb):(grep(&quot;^Mean&quot;, ltb)[1]-1)],
+    &quot;\\hline\\multicolumn{7}{l}{\\scriptsize Thana level variables}\\\\\\hline&quot;,
+    ltb[grep(&quot;^Mean&quot;, ltb)[1]:length(ltb)]
+  )
+write.tablev(ltb
+  ,  paste0(&quot;../draft/Tables/AgNonAgDestat.tex&quot;)
+  ,  colnamestrue = F)
 rm(zi00)</code></pre>
 </details>
 <table style="NAborder-bottom: 0;">
-<caption>Differences between agricultural and non-agricultural households in main data</caption>
+<caption>Baseline differences between agricultural and non-agricultural households</caption>
 
 
 <thead>
@@ -762,258 +828,36 @@ Satterthwaite
 </thead>
 <tbody>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-mean rainfall
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Child is enrolled (yes = 1)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-206.6157
+0.7380
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-207.8893
+0.7312
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-204.5947
+0.7464
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[61.53]
+[66.69]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[75.36]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(33.729)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(34.356)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(10.055)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[67.58]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-mean high temperature
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-31.1582
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-31.1432
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-31.1820
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[45.22]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[85.78]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.252)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.218)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.208)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-mean low temperature
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-21.6092
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-21.5160
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-21.7571
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.00]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[20.93]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.263)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.265)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.173)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-yield (thana)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.7859
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.8050
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.7557
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.00]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[7.64]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.044)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.055)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.023)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-program membership to FFW
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1054
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1016
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1116
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[69.47]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[52.77]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.017)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.019)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.015)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-program membership to non-FFW
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.6342
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.6146
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.6653
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[19.72]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[29.88]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.032)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.039)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.045)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-program membership
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.7396
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.7161
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.7769
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[8.65]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[18.87]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.035)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.038)
+(0.041)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.041)
+(0.035)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1021,73 +865,36 @@ program membership
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Age
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Age of child
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 12.9856
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-13.0469
+13.0318
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-12.8884
+12.9286
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[41.18]
+[58.59]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[44.38]
+[66.44]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.061)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.141)
+(0.147)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.194)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Head sex (female = 1)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1278
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.0365
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.2727
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.00]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[4.88]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.048)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.101)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.098)
+(0.227)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1095,36 +902,36 @@ Head sex (female = 1)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Sex
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Sex of child (female = 1)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.5112
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.4870
+0.4884
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.5496
+0.5393
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[12.72]
+[20.62]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[15.20]
+[9.95]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.024)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.040)
+(0.032)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.038)
+(0.027)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1132,27 +939,64 @@ Sex
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-head primary
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH head sex (female = 1)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.1278
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.0347
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.2429
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[0.00]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[4.03]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.048)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.087)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.082)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH head education: primary
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.1550
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1641
+0.1676
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1405
+0.1393
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[42.17]
+[32.68]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[57.16]
+[50.08]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.022)
@@ -1169,36 +1013,36 @@ head primary
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-head spouse primary
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH head spouse education: primary
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.1709
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1901
+0.1908
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1405
+0.1464
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[9.93]
+[13.91]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[38.41]
+[23.33]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.028)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.036)
+(0.029)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.053)
+(0.034)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1206,36 +1050,36 @@ head spouse primary
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-head secondary
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH head education: secondary
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.2843
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.2057
+0.2052
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.4091
+0.3821
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 [0.00]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.98]
+[2.50]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.031)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.054)
+(0.053)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.056)
+(0.061)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1243,73 +1087,36 @@ head secondary
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-head spouse secondary
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH head spouse education: secondary
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.1661
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1146
+0.1185
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.2479
+0.2250
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.00]
+[0.05]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[1.96]
+[1.19]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.043)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.053)
+(0.049)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.043)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Number of older female siblings
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.3898
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.3646
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.4298
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[25.61]
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[47.18]
-</td>
-</tr>
-<tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.060)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.101)
-</td>
-<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.085)
+(0.031)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1317,36 +1124,36 @@ Number of older female siblings
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Number of older male siblings
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Number of older brothers per child
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.5767
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.6484
+0.6445
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.4628
+0.4929
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.47]
+[2.25]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.87]
+[0.86]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.041)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.067)
+(0.050)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.050)
+(0.041)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1354,36 +1161,73 @@ Number of older male siblings
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-per member land holding (decimal, in 1999)
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Number of older sisters per child
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.3898
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.3613
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.4250
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[24.62]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[16.05]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.060)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.078)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.040)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Per-member land holding (decimal)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 16.7471
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-18.9627
+19.7869
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-13.2316
+12.9909
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[1.59]
+[0.30]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[10.80]
+[5.18]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (2.029)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(1.361)
+(1.318)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(3.073)
+(2.873)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1391,36 +1235,36 @@ per member land holding (decimal, in 1999)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-per member nonland asset (1000 Tk, in 1999)
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Per-member non-land asset (1000 Tk)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 11.2091
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-9.9168
+10.3070
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-13.2599
+12.3240
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[1.17]
+[9.74]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[12.46]
+[23.32]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (1.694)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(2.451)
+(2.214)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(1.894)
+(1.538)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1428,36 +1272,36 @@ per member nonland asset (1000 Tk, in 1999)
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Ownwater
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH has piped water supply
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.3802
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.4010
+0.4191
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.3471
+0.3321
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[17.37]
+[2.52]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[56.32]
+[31.92]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.096)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.113)
+(0.109)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.088)
+(0.081)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1465,36 +1309,36 @@ Ownwater
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Kutchalatrine
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH has sanitary latrine (structured toilet)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.2939
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.3229
+0.3179
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.2479
+0.2643
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[4.13]
+[14.12]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[40.19]
+[44.73]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.055)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.019)
+(0.033)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.084)
+(0.066)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1502,36 +1346,36 @@ Kutchalatrine
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Non-Muslim
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH is non-Muslim
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.1230
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1250
+0.1272
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.1198
+0.1179
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[84.78]
+[72.40]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[92.63]
+[87.59]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.062)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.082)
+(0.078)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.054)
+(0.057)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1539,36 +1383,295 @@ Non-Muslim
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
-Flooded
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH receives Food-for-Work (FFW) program
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.1054
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.1040
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.1071
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[90.05]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[86.66]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.017)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.018)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.018)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH receives non-FFW program
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.6342
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.6301
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.6393
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[81.19]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[82.60]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.032)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.044)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.040)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+HH receives a program
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.7396
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.7341
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.7464
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[72.69]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[74.73]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.035)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.044)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.037)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Mean rainfall (millimeters)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+206.6157
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+210.0472
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+202.3753
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[23.17]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[44.00]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(33.729)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(33.409)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(9.342)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Mean high temperature (Celsius)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+31.1582
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+31.1340
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+31.1881
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[30.10]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[79.11]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.252)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.233)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.196)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Mean low temperature (Celsius)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+21.6092
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+21.5139
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+21.7268
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[0.00]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[25.18]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.263)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.259)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.170)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Paddy yield (in 000 metric tons)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.7859
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.8058
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+0.7613
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[0.00]
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+[8.21]
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.044)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.053)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+(0.022)
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+<td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
+Flooded (=1)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 0.6230
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.6797
+0.6908
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-0.5331
+0.5393
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[0.03]
+[0.01]
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-[26.29]
+[22.01]
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 (0.187)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.220)
+(0.214)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-(0.120)
+(0.112)
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -1576,17 +1679,17 @@ Flooded
 </td>
 </tr>
 <tr>
-<td style="text-align:left;width: 7cm; min-width:7cm;; ">
+<td style="text-align:left;width: 8cm; min-width:8cm;; ">
 n
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 626
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-384
+346
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
-242
+280
 </td>
 <td style="text-align:left;width: 2.5cm; min-width:2.5cm;; ">
 </td>
@@ -6437,12 +6540,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -7707,12 +7810,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> For each panel, first, fourth, and seventh columns are raw DID. Second, fifth, and eith columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana fixed trends that are interactions of year 2002 dummy with Thana fixed effects. Third, sixth, and ninth columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. Primary and Secondary panels show results for primary and secondary school aged children, respectively. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -12347,12 +12450,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Panels under 2002 cohort estimate placebo impacts on the cohort of 10-18 years old in 2002. Panels under 1999 cohort estimate placebo impacts on the cohort of 10-18 years old in 1999 (13-21 in 2002). Agricultural households * year 2006 is an interaction term of agricultural household dummy and year 2006 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2006 dummy with Thana fixed effects. Third columns add interactions of year 2006 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2006 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2006 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -13718,12 +13821,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. Panel headed by Non Muslims shows impacts with non-Muslim dummy and its interactions. Panel headed by Flooded shows impacts with Flooded dummy and its interactions. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -14716,12 +14819,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -16252,12 +16355,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -17670,12 +17773,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -19088,12 +19191,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -23265,12 +23368,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -27442,12 +27545,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -29795,12 +29898,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -31502,12 +31605,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -32833,12 +32936,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -37065,12 +37168,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets.
 </td>
 </tr>
 </tfoot>
@@ -39712,12 +39815,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
@@ -42061,12 +42164,12 @@ Y
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>1</sup> Agricultural HH * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
+<sup>1</sup> Agricultural households * year 2002 is an interaction term of agricultural household dummy and year 2002 dummy. All the interaction terms are demeaned. For each panel, first columns are raw DID. Second columns add time-varying thana level characteristics (yield, mean rainfall, mean high temperature, mean low temperature), time-varying individual level characteristics (age squared, recipient of a poverty program), and Thana trends that are interactions of year 2002 dummy with Thana fixed effects. Third columns add interactions of year 2002 dummy and baseline individual level characterstics (sex of individual, household head’s and spouse’s education, number of older male/female siblings, per member land holding, per member non-land asset holding, piped water access, structured toilet access) <span class="math inline">\(\bfx_{i}r_{t}\)</span>, and triple interactions of year 2002 dummy, individual characteristics, and agricultural household dummy <span class="math inline">\(\bfx_{i}r_{t}D_{i}\)</span>. Rows of <span class="math inline">\(\underline{\phantom{mm}}*x\)</span> show estimates of the triple interaction term of <span class="math inline">\(x_{i}\)</span>, or <span class="math inline">\(x_{i}r_{t}D_{i}\)</span>. Regressions include all the linear terms of each interactions and all the double interaction terms of each triple interactions. Parental education variables are strongly collinear with agricultural household dummy and are used only in year 2002 interaction terms to avoid multicollinearity.
 </td>
 </tr>
 <tr>
 <td style="padding: 0; " colspan="100%">
-<sup>2</sup> Standard errors are clusterd at thana level using bias-reduced linearization (Satterthwaite correction) for a correction of small number of clusters. <span class="math inline">\(P\)</span> values in percentages are shown in parethenses. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
+<sup>2</sup> Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). <span class="math inline">\(P\)</span> values in percentages are shown in braces. 95% confidence intervals are shown in square brackets. <span class="math inline">\(*\)</span>, <span class="math inline">\(**\)</span>, <span class="math inline">\(***\)</span> indicate significance levels at 10%, 5%, 1% under BRL cluster robust standard errors, respectively.
 </td>
 </tr>
 </tfoot>
