@@ -36,10 +36,11 @@ SEMemoForSelectedResultsNoStar <-
 SEMemoForSelectedResults <- 
   paste(SEMemoForSelectedResultsNoStar, " $*$, $**$, $***$ indicate significance levels at 10\\%, 5\\%, 1\\% under BRL cluster robust standard errors, respectively.")
 SpecMemo1Placebo <- gsub("2002", "2006", SpecMemo1)
-SpecMemo1html <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemo1Placebo)
+SpecMemo1Placebohtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemo1Placebo)
 SpecMemo1Placebohtml <- paste(
   "Panels under 2002 cohort estimate placebo impacts on the cohort of 10-18 years old in 2002. Panels under 1999 cohort estimate placebo impacts on the cohort of 10-18 years old in 1999 (13-21 in 2002).", SpecMemo1Placebohtml
   )
+SpecMemo1html <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemo1)
 SpecMemoAgewisehtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemoAgewise)
 SpecMemoAgeGroupwisehtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemoAgeGroupwise)
 SpecMemoNonMuslimFloodhtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemoNonMuslimFlood)
