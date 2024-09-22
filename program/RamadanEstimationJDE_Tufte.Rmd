@@ -5666,7 +5666,7 @@ kthdagHH
 
 ### Reasons of not going to school
 
-Overall, agricultural households are poorer, and nonattending children claim that financial as the reason of not going to school.  
+Overall, <Blue>agricultural households are poorer, and nonattending children claim that financial as the reason of not going to school.</Blue>  
 
 <details><summary>Click here to see the R script of tabulating reasons of not going to school.</summary>
 ```{r reasons, warning = F}
@@ -5743,22 +5743,25 @@ reatab <- cbind(Quartile = repseq(1:4, 3), reatab)
 rseq <- seq(1, nrow(reatab), 3)
 rseq <- c(rseq, rseq+1, rseq+2)
 reatab <- reatab[rseq, ]
+reatab <- reatab[, c(2, 1, 3:ncol(reatab))]
+reatab[-seq(1, nrow(reatab), 4), "Group"] <- ""
 
 #### LaTeX table
-write.tablev(latextab(as.matrix(reatab),
+ltb <- latextab(as.matrix(reatab),
   hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
-  ###hcenter = c(1, 2, .8, rep(1.5, 2), 2, rep(.8, 4)), 
   hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
   hright = c("", rep("$", ncol(reatab)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  "../save/reasons.tex", colnamestrue = F)
-write.tablev(latextab(as.matrix(reatab),
-  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
-  ###hcenter = c(1, 2, .8, rep(1.5, 2), 2, rep(.8, 4)), 
-  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
-  hright = c("", rep("$", ncol(reatab)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  "../draft/Tables/reasons.tex", colnamestrue = F)
+  headercolor = NULL, delimiterline = NULL)
+ltb <- gsub("Group|Quartile|Total", "", ltb)
+ltb <- c(
+    ltb[1],
+    "\\\\makebox[2cm]{Group} & \\\\makebox[2.5cm]{Quartile} & \\\\multicolumn{c}{9}{Reasons} & \\\\makebox[1cm]{Total}\\\\\\\\", 
+    ltb[2], 
+    "\\\\hline",
+    ltb[-c(1:2)]
+  )
+write.tablev(ltb, "../save/reasons.tex", colnamestrue = F)
+write.tablev(ltb, "../draft/Tables/reasons.tex", colnamestrue = F)
 
 #### HTML table
 reatab <- data.table(reatab)
@@ -5768,13 +5771,13 @@ cn <- gsub(".*Not.*", "Not accepted", cn)
 cn <- gsub(".*Schoo.*", "School environment", cn)
 setnames(reatab, cn)
 kt <- kable(reatab, align = paste0("r", paste0(rep("c", ncol(reatab)-1), collapse = "")), 
-  caption =   "Reasons stop going to school by consumption quartile")
+  caption =   "Reasons of not going to school by consumption quartile")
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(reatab)), collapse = ""), background = "#ffcc99")
-kt <- column_spec(kt, 1, width = "3.75cm; min-width:3.75cm;")
-kt <- column_spec(kt, 2, width = "4.0cm; min-width:4.0cm;")
+kt <- column_spec(kt, 1, width = "4.0cm; min-width:4.0cm;")
+kt <- column_spec(kt, 2, width = "3.75cm; min-width:3.75cm;")
 kt <- column_spec(kt, 3:10, width = "2.25cm; min-width:2.25cm;")
 ktReaPC4 <- footnote(kt, 
-           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and disconitnue by 2002. Nonattendees are all children who are not attending school in respective years."
+           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years."
            )
 
 ####  ag vs non-ag
@@ -5815,7 +5818,7 @@ reatab[, -ncol(reatab)] <- round(reatab[, -ncol(reatab)]/reatab[, ncol(reatab)],
 reatab <- a2b(reatab, NA, 0)
 reatab <- data.frame(cbind(
   Group = rep(paste0("\\mbox{\\scriptsize ", 
-    c("Non-attdendees 1999","Non-attdendees 2002","Dropouts 2002"), "}"), 2), 
+    c("Non-attendees 1999","Non-attendees 2002","Dropouts 2002"), "}"), 2), 
   formatC(reatab[, -ncol(reatab)], digits = 2, format = "f"), total = reatab[, ncol(reatab)]))
 colnames(reatab)[-c(1, ncol(reatab))] <- cn1
 reatab <- cbind("HH type" = repseq(c("Agricultural", "Non-agricultural"), 3), reatab)
@@ -5824,26 +5827,31 @@ reatab <- cbind("HH type" = repseq(c("Agricultural", "Non-agricultural"), 3), re
 rseq <- seq(1, nrow(reatab), 3)
 rseq <- c(rseq, rseq+1)
 reatab <- reatab[rseq, ]
-
 cn00 <- colnames(reatab)
 cn <- paste0(toupper(substr(cn00, 1, 1)), substr(cn00, 2, 20))
 cn <- gsub("Not.accepted", "\\\\begin{minipage}{1cm}\\\\hfil Not\\\\\\\\\\\\hfil accepted\\\\setlength{\\\\baselineskip}{10pt}\\\\end{minipage}", cn)
 cn <- gsub("School.environ", "\\\\begin{minipage}{1cm}\\\\hfil School\\\\\\\\\\\\hfil environ.\\\\setlength{\\\\baselineskip}{10pt}\\\\end{minipage}", cn)
 cn <- gsub("NA.", "NA", cn)
 colnames(reatab) <- cn
+reatab <- reatab[, c(2, 1, 3:ncol(reatab))]
+reatab[c(2, 4), 1] <- ""
+
 #### LaTeX table
-write.tablev(latextab(as.matrix(reatab),
+ltb <- latextab(as.matrix(reatab),
   hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
   hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
   hright = c("", rep("$", ncol(reatab)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  "../save/reasons_ag.tex", colnamestrue = F)
-write.tablev(latextab(as.matrix(reatab),
-  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
-  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
-  hright = c("", rep("$", ncol(reatab)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  "../draft/Tables/reasons_ag.tex", colnamestrue = F)
+  headercolor = NULL, delimiterline = NULL)
+ltb <- gsub("Group|HH type|Total", "", ltb)
+ltb <- c(
+    ltb[1],
+    "\\\\makebox[2cm]{Group} & \\\\makebox[2.5cm]{HH type} & \\\\multicolumn{c}{9}{Reasons} & \\\\makebox[1cm]{Total}\\\\\\\\", 
+    ltb[2], 
+    "\\\\hline",
+    ltb[-c(1:2)]
+  )
+write.tablev(ltb, "../save/reasons_ag.tex", colnamestrue = F)
+write.tablev(ltb, "../draft/Tables/reasons_ag.tex", colnamestrue = F)
 #### HTML table
 reatab <- data.table(reatab)
 setnames(reatab, grepout(".*Schoo.*", colnames(reatab)), "School environment")
@@ -5853,13 +5861,13 @@ setnames(reatab, "HH type", "HHtype")
 reatab[, HHtype := factor(HHtype, labels = c("Agricultural", "Non-agricultural"))]
 setnames(reatab, "HHtype", "HH type")
 kt <- kable(reatab, align = paste0("r", paste0(rep("c", ncol(reatab)-1), collapse = "")), 
-  caption =   "Reasons stop going to school")
+  caption =   "Reasons of not going to school")
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(reatab)), collapse = ""), background = "#ffcc99")
 kt <- column_spec(kt, 1, width = "3.75cm; min-width:3.75cm;")
 kt <- column_spec(kt, 2, width = "4.0cm; min-width:4.0cm;")
 kt <- column_spec(kt, 3:10, width = "2.25cm; min-width:2.25cm;")
 kt <- footnote(kt, 
-           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and disconitnue by 2002. Nonattendees are all children who are not attending school in respective years."
+           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years."
            )
 ```
 </details>
@@ -5870,13 +5878,13 @@ ktReaPC4
 
 * 1999 data show financial as the top reason, while 2002 show NAs.  
 * Among non-NA, financial is the top reason in both years.  
-* The rate of financial is decreasinng in consumption quartile within each group.  
+* <Blue>The rate of financial is decreasinng in consumption quartile</Blue> within each group.  
 
 ```{r reasons of not going to school bg ag nonag, echo = F}
 kt
 ```
 
-* Financial among nonattending children of agricultural housesholds is greater than non-agricultural households.  
+* Financial among nonattending children of <Blue>agricultural housesholds is greater than non-agricultural households.</Blue>  
 
 ### Consumption quartiles
 
@@ -5918,7 +5926,7 @@ kt <- kable(agp, align = paste0("r", paste0(rep("c", ncol(agp)-1), collapse = ""
   caption = "Consumption quartiles")
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(agp)), collapse = ""), background = "#ffcc99")
 kt <- footnote(kt, 
-           general = "Sample of direct offspring of household heads. q1 - q4 indicate quartiles 1 - 4, and the numbers are percentages of row totals. Totals are number of households. "
+           general = "Sample of direct offspring of household heads. q1 - q4 indicate quartiles 1 - 4, and the numbers are percentages of row totals. Totals are sum of households of each columns and rows. "
            )
 ```
 </details>
@@ -5927,14 +5935,16 @@ kt <- footnote(kt,
 kt
 ```
 
-* Agricultural households are more concentrated up to the 3rd quartile.  
+* There are <Blue>50% fewer agricultural households than non-agricultural households in the richest quartile.</Blue>  
 
 
 
 ### Enrollment rate by age and age at first enrollment
 
+<Blue>Enrollment at 6 yeas old is neither compulsory nor strictly enforced.</Blue> 
 
-<details><summary>Click here to see the R script of enrollmen by age and age at enrollment.</summary>
+
+<details><summary>Click here to see the R script of enrollment by age and age at enrollment.</summary>
 ```{r enrollment by age}
 yzw <- readRDS("../save/DataForJHR.rds")
 zE = copy(yzw[grepl("111|110", exist), ])
@@ -6041,13 +6051,19 @@ whatever <- dev.off()
 ```
 </details>
 
-```{r enrollment figure1, fig.cap='Enrollment rates by age', echo = F}
+```{r enrollment figure1, fig.cap='Enrollment rates by age. Values above each bar are total number of observations.', echo = F}
 g1
 ```
-```{r enrollment figure2, echo = F, fig.cap='Age at class 1 enrollment'}
+
+* Enrollment rates are lower for agricultural than non-agricultural households at the baseline.  
+* Differences between agricltural and non-agricultural households in cross sectional (=between age) enrollment rate decline are not monotone. I.e., it is not that the agricultural households show faster decline between ages. 
+
+```{r enrollment figure2, echo = F, fig.cap='Age at class 1 enrollment. Values above each bar are total number of observations.'}
 g2
 ```
 
+* Mean age of first enrollment is generally older than 6 for both household groups.  
+* Mean age of first enrollment is older among the agricultural households. 
 
 
 # Memo on FD and DID
