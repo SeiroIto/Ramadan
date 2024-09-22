@@ -9,6 +9,12 @@ output:
     toc: true
     includes:
       in_header: "../program/MathShorthand.html"
+####   bookdown::tufte_html2:
+####     citation_package: natbib
+####     tufte_features: ["fonts", "background", "italics"]
+####     toc: true
+####     includes:
+####       in_header: "../program/MathShorthand.html"
   pdf_document:
     latex_engine: xelatex
     fig_width: 7
@@ -68,7 +74,7 @@ link-citations: yes
 ---
 
 ```{css, echo=F}
-a {
+Blue {
   color: dodgerblue;
 }
 .SeiroBenign {
@@ -98,14 +104,6 @@ pre[class] {
   background-color: inherit;
 }
 ```
-```
-<style>
-.red {color: #FF0000;}
-.green {color: #00FF00;}
-.blue {color: #0000FF;}
-.lightblue {color: #33E7FF;}
-</style>
-```
 ```{r setup, echo = F, results = "hide"} 
 #### include = F <==> echo=F & results = F
 #### renv::init()
@@ -118,7 +116,7 @@ knitr::opts_chunk$set(
   margin_references = TRUE,
   #### remove leading hashes in html output
   comment = "", 
-  echo = F, cache = F, 
+  echo = T, cache = F, 
   class.source = "SeiroBenign", class.output = "SeiroLightGreen"
   )
 options(htmltools.dir.version = FALSE, width = 100)
@@ -146,6 +144,7 @@ data_sim <- fread(FPath("docs/Workshop2024Mar26/code/EstimationCode/R",
 
 ``
 
+<details><summary>Click here to see the code of path and definition settings.</summary>
 
 ```{r path and def files, echo = T, eval = T, cache = F, warning = F, results = "hide"}
 library(data.table)
@@ -172,6 +171,7 @@ source(paste0(pathprogram, "DefinitionsAndParameters.R"))
 source(paste0(pathprogram, "tabulate_est.R"))
 source(paste0(pathprogram, "EstimatorFunctions.R"))
 ```
+</details>
 ```{r TableFootnotes, file = "../program/TableFootnotePieces.R", echo = F}
 ```
 
@@ -179,6 +179,8 @@ source(paste0(pathprogram, "EstimatorFunctions.R"))
 
 ## Define samples
 
+
+<details><summary>Click here to see the code of reading files.</summary>
 ```{r read data, results = "hide"}
 library(data.table); library(bit64); library(qs)
 #### Renamed: DataForJHR => DataRamadan
@@ -189,6 +191,8 @@ colnames(yzw)
 setkey(yzw, uniquid, survey)
 zF <- yzw
 ```
+</details>
+<details><summary>Click here to see the code of selecting sample.</summary>
 ```{r Selecting samples}
 ####zF[, (grepout("yr\\d", colnames(zF))) := NULL]
 zF[, Dummy1999 := as.numeric(survey==1999)]
@@ -214,12 +218,16 @@ zY[, Age2002 := factor(AgeIn2002)]
 table(zY[, .(survey, Age2002)])
 table(zY[, .(survey, agHH = agHH0>0)])
 ```
-Definitions: In the original sample, `exist` is either 001, 110, 111. 
+</details>
+
+In the original sample, `exist`^[Availability of each observations across survey rounds. A value of 110 indicates that this individual is observed in rd 1 and 2 but attrited in 3.] is either 001, 110, 111. We drop the observations of 001 as they do not form a panel. 
 
 ## Create demeaned dummies and their interaction terms
 
+We demean the dummy interaction terms. 
 
-```{r variables to interact with yrX 2, echo = F}
+<details><summary>Click here to see the code of demeaning dummy variable interactions.</summary>
+```{r variables to interact with yrX 2}
 thesevar.strings <- "edulevel\\.|^dummy\\d|kut|nwater|flood"
 #thesevar.strings <- "^dummy\\d"
 thesevar <- gsub("\\_", "\\\\_", grepout(thesevar.strings, colnames(yzw)))
@@ -250,7 +258,9 @@ Demeaning needs to be done separately for each sample because means differ betwe
 \[
 \tilde{x}_{it}\tilde{z}_{it}-\overline{\tilde{x}_{it}\tilde{z}_{it}}
 \]
-where $\tilde{x}_{it}=x_{it}-\bar{x}_{i}$. Alternatively, one can also use FD to drop individual FEs, which is what is done in the below when we choose demeaning level at individuals. 
+where $\tilde{x}_{it}=x_{it}-\bar{x}_{i}$. 
+
+Alternatively, one can also use FD to drop individual FEs, which is what is done in the below when we choose demeaning level at individuals. 
 
 ```{r save zEm.1999 etc and create dummy agHH yrX interactions }
 #### This chunk is copied from SampleSelectionDemeaning.rnw
@@ -282,7 +292,8 @@ for (ss in c("E", "S")) {
   for (k in 1:length(zXobjs)) {
     zXobj <- get(zXobjs[k])
     #### keep original (undemeaned) level of x as UDx
-    ######## Note: Using (paste0("UD", iitrend)) := eval(parse(text=iitrend)) gives wrong values...
+    ######## Note: Using (paste0("UD", iitrend)) := eval(parse(text=iitrend)) 
+    ######## gives wrong values...
     zXobj[, (paste0("UD", iitrend)) := .SD, .SDcol = iitrend]
     for (m in 1:length(aghh.defs))
     {
@@ -296,9 +307,11 @@ for (ss in c("E", "S")) {
         eval(parse(text = 
           paste0("list(", paste(rep(iitrend, each = 2), collapse = ","), ")")
         ))]
-      #### demean all dummies (iitrend): x1 is a dummy variable, x2_{t} is a time varying variable
+      #### demean all dummies (iitrend): x1 is a dummy variable, 
+      #### x2_{t} is a time varying variable
       ####   y_{t}=ci+a0+a1*x1+a2*x2_{t}+a3*x1*x2_{t}+e_{t}
-      #### ci is individual effects of i. Other i suffix (xi, d1i, ...) is omitted. Denote mX as X-mean(X),
+      #### ci is individual effects of i. Other i suffix (xi, d1i, ...) is omitted. 
+      #### Denote mX as X-mean(X),
       ####   y_{t}=mean(y_{t})+mci+a1*mx1+a2*mx2_{t}+a3*mx1*mx2_{t}+me_{t}
       #### Denote DX_{t} = X_{t}-X_{t-1}.
       ####   Dy_{t}=Dmean(y_{t})+a2*Dmx2_{t}+a3*mx1*Dmx2_{t}+Dme_{t}.
@@ -366,13 +379,9 @@ for (ss in c("E", "S")) {
  qsave(zX, paste0("../save/z", ss, ".qs"))
 }
 ```
-In data preparation (`Create2RoundPanel.rnw`), `totalland` (decimal) is deflated with 1 million (1,000,000), or 10000 acre units. Then, I reflated it back to original decimal units and further divided with 100 to make it to acre units. `totalvalue` is also deflated with 1,000,000 or in million BDT units. To get values in 1000 BDT units, multiply with 1000. 
+</details>
 
-
-
-# Understanding characteristics of sample used in main results
-
-## Summary statitistics
+In data preparation (`Create2RoundPanel.rnw`), `totalland` (decimal) is deflated with 1 million (1,000,000), or 10000 acre units. I reflated it back to original decimal units and further divided with 100 to make it to acre units. `totalvalue` is also deflated with 1,000,000 or in million BDT units. To get values in 1000 BDT units, multiply with 1000. 
 
 ```{r main sample size check, echo = F, eval = F}
 #### zXy0, zXy1 (zEm0, zEm1, ..., zEp20, zEp21, ...) are created.
@@ -429,6 +438,7 @@ for (ii in 1:length(zsobj)) {
   }  #### jj
 }  #### ii
 ```
+<details><summary>Click here to see the code of attaching id variables.</summary>
 ```{r id variable from orginal rd 1 file}
 for (yy in c(0, 3, 7)) {
   pathsource000 <- paste0(pathsource, "/ffe/200", yy, "/Data/HouseholdData/STATA/")
@@ -473,9 +483,13 @@ a00sch[, schoolp := as.numeric(grepl("Y", schoolp))]
 setkey(RosRd1, hhnum, mid); setkey(a00sch, hhnum, mid)
 RosRd1 <- a00sch[RosRd1]
 #### attach agHH defs
+#### agri or tenant as income source
 #### 	sum(ii1 <- whichgrep("Agri|Tena", z[, "isource"]) & y2k )
-#### 	sum(ii2 <- whichgrep("Agri|enan|farm", z[, "occup"]) & y2k) #### tenant and own farmers as occupation
-#### 	sum(ii3 <- whichgrep("OwnL|Tena", z[, "isource"]) & y2k) #### a subset of ii1, owners and cultivators
+#### tenant and own farmers as occupation
+#### 	sum(ii2 <- whichgrep("Agri|enan|farm", z[, "occup"]) & y2k)
+#### a subset of ii1, owners and cultivators
+#### 	sum(ii3 <- whichgrep("OwnL|Tena", z[, "isource"]) & y2k) 
+#### ag labourer
 #### 	sum(iiL <- whichgrep("Agri.*day", z[, "occup"]) & y2k)
 #### 	c(sum(ii1 & ii2), sum(ii1 & !ii2), sum(!ii1 & ii2))
 #### 	table(ocagHHold=ii2, aglabHH=iiL)
@@ -488,9 +502,12 @@ RosRd1 <- a00sch[RosRd1]
 #### 		####	owner cultivator household as ownagHH
 #### 	z <- cbind(z, ownagHH = z[, "hh"] %in% z[ii3 & y2k, "hh"])
 #### 		####	M/F head isource|occup is agri
-#### 	z <- cbind(z, hdagHH = z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd, "hh"])
-#### 	z <- cbind(z, mhdagHH = z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd & !fem, "hh"])
-#### 	z <- cbind(z, fhdagHH = z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd & fem, "hh"])
+#### 	z <- cbind(z, hdagHH = 
+####    z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd, "hh"])
+#### 	z <- cbind(z, mhdagHH = 
+####    z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd & !fem, "hh"])
+#### 	z <- cbind(z, fhdagHH = 
+####    z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd & fem, "hh"])
 #### 		####	agri laborer indicator
 #### 	z <- cbind(z, aglabHH = z[, "hh"] %in% z[iiL & y2k, "hh"])
 #### 		####	occup agri HH (old def, wrong, due to error in data.prn codes)
@@ -509,13 +526,19 @@ RosRd1 <- a00sch[RosRd1]
 #### 	e00 <- e00[f1id]
 #### 	setkey(e00, hh)
 #### 	#### ocagHH: Any member of HH reports agri as one's occupation
-#### 	z <- cbind(z, ocagHH = z[, "hh"] %in% unique(e00[grepl("Ag|arm|enan", occup), hh]))
+#### 	z <- cbind(z, ocagHH = 
+####    z[, "hh"] %in% unique(e00[grepl("Ag|arm|enan", occup), hh]))
 ####	z <- cbind(z, agHH0 = z[, "isagHH"] | z[, "ocagHH"])
 qsave(RosRd1, "../save/OriginalRd1RosterFileWithUniquid.qs")
 ```
+</details>
 
-## Plain DID
 
+# Understanding characteristics of sample used in main results
+
+## Summary statitistics and simple DID
+
+<details><summary>Click here to see the code of simple DID.</summary>
 ```{r plain DID}
 library(clubSandwich)
 Zm <- qread("../save/zEm1999.qs")
@@ -546,8 +569,9 @@ dideasy <- function(x, regnum) {
 lmlist <- list(lm0, lm1, lm2, lm3)
 lapply(1:length(lmlist), function(i) dideasy(lmlist[[i]], regnum = i-1)) 
 ```
+</details>
 
-We need to know if `program` is as good as random between ag and nonag. `program` is defined in `Construct3RoundPanelAndClean.rnw` with grepl("FF|stipe|RRMP|VGD", anyprog). The table (ref:SDiffTable) shows they are, indeed, as good as random with $p$ value at least as large as 18%. 
+Given that the data is collected with program impacts in mind, we expect the program indicator to be correlated with school enrollment and will need to add the estimating equation as a covariate. Then, we need to know if `program` is distributed as good as random between ag and nonag. `program` is defined in `Construct3RoundPanelAndClean.rnw` with grepl("FF|stipe|RRMP|VGD", anyprog). The table (ref:SDiffTable) shows <Blue>`programs` are, indeed, as good as randomly distributed between ag and non-ag HHs</Blue> with the large $p$ values. 
 
 <details><summary>Click here to see the code of ag vs. nonag differences.</summary>
 
@@ -818,23 +842,31 @@ rm(zi00)
 ```
 </details>
 
+<details><summary>Click here to see the code of ag-nonag difference table.</summary>
 ```{r show ag nonag diff table}
 #### HTML table
 library(kableExtra)
-kt <- kable(SDiff.print[, -(1:2)], 
+kt <- kable(SDiff.print[, -(1:2)], align = 
+  paste0("r", paste0(rep("c", ncol(SDiff.print)-1), collapse = "")), 
   caption = "Baseline differences between agricultural and non-agricultural households")
-kt <- column_spec(kt, 1, width = "8cm; min-width:8cm;")
+kt <- column_spec(kt, 1, width = "9cm; min-width:9cm;")
 kt <- column_spec(kt, 2:6, width = "2.5cm; min-width:2.5cm;")
-kt <- kableExtra::footnote(kt, general = "Differences between agricultural and non-agricultural households in main data with the 10 years and older cutlff. Overall, agHH, nonagHH columns show means for all households, means for agricultural households, means for non-agricultural households. Column headed by t shows p-values of regular t-tests, Satterthwaite shows p-values under a Sattherthwaite correction for small number of clusters.")
+kt <- kableExtra::footnote(kt, general = "Differences between the children of agricultural and non-agricultural households in main data with the 10 years old age lowerbound. Overall, agHH, nonagHH columns show means for all households, means for agricultural households, means for non-agricultural households. Column headed by t shows p-values of regular t-tests, Satterthwaite shows p-values under a Sattherthwaite correction for small number of clusters.")
 #kable(SDiff.print, format = "latex", booktabs = TRUE)
+```
+</details>
+
+<!-- \@ref(tab:destat) -->
+
+```{r desstat, echo = F}
 kt
 ```
 
 
 # Preparing regressors
 
-
-```{r regressor pieces and reordering strings, echo = F}
+<details><summary>Click here to see the code of regressor preparation.</summary>
+```{r regressor pieces and reordering strings}
 #### ii0 is a set of variables that will not be required for any of estimation steps below.
 #### Note: Some variables are not used in estimation but needed to show the clusters.
 ii0 <- paste("^nonm|only|abs|isag|ocag|ownag|hd.*[gmiltxy]$|educa", 
@@ -880,6 +912,7 @@ mix.reorder <- function(x, y=main.reorder.JHR)
 ```
 
 
+
 Regressors for main. 
 ```{r Regressors for main, echo = T, results = 'hide'}
 #### source("../program/RegressorPieces.R")
@@ -921,7 +954,7 @@ paste(unlist(
 ```
 
 Regressors for placebo testing. \gobblepars 
-```{r Regressors for placebo testing, echo = F}
+```{r Regressors for placebo testing}
 #### zEp.2002: UDOldSibF is all 0, UDOldSibM is all 0 but 2 obs, 
 ####   so drop them (and interactions).
 regressorsM2002 <- c("^\\(Interce", indivagesib3, paste(yield, weather.variables1, sep = "|"),
@@ -932,10 +965,10 @@ regressorsM2002 <-   c("^\\(Interce", indivage3,
   paste(yield, weather.variables1, "^prog", sep = "|"), 
   hygiene3, sib3, area3)
 ```
+</details>
 
 
-
-Specifications (Feb 28 version):  
+Specifications:  
 
 1. Simple DID  
 1. $+$ program, time variant controls, thana specific trends  
@@ -1016,16 +1049,20 @@ Note that `NonStipendProgram` almost ceases to exist in 2002.
 </details>
 
 
-Specifications 2 and 3 in `regressorsM2024` (for main effects):   
+Covariates in Specifications 2 and 3 of `regressorsM2024` (for main effects):   
 
+<details><summary>Click here to see covariates.</summary>
 `r ShowCovariates(regressorsM2024, colnames(zEm.1999))` 
+</details>
 
 
-Specifications 2 and 3 in regressorsP2024 (for placebo effects of 1999 cohorts):   
+Covariates in Specifications 2 and 3 of `regressorsP2024` (for placebo effects of 2002 cohorts):   
 
-`r ShowCovariates(regressorsP2024, colnames(zEp.1999))` 
+<details><summary>Click here to see covariates.</summary>
+`r ShowCovariates(regressorsP2024, colnames(zEp.2002))` 
+</details>
 
-Same covariates are used for placebo effects of 2002 cohorts. 
+Same covariates are used for placebo effects of 1999 cohorts. 
 
 <br>
 
@@ -1058,11 +1095,13 @@ regressorsN2002 <- c("^\\(Interce",
 ```
 </details>
 
+<details><summary>Click here to see covariates.</summary>
 `r ShowCovariates(regressorsN, colnames(zEm.1999))` 
+</details>
 
 
 Flood affected thanas are \gobblepars
-```{r flood thana}
+```{r flood thana, echo = F}
 unique(zEm.1999[flooded>0,.(thana)])
 ```
 
@@ -1110,9 +1149,12 @@ regressorsF2002 <- c("^\\(Interce",
 
 Regressors for flood.  
 
+<details><summary>Click here to see covariates.</summary>
 `r ShowCovariates(regressorsF, colnames(zEm.1999))` 
+</details>
 
 Regressors for number of grades. \gobblepars
+
 <details><summary>Click here to see the R script for grade progression regressor preparation.</summary>
 ```{r Regressors for NumGrades, echo = T, results = 'hide'}
 regressorsNumGrades <- 
@@ -1138,7 +1180,9 @@ regressorsNumGrades2002 <-
 ```
 </details>
 
+<details><summary>Click here to see covariates.</summary>
 `r ShowCovariates(regressorsNumGrades, colnames(zEm.1999))`  
+</details>
 
 Regressors for number of days absent are just the same as main. \gobblepars
 
@@ -1182,7 +1226,10 @@ Placebo estimation tests a non-existing 2002-2006 shock on the outcomes. To alig
 
 We need to cluster the standard errors to account for unobservable correlations within a cluster.  Following the conventional wisdom, we cluster at the highest level of cluster sampling [@AbadieAtheyImbensWooldridge2022], which is Thana in our data.  
 
+For inference of linear hypotheses, we use <span style='color:blue; font-size:100%; font-weight:600'> [glht](https://search.r-project.org/CRAN/refmans/multcomp/html/glht.html)  </span> of <Blue><a href='https://cran.r-project.org/web/packages/multcomp/index.html'>multcomp package</a></Blue>.  
 
+
+<details><summary>Click here to see the R script of main and placebo estimation.</summary>
 ```{r read 2024 main and JHR main results, eval = T, warning = F}
 ####Res <- qread("../save/TabulatedAllResults.qs")
 ####re <- Res[grepl("Em", data) & grepl("dir", HHtype) & grepl("main", coeff)
@@ -1223,7 +1270,7 @@ CovariatesCommon <- intersect(prevcovariates, currcovariates)
 CovariatesOnlyInPrev <- prevcovariates[!prevcovariates %in% currcovariates]
 CovariatesOnlyInCurr <- currcovariates[!currcovariates %in% prevcovariates]
 ```
-
+</details>
 
 <details><summary>Click here to see the R script of main and placebo estimation.</summary>
 ```{r main and placebo gender BRL 2024, file = "../program/Estimation_MainPlacebo.R", eval = F, echo = T, results = 'hide', warning = F, cache = F}
@@ -1232,7 +1279,7 @@ CovariatesOnlyInCurr <- currcovariates[!currcovariates %in% prevcovariates]
 
 <!-- Results of 10 - 18, nuclear, boys and girls. Compare with previous results. Previous results also include sex&#42;agHH&#42;yr in specifications 2 to 7. So specification 1 for both estimation and new, spec 4 and previous spec 7 are comparable. -->
 
-```{r find the difference in JHR and current estimation data, eval = F}
+```{r find the difference in JHR and current estimation data, echo = F, eval = F}
 ii <- jj <-  m <- s <- de <- 1
 j <- clnum <- 2; ge <- 3
 d1 <- resultsJHR[[ii]][[1]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[7]]$level.data[, 
@@ -1254,11 +1301,11 @@ zEm.1999[uniquid %in% d1[program != program2, uniquid] & survey == 2002,
 #### To mimic JHR data, BRAC and Grameen Bank => nonFFWProgram := 0, or 
 ####   NonFFWProgram := !is.na(anyprog) & !grepl("FFW|non-m|BRA|Gram", anyprog)
 ```
-```{r current and JHR results 1018 nuclear all, eval = F}
+```{r current and JHR results 1018 nuclear all, echo = F, eval = F}
  rbindlist(list(cisj, cis))
 ```
 <!-- Results of 10 - 18, nuclear, boys.  -->
-```{r Show results for main 10 - 18 nuclear boys, eval = F}
+```{r Show results for main 10 - 18 nuclear boys, echo = F, eval = F}
 ii <- jj <-  m <- s <- 1
 j <- clnum <- 2 ## extended HH, Satterthwaite
 ge <- 3  # boys+girls
@@ -1284,7 +1331,7 @@ cisj[, ver := "previous"]
 rbindlist(list(cisj, cis))
 ```
 <!-- Results of 10 - 18, nuclear, girls.  -->
-```{r Show results for main 10 - 18 nuclear girls, eval = F}
+```{r Show results for main 10 - 18 nuclear girls, echo = F, eval = F}
 ii <- jj <-  m <- s <- 1
 j <- clnum <- 2 ## extended HH, Satterthwaite
 ge <- 3  # boys+girls
@@ -1310,7 +1357,7 @@ cisj[, ver := "previous"]
 rbindlist(list(cisj, cis))
 ```
 
-```{r JHR select results for MainByGenderByAgeLB for agHH0, eval = F}
+```{r JHR select results for MainByGenderByAgeLB for agHH0, echo = F, eval = F}
 #### These files are compiled for JHR submission.
 Res <- qread("../save/TabulatedAllResults.qs")
 Enr <- qread("../save/TabulatedAllResultsEnr.qs")
@@ -1462,6 +1509,7 @@ for (rrr in c("", "j")) {
 ```
 </details>
 
+<details><summary>Click here to see the code of tabulating results age and gender wise.</summary>
 ```{r tabulate results age gender wise, eval = F}
 results <- qread("../save/DID2024_SubsampleAgeGroupGenderResults.qs")
 names(results[[1]][[1]])
@@ -1591,6 +1639,8 @@ qsave(Res2, "../save/TabulatedMainResults2.qs")
 qsave(Enr2, "../save/TabulatedMainResultsEnr2.qs")
 qsave(NR2, "../save/TabulatedMainResultsNR2.qs")
 ```
+</details>
+<details><summary>Click here to see the code of tabulating main results.</summary>
 ```{r tabulate main results, eval = F}
 library(qs)
 AddStar <- T
@@ -1766,10 +1816,12 @@ qsave(Res, "../save/TabulatedAllResults.qs")
 qsave(Enr, "../save/TabulatedAllResultsEnr.qs")
 qsave(NR, "../save/TabulatedAllResultsNR.qs")
 ```
+</details>
 
+<!--
 * For a summary table with est [LZ ci] [Satterthwaite CI]: Use TabulatedMainResults.qs (tabulated results) where "inference" column gives LZ and Satterthwaite information. Construct a table by stacking up est, LZ-CI, LZ-Satterthwaite.  
 * For a show-all-results table only with one statistic line per estimate (est, se; est, p; est, ci), use results in a list (DID2024_MainResults.qs) and construct a table.  
-
+-->
 
 
 ## Non-Muslims, flood
@@ -1786,6 +1838,7 @@ Flooded area is defined at thana level. These are \Sexpr{thanas[!grepl("Aailjhar
 ```
 </details>
 
+<details><summary>Click here to see the code of tabulating flood nonmuslim results.</summary>
 ```{r tabulate flooded nonmuslim results, eval = F}
 #### Flooded: results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 resultsF <- qread("../save/DID2024_FloodGenderResults.qs")
@@ -1933,15 +1986,18 @@ qsave(Enr, "../save/TabulatedFloodMuslimResultsEnr2024.qs")
 qsave(NR, "../save/TabulatedFloodMuslimResultsNR2024.qs")
 floodftnote <- "A first-difference estimator with standard errors clustered at \\textit{thana} level. Flood dummy variable is interacted with year 2002 dummy and year 2002 * agricultural HH dummy. "
 ```
+</details>
+
 
 
 
 ## Other schooling outcomes
 
-<a name="EstimationOtherSchoolingOutcomes">Impacts on number of grade progression and days absent.</a>
 
 
-<details><summary>Click here to see the R script of grade progression estimation.</summary>
+<details><summary><a name="EstimationOtherSchoolingOutcomes"> 
+Click here to see the R script of grade progression estimation.</a>
+</summary>
 
 ```{r num grades impacts by enrollers and by gender, file = "../program/Estimation_NumGrades.R", echo = T, eval = F, results = 'hide', warning = F, cache = F}
 ```
@@ -1958,6 +2014,7 @@ floodftnote <- "A first-difference estimator with standard errors clustered at \
 ```
 </details>
 
+<details><summary>Click here to see the code of tabulating grade progression and days absent.</summary>
 ```{r tabulate grade absent by gender results, warning = F, eval = F}
 #### GradeProgression: resultsGG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]], en = 1, 2
 #### DaysAbsent:          resultsDE[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
@@ -2157,17 +2214,20 @@ qsave(Enr, "../save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
 ####qsave(NR, "save/GenderGradeDaysAbsentTabulatedNR2024.qs")
 ####qsave(Enr, "save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
 ```
+</details>
+
 
 
 # Results
 
 ## Main estimation results
 
-<a name = "ResultsTableMain">Main results in text.<a/>
+Main results in text. For full results, see <a name = "ResultsTableMain">[the full table in appendix.](#FullResultsMain)</a>
 
 Agricultural household definition is based on `r Aghh.defs[3]`(`r aghh.defs[3]`)  
 
-```{r show main table, eval = T, warning = F}
+<details><summary>Click here to see the code of showing main results.</summary>
+```{r show main table, echo = T, eval = T, warning = F}
 #### Uses tabs2latex4
 Enr <- qread("../save/TabulatedAllResultsEnr.qs")
 NR <- qread("../save/TabulatedAllResultsNR.qs")
@@ -2300,7 +2360,8 @@ ltb <- c(
   )
 #### for (iii in 1:18) {
 ####   ltb <- gsub(paste("\\&", iii, "\\&"), paste0("& (", iii, ") &"), ltb)
-####   ltb <- gsub(paste0("\\& ", iii, "\\\\\\\\"), paste0("& (", iii, ") \\\\\\\\"), ltb)
+####   ltb <- gsub(paste0("\\& ", iii, "\\\\\\\\"), 
+####    paste0("& (", iii, ") \\\\\\\\"), ltb)
 #### }
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
@@ -2358,7 +2419,8 @@ bgcolor <- "#ffcc99"
 ####        )
 #### Using kable shows title above the table
 #### Using kbl shows title in the side note
-kt <- kable(data.table(Tab), align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")), 
+kt <- kable(data.table(Tab), 
+  align = paste0("r", paste0(rep("c", ncol(Tab)-1), collapse = "")), 
   caption = 
   paste("Main results: Enrollment impacts for year 1999-2002,",
     "10-18 years old, direct offspring, Satterthwaite correction"))
@@ -2380,6 +2442,9 @@ kt <- footnote(kt,
          number = c(SpecMemo1html, 
          SEMemoForSelectedResultsNoStarhtml)
        )
+```
+</details>
+```{r , echo = F}
 kt
 ```
 
@@ -2398,6 +2463,7 @@ See [Appendix full table](#FullResultsMain) for the full results.
 
 Primary = 6-10. Secondary = 11-17.  
 
+<details><summary>Click here to see the code of shoring age group wise results.</summary>
 ```{r show age group table, eval = T, warning = F}
 #### Uses tabs2latex4
 resultsag <- qread("../save/DID2024_SubsampleAgeGroupGenderResults.qs")
@@ -2608,6 +2674,9 @@ kt <- footnote(kt,
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemoAgeGroupwisehtml, SEMemoForSelectedResultsNoStarhtml)
            )
+```
+</details>
+```{r , echo = F}
 kt
 ```
 
@@ -2621,6 +2690,7 @@ kt
    * 1999 cohort: 10-18 in 1999. 13-21 in 2002.  
    * 2002 cohort: 10-18 in 2002.  
 
+<details><summary>Click here to see the code of showing placebo results.</summary>
 ```{r show placebo table, eval = T, warning = F}
 #### Uses tabs2latex4
 #### results <- qread("../save/DID2024_MainResults.qs")
@@ -2848,9 +2918,13 @@ for (tt in 1:length(TabObj)) {
              )
   assign(paste0("kt", tt), kt)
 }
+```
+</details>
+```{r , echo = F}
 kt2
 ```
 
+<details><summary>Click here to see the code of plotting main vs placebo.</summary>
 ```{r plot main vs placebo, eval = T}
 #### results <- qread("../save/DID2024_MainResults.qs")
 #### results <- qread("save/DID2024_MainResults.qs")
@@ -2918,6 +2992,9 @@ pdf(
   , width = 2.5*12/2.54, height = 2.5*8/2.54)
 print(g)
 whatever <- dev.off()
+```
+</details>
+```{r , echo = F}
 g
 ```
 
@@ -2930,20 +3007,21 @@ g
 
 ## Non Muslim and Flooded 
 
-```{r thana names}
+```{r thana names, echo = F}
 thanas <- as.character(lapply(unique(yzw[, thana]), function(x) 
   paste0(toupper(substring(x, 1, 1)), substring(x, 2, 30))))
 thanas <- thanas[!grepl("NA", thanas)]
 ```
-```{r read nonmuslim flood results, eval = T, warning = F}
+
+Results for non Muslims.
+
+<details><summary>Click here to see the code of showing non-muslims and flooded.</summary>
+```{r read nonmuslim flood results, eval = T, echo = F, warning = F}
 resultsM <- qread("../save/DID2024_NonMuslimGenderResults.qs")
 resultsF <- qread("../save/DID2024_FloodGenderResults.qs")
 EnrFM <- qread("../save/TabulatedFloodMuslimResultsEnr2024.qs")
 NRFM <- qread("../save/TabulatedFloodMuslimResultsNR2024.qs")
 ```
-
-Results for non Muslims.
-
 ```{r show nonmuslim results, eval = F}
 #### results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]] 
 ii <- jj <- s <- 1
@@ -3003,11 +3081,10 @@ kt <- pack_rows(kt, group_label="Boys", grep("Agri", rn)[1], grep(" Non", rn)[1]
 kt <- pack_rows(kt, group_label="Girls", grep("Agri", rn)[2], grep(" Non", rn)[2]+2)
 kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rn)[3], grep(" Non", rn)[3]+2)
 kt <- scroll_box(kt, height = "800px")
-kt <- footnote(kt, 
+ktM <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemo1, SEMemoForSelectedResultsNoStarhtml)
            )
-kt
 ```
 ```{r show flooded results, eval = F}
 #### results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]] 
@@ -3065,13 +3142,14 @@ kt <- pack_rows(kt, group_label="Boys", grep("Agri", rn)[1], grep(" Fl.*ag", rn)
 kt <- pack_rows(kt, group_label="Girls", grep("Agri", rn)[2], grep(" Fl.*ag", rn)[2]+2)
 kt <- pack_rows(kt, group_label="Boys+Girls", grep("Agri", rn)[3], grep(" Fl.*ag", rn)[3]+2)
 kt <- scroll_box(kt, height = "800px")
-kt <- footnote(kt, 
+ktF <- footnote(kt, 
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemo1, SEMemoForSelectedResultsNoStarhtml)
            )
-kt
 ```
+</details>
 
+<details><summary>Click here to see the code of showing nonmuslim flooded results.</summary>
 ```{r show nonmuslim flooded results, eval = T}
 #### Uses tabs2latex4
 #### results[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]] 
@@ -3283,10 +3361,13 @@ kt <- footnote(kt,
            number = c(SpecMemoNonMuslimFloodhtml, SEMemoForSelectedResultsNoStarhtml)
            )
 qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "MuslimFloodH.qs"))
-kt
 rm(rFM)
 rm(resultsM)
 rm(resultsF)
+```
+</details>
+```{r, echo = F}
+kt
 ```
 
 * Verdict: Main estimates do not change when we control for Non-Muslims or flooded areas.  
@@ -3299,6 +3380,7 @@ rm(resultsF)
 ## Other schooling outcomes: Grade progression and days absent per month
 
 
+<details><summary>Click here to see the code of showing num grades and days absent.</summary>
 ```{r read num grades days absent results, eval = T, warning = F}
 resultsG <- qread("../save/DID2024_NumGradesEnrollersGenderResults.qs")
 resultsD <- qread("../save/DID2024_DaysAbsentEnrollersGenderResults.qs")
@@ -3728,6 +3810,9 @@ kt <- footnote(kt,
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemo1, SEMemoForSelectedResultsNoStarhtml)
            )
+```
+</details>
+```{r, echo = F}
 kt
 ```
 
@@ -3753,6 +3838,7 @@ kt
 
 For [a more concise table](#ResultsTableMain), refer to the main text.
 
+<details><summary>Click here to see the code of showing full results.</summary>
 ```{r ShowMainResults, eval = T, warning = F, warning = F}
 #### Uses tabs2latex4
 ##### results <- qread("../save/DID2024_MainResults.qs")
@@ -3841,23 +3927,27 @@ for (ge in c(3, 1, 2)) {
              )
   assign(paste0("FullResults", ge), kt)
 }
+```
+</details>
+```{r , echo = F}
 FullResults3
 ```
 
 Results for boys.
 
-```{r show main results for boys, eval = T}
+```{r show main results for boys, echo = F, eval = T}
 FullResults1
 ```
 
 Results for girls.
 
-```{r show main results for girls, eval = T}
+```{r show main results for girls, echo = F, eval = T}
 FullResults2
 ```
 
 Placebo 2002 cohort results (ages 10-18 in 2002).
 
+<details><summary>Click here to see the code of shoring full placebo results.</summary>
 ```{r show placebo 1999 and 2002 cohort results, eval = T}
 #### Uses tabs2latex4
 s <- de <- 1
@@ -3971,12 +4061,15 @@ for (jj in 1:2) {
              )
   assign(paste0("FullPlaceboResults", c(2, 9)[jj]), kt)
 }
+```
+</details>
+```{r, echo = F}
 FullPlaceboResults2
 ```
 
 Placebo 1999 cohort results (ages 13-21 in 2002).
 
-```{r show placebo 1999 cohort results, eval = T}
+```{r show placebo 1999 cohort results, echo = F, eval = T}
 FullPlaceboResults9
 ```
 
@@ -3985,6 +4078,7 @@ FullPlaceboResults9
 
 ### By gender and by aghh def
 
+<details><summary>Click here to see the code of main results by gender, ag HH definitions.</summary>
 ```{r select results for MainByGenderByAgHHdef for given Agelb, eval = T, warning = F}
 #### Does not use tabs2latex4, choose brace types in resl
 library(kableExtra)
@@ -4253,11 +4347,15 @@ for (ii in 1:2) {
     } # s
   } # jj
 } # ii
+```
+</details>
+```{r, echo = F}
 M910H
 ```
 
 ### By different age cutoff
 
+<details><summary>Click here to see the code of results by different age lowerbound.</summary>
 ```{r M9 10-12, warning = F}
 ii <- jj <- 1
 aghhrows <- grep("^Agri", M910L)
@@ -4375,6 +4473,9 @@ kt <- footnote(kt,
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], "L"), mrtab)
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj]), kt)
 qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], ".qs"))
+```
+</details>
+```{r, echo = F}
 kt
 ```
 
@@ -4446,7 +4547,7 @@ rm(results)
 ```
 </details>
 
-```{r plot results by ageLB}
+```{r plot results by ageLB, echo = F, fig.cap = "Results by different age lowerbound by gender groups"}
 g
 ```
 
@@ -4461,6 +4562,7 @@ g
 
 ## By age group
 
+<details><summary>Click here to see the code of results by school age group.</summary>
 ```{r main gender AgeGroup2 for paper, eval = T, warning = F}
 Res2 <- qread("../save/TabulatedMainResults2.qs")
 NR2 <- qread("../save/TabulatedMainResultsNR2.qs")
@@ -4738,7 +4840,6 @@ ii <- jj <- s <- 1
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "AgeGroup2"), mrtab)
 assign(paste0(c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "AgeGroup2H"), kt)
 qsave(kt, paste0("../save/", c("M", "P")[ii], c(9, 2)[jj], (10:12)[s], "AgeGroup2H.qs"))
-kt
 ```
 ```{r plot gender AgeGroup2 for paper, eval = T, warning = F}
 library(ggplot2)
@@ -4774,6 +4875,11 @@ pdf(
   , width = 2*12/2.54, height = 2*8/2.54)
 print(g)
 whatever <- dev.off()
+```
+</details>
+```{r, echo = F}
+kt
+```{r , echo = F, fig.cap = "Results by school level and gender"}
 g
 ```
 
@@ -4786,6 +4892,7 @@ g
 
 <a name="NumGradeDaysAbsentResults">Boys+girls and boys and girls subsamples.</a>
 
+<details><summary>Click here to see the code of num grades days absent, full results.</summary>
 ```{r show num grades days absent full results, eval = T, warning = F}
 #### HTML output
 library(kableExtra)
@@ -4856,9 +4963,11 @@ kt <- footnote(kt,
            general = "Sample of direct offspring of household heads. ",
            number = c(SpecMemo1, SEMemoForSelectedResultsNoStarhtml)
            )
+```
+</details>
+```{r, echo = F}
 kt
 ```
-
 
 ```{r show days absent results, eval = F}
 ####resultsG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
@@ -5004,7 +5113,7 @@ Days absent impacts are estimated using the main sample:
 * OLS estimates for 2000 impacts on 2000 enrollers.  
 * Placebo sample was not used because the 2006 data do not have the days absent information. 
 
-```{r plot grade days, eval = T, echo = T}
+```{r plot grade days, eval = T, echo = F}
 ii <- jj <- s <- h <- dd <- 1
 clnum <- j <- 2
 m <- 3
@@ -5210,7 +5319,7 @@ rm(resultsG)
 ```
 </details>
 
-```{r plot GPDA}
+```{r plot GPDA, echo = F, fig.cap = "Grade progression, days absent by different subsamples"}
 g
 ```
 
@@ -5248,20 +5357,19 @@ See [estimation code of other schooling outcomes](#EstimationOtherSchoolingOutco
 
 2002 cohort
 
-```{r P210H}
+```{r P210H, echo = F}
 P210H
 ```
 
 1999 cohort
 
-```{r P910H}
+```{r P910H, echo = F}
 P910H
 ```
 
 ## Attrition
 
-We use <span style='color:blue; font-size:100%; font-weight:600'> [glht](https://search.r-project.org/CRAN/refmans/multcomp/html/glht.html)  </span> of <a href='https://cran.r-project.org/web/packages/multcomp/index.html'>multcomp package</a> for linear hypothesis testing.  
-
+<details><summary>Click here to see the R script of attrition analysis.</summary>
 ```{r read data for attrition analysis, warning = F}
 library(clubSandwich)
 pathsource00 <- paste0(pathsource, "/ffe/2000/Data/HouseholdData/STATA/")
@@ -5480,7 +5588,10 @@ for (m in c(1, 3)) {
   assign(paste0("AttComp", aghh.defs[m]), matatt)
 }
 ```
+</details>
 
+
+<details><summary>Click here to see the R script of tabulating attrition analysis.</summary>
 ```{r attrition tabulation}
 matthd <- get(paste0("AttComp", aghh.defs[m]))
 write.tablev(matthd, "../save/HeadReplyBasedAttritionComparison.tex") 
@@ -5535,15 +5646,19 @@ for (m in c(1, 3)) {
              ))
    assign(paste0("kt", aghh.defs[m]), kt)
 }
-ktagHH0
+```
+</details>
+
+```{r attrition analysis results, echo = F}
 kthdagHH
 ```
 
 * `A. Descriptive statistics of attriters` panel shows attriter's characteristics.  
 * `B. OLS estimation` panel shows results from linear probability model of attrition on baseline variables and their interaction with the agricultural household dummy.  
-* Attrition rate is higher among non-ag HHs. Given the smaller enrollment rate changes among them, this has a potential to understate the impacts. We also note that attrited households between ag and nonag differ in terms of head's spouse education level. However, we see in below that, when we estimate the attrition selection with the sample of attrited and non-attrited households, the attrition can be considered mostly as random.  
-* Based on linear probability estimation, attrition seems random between agHHs and nonag HHs at the household level. There is an indication that smaller land holders of agHHs may be more prone to attrit at the rate of 3% per one acre reduction in landholding.  
-* The implied magnitude of correlation between landholding and attrition is small given the mean landholding of agHHs is 1.46 acre. In addition, it is not easy to guess the direction of the bias it gives to enrollment rates: When smaller landholding has smaller labor demand for children that results in higher enrollment rates, their attrition can understate enrollment rates. When smaller landholders, or less wealthy households, stop schooling early that results in lower enrollment rates, their attrition can overstate enrollment rates. Given the small magnitude of possible impacts that may potentially cancel out each other and a mildly small $p$ value associated with it, we restrict our attention to the complete panel portion of the data. We also note that we include landholding as a covariate in the main estimation.  
+* Attrition rate is higher among non-ag HHs. While we do not know the enrollment rate changes of the attrited non-ag HHs, we know that their parental educational achievements are higher than the attrited ag HH counterparts. If their enrollment rate changes are smaller (more likely to stay on school) than the ag HH attriters, provided that the more educated parents value education more highly, this has <Blue>a potential to understate the impacts.</Blue>  
+* Despite some differences in attriter characteristics, we see in below that, when we estimate the attrition selection with the whole sample of attrited and non-attrited households, the attrition can be considered as good as random.  
+* Based on linear probability estimation, <Blue>attrition seems random between agHHs and nonag HHs at the household level.</Blue> There is an indication that smaller land holders of agHHs may be more prone to attrit at the rate of 3% per one acre reduction in landholding.  
+* The implied magnitude of correlation between landholding and attrition is small given the mean landholding of agHHs is 1.46 acre. In addition, it is not easy to guess the direction of the bias it gives to enrollment rates: When smaller landholding has smaller labor demand for children that results in higher enrollment rates, their attrition can understate enrollment rates. When smaller landholders, or less wealthy households, stop schooling early that results in lower enrollment rates, their attrition can overstate enrollment rates. Given the <Blue>small magnitude of possible impacts that may potentially cancel out each other with a mildly small $p$ value attached to it,</Blue> we restrict our attention to the complete panel portion of the data. We also note that we include landholding as a covariate in the main estimation.  
 
 
 ## Other ag-nonag comparisons
@@ -5551,6 +5666,9 @@ kthdagHH
 
 ### Reasons of not going to school
 
+Overall, agricultural households are poorer, and nonattending children claim that financial as the reason of not going to school.  
+
+<details><summary>Click here to see the R script of tabulating reasons of not going to school.</summary>
 ```{r reasons, warning = F}
 z <- readRDS("../save/zFm1999.rds")
 z <- qread("../save/zEm1999.qs")
@@ -5583,7 +5701,7 @@ reatab <- NULL
 for (class in 1:4)
 {
   cat(paste("pcexp class", class, "\n"))
-  iiq <- grepl(class, z[, pc4])
+  iiq <- grepl(class, z[, UDpc4])
   cat("non-goers 1999:", round(sum(iiq & y2k & !iisch, na.rm = T)/
     sum(iiq & y2k, na.rm = T), 2), "=",
     sum(iiq & y2k & !iisch, na.rm = T), "/", 
@@ -5606,22 +5724,58 @@ for (class in 1:4)
   if (class == 1) reatab <- grbind(t1, t3) else reatab <- grbind(reatab, grbind(t1, t3))
 }
 reatab <- reatab[, c(2:4, 7, 1, 5, 6)]
-cn <- colnames(reatab)
 reatab <- cbind(reatab, sum = apply(reatab, 1, sum, na.rm = T))
 reatab[, -ncol(reatab)] <- round(reatab[, -ncol(reatab)]/reatab[, ncol(reatab)], 2)
 reatab <- a2b(reatab, NA, 0)
 reatab <- data.frame(cbind(
   group = rep(paste0("\\mbox{\\scriptsize ", 
-    c("non-goers 1999","non-goers 2002","drop outs 2002"), "}"), 4), 
+    c("Non-attendees 1999", "Non-attendees 2002", "Dropouts 2002"), "}"), 4), 
   formatC(reatab[, -ncol(reatab)], digits = 2, format = "f"), total = reatab[, ncol(reatab)]))
-colnames(reatab)[-c(1, ncol(reatab))] <- cn
-reatab <- cbind(quartile = repseq(1:4, 3), reatab)
+cn0 <- colnames(reatab)
+cn <- paste0(toupper(substr(cn0, 1, 1)), substr(cn0, 2, 20))
+cn <- gsub("Not.accepted", "\\\\begin{minipage}{1cm}\\\\hfil Not\\\\\\\\\\\\hfil accepted\\\\setlength{\\\\baselineskip}{10pt}\\\\end{minipage}", cn)
+cn <- gsub("School.environ", "\\\\begin{minipage}{1cm}\\\\hfil School\\\\\\\\\\\\hfil environ.\\\\setlength{\\\\baselineskip}{10pt}\\\\end{minipage}", cn)
+cn <- gsub("NA.", "NA", cn)
+colnames(reatab) <- cn
+reatab <- cbind(Quartile = repseq(1:4, 3), reatab)
+#### reorder rows: pack rows by group, Irregulars 1999 q1, q2, q3, q4, 
+####  Irregulars2002 q1, q2, q3, q4, etc.
+rseq <- seq(1, nrow(reatab), 3)
+rseq <- c(rseq, rseq+1, rseq+2)
+reatab <- reatab[rseq, ]
+
 #### LaTeX table
 write.tablev(latextab(as.matrix(reatab),
-  hleft = "\\scriptsize\\hfil$", 
-  hcenter = c(1, 2, .8, rep(1.5, 2), 2, rep(.8, 4)), 
-  hright = "$", headercolor = "gray90", delimiterline = NULL), 
+  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
+  ###hcenter = c(1, 2, .8, rep(1.5, 2), 2, rep(.8, 4)), 
+  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
+  hright = c("", rep("$", ncol(reatab)-1)), 
+  headercolor = NULL, delimiterline = NULL), 
   "../save/reasons.tex", colnamestrue = F)
+write.tablev(latextab(as.matrix(reatab),
+  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
+  ###hcenter = c(1, 2, .8, rep(1.5, 2), 2, rep(.8, 4)), 
+  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
+  hright = c("", rep("$", ncol(reatab)-1)), 
+  headercolor = NULL, delimiterline = NULL), 
+  "../draft/Tables/reasons.tex", colnamestrue = F)
+
+#### HTML table
+reatab <- data.table(reatab)
+reatab[, Group := gsub("^\\\\mbox\\{\\\\scriptsize (.*?)\\}", "\\1", Group)]
+cn <- colnames(reatab)
+cn <- gsub(".*Not.*", "Not accepted", cn)
+cn <- gsub(".*Schoo.*", "School environment", cn)
+setnames(reatab, cn)
+kt <- kable(reatab, align = paste0("r", paste0(rep("c", ncol(reatab)-1), collapse = "")), 
+  caption =   "Reasons stop going to school by consumption quartile")
+kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(reatab)), collapse = ""), background = "#ffcc99")
+kt <- column_spec(kt, 1, width = "3.75cm; min-width:3.75cm;")
+kt <- column_spec(kt, 2, width = "4.0cm; min-width:4.0cm;")
+kt <- column_spec(kt, 3:10, width = "2.25cm; min-width:2.25cm;")
+ktReaPC4 <- footnote(kt, 
+           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and disconitnue by 2002. Nonattendees are all children who are not attending school in respective years."
+           )
 
 ####  ag vs non-ag
 z[hdagHH<0, agHH := 0L]
@@ -5652,24 +5806,48 @@ for (k in 0:1)
   t1 <- grbind(t1, t2)
   if (k == 0) reatab <- grbind(t1, t3) else reatab <- grbind(reatab, grbind(t1, t3))
 }
-reatab <- reatab[, cn]
+cn1 <- gsub("\\.", " ", cn0)
+cn1 <- gsub(" $", "", cn1)
+cn1 <- cn1[!grepl("gr|tota", cn1)]
+reatab <- reatab[, cn1]
 reatab <- cbind(reatab, sum = apply(reatab, 1, sum, na.rm = T))
 reatab[, -ncol(reatab)] <- round(reatab[, -ncol(reatab)]/reatab[, ncol(reatab)], 2)
 reatab <- a2b(reatab, NA, 0)
 reatab <- data.frame(cbind(
   Group = rep(paste0("\\mbox{\\scriptsize ", 
-    c("Non-goers 1999","Non-goers 2002","Drop outs 2002"), "}"), 2), 
+    c("Non-attdendees 1999","Non-attdendees 2002","Dropouts 2002"), "}"), 2), 
   formatC(reatab[, -ncol(reatab)], digits = 2, format = "f"), total = reatab[, ncol(reatab)]))
-colnames(reatab)[-c(1, ncol(reatab))] <- cn
-reatab <- cbind("HH type" = repseq(c("ag", "non-ag"), 3), reatab)
+colnames(reatab)[-c(1, ncol(reatab))] <- cn1
+reatab <- cbind("HH type" = repseq(c("Agricultural", "Non-agricultural"), 3), reatab)
+#### reorder rows: pack rows by group, Irregulars 1999 q1, q2, q3, q4, 
+####  Irregulars2002 q1, q2, q3, q4, etc.
+rseq <- seq(1, nrow(reatab), 3)
+rseq <- c(rseq, rseq+1)
+reatab <- reatab[rseq, ]
+
+cn00 <- colnames(reatab)
+cn <- paste0(toupper(substr(cn00, 1, 1)), substr(cn00, 2, 20))
+cn <- gsub("Not.accepted", "\\\\begin{minipage}{1cm}\\\\hfil Not\\\\\\\\\\\\hfil accepted\\\\setlength{\\\\baselineskip}{10pt}\\\\end{minipage}", cn)
+cn <- gsub("School.environ", "\\\\begin{minipage}{1cm}\\\\hfil School\\\\\\\\\\\\hfil environ.\\\\setlength{\\\\baselineskip}{10pt}\\\\end{minipage}", cn)
+cn <- gsub("NA.", "NA", cn)
+colnames(reatab) <- cn
 #### LaTeX table
 write.tablev(latextab(as.matrix(reatab),
-  hleft = "\\scriptsize\\hfil$", 
-  hcenter = c(1, 2, .8, rep(1.5, 2), 2, rep(.8, 4)), 
-  hright = "$", headercolor = "gray90", delimiterline = NULL), 
+  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
+  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
+  hright = c("", rep("$", ncol(reatab)-1)), 
+  headercolor = NULL, delimiterline = NULL), 
   "../save/reasons_ag.tex", colnamestrue = F)
+write.tablev(latextab(as.matrix(reatab),
+  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
+  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
+  hright = c("", rep("$", ncol(reatab)-1)), 
+  headercolor = NULL, delimiterline = NULL), 
+  "../draft/Tables/reasons_ag.tex", colnamestrue = F)
 #### HTML table
 reatab <- data.table(reatab)
+setnames(reatab, grepout(".*Schoo.*", colnames(reatab)), "School environment")
+setnames(reatab, grepout(".*Not.*", colnames(reatab)), "Not accepted")
 reatab[, Group := gsub("^\\\\mbox\\{\\\\scriptsize (.*?)\\}", "\\1", Group)]
 setnames(reatab, "HH type", "HHtype")
 reatab[, HHtype := factor(HHtype, labels = c("Agricultural", "Non-agricultural"))]
@@ -5681,13 +5859,28 @@ kt <- column_spec(kt, 1, width = "3.75cm; min-width:3.75cm;")
 kt <- column_spec(kt, 2, width = "4.0cm; min-width:4.0cm;")
 kt <- column_spec(kt, 3:10, width = "2.25cm; min-width:2.25cm;")
 kt <- footnote(kt, 
-           general = "Sample of direct offspring of household heads. "
+           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and disconitnue by 2002. Nonattendees are all children who are not attending school in respective years."
            )
+```
+</details>
+
+```{r reasons of not going to school by group and con q4, echo = F}
+ktReaPC4
+```
+
+* 1999 data show financial as the top reason, while 2002 show NAs.  
+* Among non-NA, financial is the top reason in both years.  
+* The rate of financial is decreasinng in consumption quartile within each group.  
+
+```{r reasons of not going to school bg ag nonag, echo = F}
 kt
 ```
 
+* Financial among nonattending children of agricultural housesholds is greater than non-agricultural households.  
+
 ### Consumption quartiles
 
+<details><summary>Click here to see the R script of consumption quartile shares.</summary>
 ```{r consumption quartiles, warning = F}
 ####print(table0(z[, c("agHH", "pc4")]))
 ####print(addmargins(table0(z[tee == 1, .(agHH, UDpc4)])))
@@ -5706,11 +5899,20 @@ setnames(agp, c(paste0("q", 1:4), "NA", "Total"))
 for (j in 1:5) set(agp, j=j, value = as.character(agp[[j]]))
 for (i in 1:2) for (j in 1:5) 
   set(agp, i, j, value = formatC((as.numeric(agp[[j]][[i]])/agp[[6]][[i]])*100, digits = 2, format = "f"))
-agp <- cbind(type = c("Non agricultural households", "Agricultural households", "Total"), agp)
+agp <- cbind(Quartile = c("Non agricultural households", "Agricultural households", "Total"), agp)
 #### LaTeX table
-write.tablev(latextab(as.matrix(agp),hleft = "\\scriptsize\\hfil$", 
-  hcenter = c(rep(1.5, ncol(agp))), hright = "$", headercolor = "gray90", delimiterline = NULL), 
+write.tablev(latextab(as.matrix(agp), 
+  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(agp)-1)), 
+  hcenter = c(3.5, rep(1.5, ncol(agp)-1)), 
+  hright = c("", rep("$", ncol(agp)-1)), 
+  headercolor = NULL, delimiterline = NULL), 
   "../save/tab_agpc4.tex", colnamestrue = F)
+write.tablev(latextab(as.matrix(agp), 
+  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(agp)-1)), 
+  hcenter = c(3.5, rep(1.5, ncol(agp)-1)), 
+  hright = c("", rep("$", ncol(agp)-1)), 
+  headercolor = NULL, delimiterline = NULL), 
+  "../draft/Tables/tab_agpc4.tex", colnamestrue = F)
 #### HTML table
 kt <- kable(agp, align = paste0("r", paste0(rep("c", ncol(agp)-1), collapse = "")), 
   caption = "Consumption quartiles")
@@ -5718,25 +5920,33 @@ kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(agp)), collapse = ""), backgr
 kt <- footnote(kt, 
            general = "Sample of direct offspring of household heads. q1 - q4 indicate quartiles 1 - 4, and the numbers are percentages of row totals. Totals are number of households. "
            )
+```
+</details>
+
+```{r con q4 shares, echo = F}
 kt
 ```
+
+* Agricultural households are more concentrated up to the 3rd quartile.  
+
+
 
 ### Enrollment rate by age and age at first enrollment
 
 
-
+<details><summary>Click here to see the R script of enrollmen by age and age at enrollment.</summary>
 ```{r enrollment by age}
 yzw <- readRDS("../save/DataForJHR.rds")
 zE = copy(yzw[grepl("111|110", exist), ])
 iiid <- unique(zE[AgeIn1999 <= 18, uniquid])
 z1 <- zE[uniquid %in% iiid & survey != 2006 & sd == 1, ]
-# enrollment rates of cohort 1999, exist sample for main estimation
+#### enrollment rates of cohort 1999, exist sample for main estimation
 z1[, .(Enroll = mean(schoolp, na.rm = T), N = .N), by = .(AgeIn1999, agHH0>0)][order(AgeIn1999, agHH0), ]
 er1 <- addmargins(addmargins(table(z1[agHH0>0,.(survey, schoolp)]), 1, sum), 2, sum)
 pathsource00 <- paste0(pathsource, "/ffe/2000/Data/HouseholdData/STATA/")
 fn <- list.files(pathsource00)
 fn0 <- list.files(pathsource00, full.names = T)
-# 1.A.1 section (roster)
+#### 1.A.1 section (roster)
 e00 <- foreign::read.dta(grepout("a1", fn0))
 e00 <- data.table(e00)
 	#	isource agri HH: Agri|Tena
@@ -5746,14 +5956,14 @@ e00[, ocagHH := as.integer(hhnum %in% hhnum[grep("Agri|enan|farm", occup)])]
 	#	owner or cultivator household as ownagHH. A subset of isagHH.
 e00[, ownagHH := as.integer(hhnum %in% hhnum[grep("^6[12]$", isource)])]
 e00[, agHH0 := as.integer(isagHH+ocagHH > 0L)]
-# 1.A.2 section (roster and school attendance): schoolp (still attending school?), 
-# agead (age first admitted) and year_ (year first admitted)
+#### 1.A.2 section (roster and school attendance): schoolp (still attending school?), 
+#### agead (age first admitted) and year_ (year first admitted)
 a00 <- foreign::read.dta(grepout("a2a", fn0))
 a00 <- data.table(a00)
 e00age <- e00[, .(hhnum, mid, age, agem, agHH0)]
 setkey(e00age, hhnum, mid); setkey(a00, hhnum, mid)
 a00 <- e00age[a00]
-# Age and year admitted to grade 1
+#### Age and year admitted to grade 1
 adyr <- a00[, .(MeanAgeAtG1 = mean(agead, na.rm = T), 
   MedianAgeAtG1 = median(agead, na.rm = T), 
   MinAgeAtG1 = min(agead, na.rm = T), 
@@ -5763,7 +5973,7 @@ setkey(adyr, year_, agHH0)
 adyrW <- reshape(adyr, direction = "wide", idvar = "year_", timevar = "agHH0", 
   v.names = grepout("G1|N", colnames(adyr)))
 adyr[, agHH0 := factor(agHH0, labels = c("nonag HH", "ag HH"))]
-# Enrollment rates by age
+#### Enrollment rates by age
 a00[, Schoolp := schoolp]
 a00[, schoolp := NULL]
 a00[, schoolp := 0L]
@@ -5779,14 +5989,16 @@ erbg[, age := factor(age, levels = 5:18)]
 ```
 ```{r plot enrollment rate by age}
 library(ggplot2)
-g <- ggplot(data = erbg, 
-    aes(x = age, y = MeanEAtG1, group = agHH0, fill = agHH0, colour = agHH0, label = N)) + 
+g1 <- ggplot(data = erbg, 
+    aes(x = age, y = MeanEAtG1, 
+      group = agHH0, fill = agHH0, colour = agHH0, label = N)) + 
   geom_col(position = "dodge") +
   scale_fill_manual(values = c("lightblue", "blue")) +
   scale_colour_manual(values = c("blue", "blue")) +
   scale_x_discrete(expand=c(.04, .04)) +
   ThisThemeEnd+
-  geom_text(vjust = -0.5, size = 3, position = position_dodge(width = 0.9))+
+  geom_text(vjust = -0.5, size = 3, position = position_dodge(width = 0.9),
+    show.legend = F)+
   xlab("age") + 
   ylab("mean enrollment rate at round 1") + 
   labs(color  = "HH type", fill = "HH type", label = "cell size") +
@@ -5798,20 +6010,21 @@ g <- ggplot(data = erbg,
 pdf(
   "../save/AgewiseRawEnrollmentRates.pdf"
   , width = 2*12/2.54, height = 2*6/2.54)
-print(g)
+print(g1)
 whatever <- dev.off()
-g
 ```
 ```{r plot age at grade 1}
 library(ggplot2)
-g <- ggplot(data = adyr, 
-    aes(x = year_, y = MeanAgeAtG1, group = agHH0, fill = agHH0, colour = agHH0, label = N)) + 
+g2 <- ggplot(data = adyr, 
+    aes(x = year_, y = MeanAgeAtG1, 
+      group = agHH0, fill = agHH0, colour = agHH0, label = N)) + 
   geom_col(position = "dodge") +
   scale_fill_manual(values = c("lightblue", "blue")) +
   scale_colour_manual(values = c("blue", "blue")) +
   scale_x_continuous(breaks = 1987:2000, expand=c(.04, .04)) +
   ThisThemeEnd+
-  geom_text(vjust = -0.5, size = 3, position = position_dodge(width = 0.9))+
+  geom_text(vjust = -0.5, size = 3, position = position_dodge(width = 0.9),
+    show.legend = F)+
   xlab("year of starting primary school") + 
   ylab("mean age") + 
   labs(color  = "HH type", fill = "HH type", label = "cell size") +
@@ -5823,9 +6036,16 @@ g <- ggplot(data = adyr,
 pdf(
   "../save/AgeAtClass1Enrollment.pdf"
   , width = 2*12/2.54, height = 2*6/2.54)
-print(g)
+print(g2)
 whatever <- dev.off()
-g
+```
+</details>
+
+```{r enrollment figure1, fig.cap='Enrollment rates by age', echo = F}
+g1
+```
+```{r enrollment figure2, echo = F, fig.cap='Age at class 1 enrollment'}
+g2
 ```
 
 
@@ -5841,13 +6061,13 @@ is either estimated by differencing out the fixed effect or by taking deviations
 \hfill \href{https://econ.lse.ac.uk/staff/spischke/ec524/evaluation3.pdf}{Stephen Pischke} (p.13)
 \end{quote}
 
-```{r ,eval = F}
+```{r , echo = F, eval = F}
 library(qs)
 Enr.DID <- qread("../save/Enr2024.DID.qs")
 Enrchg.DID <- qread("../save/Enrchg2024.DID.qs")
 ```
 
-```{r ShowMemUse}
+```{r ShowMemUse, echo = F}
 ShowMemUse(decreasing = T, limit = 10)
 ```
 

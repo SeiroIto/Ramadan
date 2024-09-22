@@ -1,0 +1,36 @@
+\begin{table}[h!]
+\caption{\textbf{Estimates with India Data}}
+\label{india1}
+\begin{center}
+{
+\resizebox{16.5cm}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\multicolumn{1}{c}{\textbf{Dependent Variable: }} & \multicolumn{2}{c}{\textbf{Enrollment}} & \multicolumn{2}{c}{\textbf{Years of Education}}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+\multicolumn{1}{c}{\textbf{Age group:}} & \multicolumn{1}{c}{\textbf{5-13 in 2004}} & \multicolumn{1}{c}{\textbf{6-14 in 2004}} & \multicolumn{1}{c}{\textbf{5-13 in 2004}} & \multicolumn{1}{c}{\textbf{6-14 in 2004}}\\
+\cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4}\cmidrule(lr){5-5}
+	& (1)	& (2)	& (3)	& (4)\\
+\midrule
+Year 2011	&-0.131***	&-0.139***	&4.018***	&3.878*** \\
+	&(-0.0322)	&(-0.0315)	&(-0.156)	&(-0.157) \\
+(Agri) * (Yr 2011)	&-0.0456***	&-0.0558***	&-0.106	&-0.144**  \\
+	&(-0.0133)	&(-0.0136)	&(-0.0672)	&(-0.0669) \\
+(Overlapping state) * (Yr 2011)	&-0.0236	&-0.0283*	&0.113	&0.0678 \\
+	&(-0.0152)	&(-0.0157)	&(-0.083)	&(-0.0825) \\
+(Overlapping state) * (Agri) * (Yr 2011)	&-0.0655***	&-0.0543**	&-0.214*	&-0.221*\\
+	&(-0.022)	&(-0.0225)	&(-0.113)	&(-0.113)\\
+\hline
+Other Household level Control	&Yes	&Yes	&Yes	&Yes\\
+District Control	&Yes	&Yes	&Yes	&Yes\\
+\hline
+Observations	&18922	&19184	&18922	&19184\\
+R-Square (within)	&0.428	&0.452	&0.86	&0.856\\
+Mean of control group in 2011	&0.72	&0.69	&8	&8.24\\
+\hline\\
+\multicolumn{5}{p{20cm}}{{\footnotesize Source: Compiled from IHDS 2004-05 and 2011-12 data.Notes: 1. Regression estimated using a panel fixed effect estimator with standard errors clustered at the household level.. $*$, $**$, $***$ indicate significance levels at 10\%, 5\%, 1\%, respectively.
+2. We used the nuclear households. The regression estimates control for time-variant covariates: Age, age squared, parents' age, education, and the number of household assets. We also control for major state-level crop yields, agricultural areas, and rainfall. 
+3. Time-invariant variables interact with the year 2011. An agricultural household is an indicator variable for a household whose primary occupation is agriculture. Overlapping State is an indicator variable of the states in which the major harvesting crop of the state overlaps with the schools' annual exam period. }}
+\end{tabular}}}
+\end{center}
+\end{table}

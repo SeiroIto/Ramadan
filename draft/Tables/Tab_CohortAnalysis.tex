@@ -1,0 +1,65 @@
+\begin{table}[h!]
+\caption{\textbf{Cohort Analysis: Aged 10-27 in 1999}}
+\label{cohort1}
+\begin{center}
+{
+\resizebox{12.5cm}{!}{
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Variables}	& \textbf{Years of }	& \textbf{Primary}	& \textbf{Secondary} 	& \textbf{Higher}  \\
+	&\textbf{Education}	&	&	& \textbf{Secondary} \\
+\cmidrule{2-5}
+\textbf{Estimation: }	 & \multicolumn{1}{c}{\textbf{OLS}}	
+& \multicolumn{3}{c}{\textbf{Probit (Marginal Effects)}}\\
+\cmidrule(lr){2-2}\cmidrule(lr){3-5}
+\multicolumn{1}{c}{}	& (1)	& (2)	& (3)	& (4)\\
+\hline
+%{\textbf{Panel A:  }}	&	&	&	&\\
+%Aged 6-18 in 1999	&1.665***		&0.193***		&0.121***		&0.0589***\\
+%	&(0.0598)	&(0.00712)	&(0.00478)	&(0.00426)\\
+{\textbf{Panel A:}}	&	&	&	&\\
+Cohort: Aged 10-18 in 1999	&4.278***	&0.396***	&0.366***	&0.317***\\
+	&(0.119)	&(0.0110)	&(0.0113)	&(0.00957)\\[1em]
+(Aged 10-18 in 1999) * (Rural)	&0.462***	&0.0532***	&0.0531***	&0.0334***\\
+	&(0.112)	&(0.0106)	&(0.0106)	&(0.00859)\\[1em]
+Rural	&-2.155***	&-0.164***	&-0.199***	&-0.160***\\
+	&(0.174)	&(0.0153)	&(0.0137)	&(0.0105)\\[1em]
+{\textbf{Panel B:}}	&	&	&	&\\
+Age 10-12 in 1999	&4.188***	&0.381***	&0.359***	&0.312***\\
+	&(0.137)	&(0.0136)	&(0.0116)	&(0.0103)\\[1em]
+Age 13-15 in 1999	&2.322***	&0.253***	&0.159***	&0.146***\\
+	&(0.141)	&(0.0122)	&(0.0124)	&(0.0104)\\[1em]
+Age 16-18 in 1999	&1.414***	&0.0796***	&0.0197	&0.151***\\
+	&(0.135)	&(0.0140)	&(0.0136)	&(0.0118)\\[1em]
+(Age 10-12 in 1999) * (Rural)	&0.587***	&0.0718***	&0.0628***	&0.0401***\\
+	&(0.139)	&(0.0141)	&(0.0118)	&(0.0103)\\[1em]
+(Age 13-15 in 1999) * (Rural)	&0.773***	&0.0825***	&0.0730***	&0.0374***\\
+	&(0.141)	&(0.0139)	&(0.0135)	&(0.00981)\\[1em]
+(Age 16-18 in 1999) * (Rural)	&-0.0272	&0.000236	&0.0185	&0.0201\\
+	&(0.143)	&(0.0155)	&(0.0156)	&(0.0134)\\[1em]
+Rural	&-2.155***	&-0.164***	&-0.199***	&-0.160***\\
+	&(0.174)	&(0.0152)	&(0.0137)	&(0.0105)\\
+\hline
+Mean of older cohort: aged 19-27 in 1999	&4.31	&0.46	&0.27	&  0.15\\
+Mean of older sub-cohort: aged 19-21 in 1999	&4.61	&0.50	&0.29	&  0.15\\
+Mean of older sub-cohort: aged 22-24 in 1999	&4.23	&0.45	&0.26	&  0.15\\
+Mean of older sub-cohort: aged 25-27 in 1999	&3.93	&0.42	&0.25	&  0.14\\
+Other Control	&Yes	&  Yes	&Yes	&Yes\\
+District Control	&Yes	&  Yes	&Yes	&Yes\\
+District $\times$ \textnormal{Age Control}	&Yes	&  Yes	&Yes	&Yes\\
+Observations	&49165	&49129	&49128	&48987\\
+\hline
+\hline\\
+\multicolumn{5}{p{15cm}}{{\footnotesize 	Source: 
+Compiled from the HIES 2016 data.
+	Notes: 1. 
+Standard errors are clustered at \textit{district} level are reported in parentheses. 
+$*$, $**$, $***$ indicate significance levels at 10\%, 5\%, 1\%, respectively.
+	2. 
+Regression estimates control for cohort of birth dummy, sex, 
+district and cohort of birth dummy interactions, and religion.}}.
+\end{tabular}
+}
+}
+\end{center}
+\end{table}

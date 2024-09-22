@@ -1,0 +1,105 @@
+\begin{table}[h!]
+\caption{\textbf{Cohort Analysis 2: (Aged 10-27 in 2016)}}
+\label{cohort2}
+\begin{center}
+{
+\resizebox{11.5cm}{!}{
+\begin{tabular}{lcccc}
+    \toprule
+\textbf{Variables}	& \textbf{Years of }	& \textbf{Primary}	& \textbf{Secondary}	& \textbf{Higher}\\
+	&\textbf{Education}	&	&	& \textbf{Secondary} \\
+\cmidrule{2-5}
+\textbf{Estimation: } & \multicolumn{1}{c}{\textbf{OLS}} & \multicolumn{3}{c}{\textbf{Probit}}\\
+\cmidrule(lr){2-2}\cmidrule(lr){3-5}
+\multicolumn{1}{c}{}	&(1)	&(2)	&(3)	&(4)\\
+\hline
+(Aged 10 in 1999) X (Rural)	&1.067***	&0.368***	&0.370***	&0.296**\\
+	&(0.343)	&(0.108)	&(0.108)	&(0.120)\\[1em]
+(Aged 11 in 1999) X (Rural)	&0.873**	&0.213*	&0.230**	&0.330***\\
+	&(0.412)	&(0.119)	&(0.117)	&(0.123)\\[1em]
+(Aged 12 in 1999) X (Rural)	&0.910**	&0.278***	&0.283***	&0.345***\\
+	&(0.366)	&(0.101)	&(0.106)	&(0.128)\\[1em]
+(Aged 13 in 1999) X (Rural)	&0.933*	&0.335**	&0.351***	&0.230\\
+	&(0.487)	&(0.138)	&(0.131)	&(0.150)\\[1em]
+(Aged 14 in 1999) X (Rural)	&1.339***	&0.360***	&0.364***	&0.371***\\
+	&(0.357)	&(0.0979)	&(0.106)	&(0.116)\\[1em]
+(Aged 15 in 1999) X (Rural)	&0.897**	&0.228**	&0.233*	&0.257*\\
+	&(0.386)	&(0.110)	&(0.133)	&(0.132)\\[1em]
+(Aged 16 in 1999) X (Rural)	&0.261	&0.116	&0.147	&0.218*\\
+	&(0.391)	&(0.117)	&(0.117)	&(0.125)\\[1em]
+(Aged 17 in 1999) X (Rural)	&0.417	&0.0876	&0.184	&0.272*\\
+	&(0.443)	&(0.127)	&(0.117)	&(0.139)\\[1em]
+(Aged 18 in 1999) X (Rural)	&0.416	&0.0561	&0.182	&0.241*\\
+	&(0.406)	&(0.121)	&(0.123)	&(0.146)\\
+\hline
+Other Control	&Yes	&Yes	&Yes	&Yes\\
+District Control	&Yes	&Yes	&Yes	&Yes\\
+District $\times$ \textnormal{Age Control}	&Yes	&Yes	&Yes	&Yes\\
+Observations	&49165	&49129	&49128	&48987\\
+\hline
+\hline\\
+\multicolumn{5}{p{15cm}}{{\footnotesize Source: Compiled from HIES 2016 data.
+Notes: 1. Regression estimated using OLS with standard errors clustered at \textit{district} level reported in the parenthesis. $*$, $**$, $***$ indicate significance levels at 10\%, 5\%, 1\%, respectively.
+2. Regression estimates control for the cohort of birth dummy, sex, type of location (rural or urban), district and cohort of birth dummy interactions, and religion.}}.
+\end{tabular}}}
+\end{center}
+\end{table}
+
+
+\begin{table}[h!]
+\caption{\textbf{common trend test with HIES 2016: (Aged 19-27 in 1999)}}
+\label{cohort4}
+\begin{center}
+{
+\resizebox{12.5cm}{!}{
+\begin{tabular}{lcccc}
+    \toprule
+\textbf{Variables}	& \textbf{Years of }	& \textbf{Primary}	& \textbf{Secondary}	& \textbf{Higher}\\
+	&\textbf{Education}	&	&	& \textbf{Secondary} \\
+\cmidrule{2-5}
+\textbf{Estimation: } & \multicolumn{1}{c}{\textbf{OLS}} & \multicolumn{3}{c}{\textbf{Probit}}\\
+\cmidrule(lr){2-2}\cmidrule(lr){3-5}
+\multicolumn{1}{c}{}	& (1)	& (2)	& (3)	& (4)\\
+\hline
+%{\textbf{Panel A:	}}	&	&	&	&\\
+%Aged 6-18 in 1999	&1.665***	&0.193***	&0.121***	&0.0589***\\
+%	&(0.0598)	&(0.00712)	&(0.00478)	&(0.00426)\\
+%\textbf{Panel A}	&	&	&	&\\
+%Aged 20-27 in 1999	& -1.025***	& -0.262***	& -0.0986**	& -0.380***\\
+%	& (0.13)	& (0.04)	& (0.04)	& (0.04)\\
+%(Aged 20-27 in 1999) X (Rural)	& -0.0281	& -0.00868	& -0.0267	& -0.0894\\
+%	& (0.19)	& (0.05)	& (0.06)	& (0.06)\\
+%\textbf{Panel B}	&	&	&	&\\
+(Aged 20 in 1999) X (Rural)	& 0.395	& 0.0924	& 0.0722	& -0.0198\\
+	& (0.26)	& (0.07)	& (0.08)	& (0.09)\\
+(Aged 21 in 1999) X (Rural)	& -0.189	& 0.0623	& -0.0514	&-0.210**\\
+	& (0.31)	& (0.08)	& (0.08)	& (0.09)\\
+(Aged 22 in 1999) X (Rural)	& -0.349	&-0.184**	& -0.0539	& -0.0289\\
+	& (0.30)	& (0.08)	& (0.09)	& (0.09)\\
+(Aged 23 in 1999) X (Rural)	& -0.181	& -0.0822	& -0.0223	& -0.121\\
+	& (0.37)	& (0.10)	& (0.11)	& (0.12)\\
+(Aged 24 in 1999) X (Rural)	& 0.131	& 0.0214	& -0.0387	& -0.078\\
+	& (0.24)	& (0.06)	& (0.07)	& (0.07)\\
+(Aged 25 in 1999) X (Rural)	& 0.133	& 0.0177	& -0.0272	& 0.0177\\
+	& (0.34)	& (0.09)	& (0.11)	& (0.11)\\
+(Aged 26 in 1999) X (Rural)	& -0.136	& 0.0198	& -0.0374	&-0.161*\\
+	& (0.29)	& (0.07)	& (0.09)	& (0.09)\\
+(Aged 27 in 1999) X (Rural)	& -0.364	& -0.0928	& -0.122	&-0.213*\\
+	& (0.38)	& (0.10)	& (0.11)	& (0.12)\\
+\hline
+P-value for joint significance	&	&	&	&\\
+test for age and rural interaction terms	& 0.39	& 0.13	& 0.54	& 0.25\\
+\hline
+Other Control	&Yes	&Yes	&Yes	&Yes\\
+District Control	&Yes	&Yes	&Yes	&Yes\\
+District $\times$ \textnormal{Age Control}	&Yes	&Yes	&Yes	&Yes\\
+Observations	&23100	& 23087	& 23063	& 22986\\
+\hline
+\hline\\
+\multicolumn{5}{p{17cm}}{{\footnotesize Source: Compiled from HIES 2016 data.
+Notes: 1. Standard errors clustered at \textit{district} level reported in the parenthesis. $*$, $**$, $***$ indicate significance levels at 10\%, 5\%, 1\%, respectively.
+2. Regression estimates control for cohort of birth dummy, sex, district and cohort of birth dummy interactions, and religion.}}.
+\end{tabular}}}
+\end{center}
+\end{table}
+
