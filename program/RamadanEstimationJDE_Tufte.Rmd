@@ -572,7 +572,7 @@ varcompare01 <- c("Enrolled", "AgHH", "HdagHH", "IsagHH", "OcagHH",
 varcompare2 <- c("age", "yield", "UDOldSibF", "UDOldSibM") #"OldAgSibF", "OldAgSibM")
 #### scaled continuous
 varcompare3 <- c("pclandDec", "pcnlasset1000")
-boxsize <- .75
+boxsize <- .85
 library(qs)
 zi00N <- qread("../save/DID2024_N_MainResults.qs")
 for (ii in 1:length(samples)) {
@@ -679,11 +679,16 @@ for (ii in 1:length(samples)) {
      dst.print <- cbind(covariates = rn, dst.print)
      #### LaTeX table
      ltb <- latextab(dst.print, delimiterline = NULL, 
-        hcenter = c(5, rep(boxsize, 5), 1.0, rep(boxsize, ncol(dst.print)-7)),
-        hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(dst.print)-1)), 
-        hright = c("\\hfill", rep("$", ncol(dst.print)-1)),
+        hcenter = c(5.75, rep(boxsize, 5), 1.0, rep(boxsize, ncol(dst.print)-7)),
+        hleft = c("\\scriptsize\\hfill", rep("\\hfill\\scriptsize$", ncol(dst.print)-1)), 
+        hright = c("", rep("$", ncol(dst.print)-1)),
         headercolor = NULL, alternatecolor = NULL)
      ltb <- gsub("agr", "Agr", ltb)
+     ltb <- c(
+         ltb[1:2], 
+         "\\hline",
+         ltb[-c(1:2)]
+       )
      write.tablev(ltb, 
         paste0("../draft/Tables/SampleDescriptiveStat_", i, "_", zSobj[jj], ".tex")
         , colnamestrue = F)
