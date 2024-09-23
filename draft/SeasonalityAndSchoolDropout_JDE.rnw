@@ -843,7 +843,7 @@ Descriptive statistics of main estimation,\\ 10-18 years old, direct offspring\s
 \label{tab destat zEm1999}}\\
 \setlength{\tabcolsep}{1pt}
 \renewcommand{\arraystretch}{.6}
-%\hfil\input{Tables/SampleDescriptiveStat_older10_zEm.1999.tex}\\
+\hfil\input{Tables/SampleDescriptiveStat_older10_zEm.1999.tex}\\
 
 \renewcommand{\arraystretch}{.55}
 \setlength{\tabcolsep}{1pt}
@@ -862,7 +862,7 @@ Descriptive statistics of placebo estimation,\\ 10-18 years old in 2002, direct 
 \label{tab destat zEp2002}}\\
 \setlength{\tabcolsep}{1pt}
 \renewcommand{\arraystretch}{.6}
-%\hfil\input{Tables/SampleDescriptiveStat_older10_zEp.2002.tex}\\
+\hfil\input{Tables/SampleDescriptiveStat_older10_zEp.2002.tex}\\
 
 \renewcommand{\arraystretch}{.55}
 \setlength{\tabcolsep}{1pt}
@@ -883,89 +883,34 @@ The IFPRI panel data set reports reasons for dropping out of school (\textsc{\sm
 \begin{table}
 \caption{Tabulation of Agricultural vs. Non-Agriculture household Consumption Quartiles}
 \label{agpc4}
-\begin{center}
-{
-\resizebox{11.5cm}{!}{
-\begin{tabular}{lcccccc}
-\hline
-Quartiles & 1     & 2         & 3          & 4        & `NA's         &       N    \\
-\hline
-Agricultural households  & 25.8 &      27.27 &      26.54 &      19.66 & 0.74 &   407 \\
-Non-agricultural households & 23.27 &  24.36 &  18.55 &   33.82 &   0 &        275 \\
-\hline
-\hline
-\multicolumn{7}{p{12cm}}{{\footnotesize Notes: Consumption quartiles are based on households.}}
-\end{tabular}}}
+\hfil\input{Tables/tab_agpc4.tex}
 
-\hspace{-1.0cm}\input{Tables/tab_agpc4.tex}
-
-\end{center}
+\hfil\begin{minipage}{16cm}\footnotesize Notes: Consumption quartiles are based on household totals.\end{minipage}
 \end{table}
 
 
 
-\begin{table}[bp]
-\caption{Reported Reasons for Stop Going to School by Consumption Quartiles and by Household Type}
+\begin{table}
+\caption{Reasons for not going to school by consumption quartiles}
 \label{reasons}
-\begin{center}
-{
-\resizebox{15cm}{!}{
-\begin{tabular}{cccccccccc}
-\hline
-Quartile & Group & \scriptsize{Financial} & \scriptsize {Not accepted} & \scriptsize {School environment} & \scriptsize {Marriage} & \scriptsize {Distance} & \scriptsize {Sickness} & NA & Total                        \\
-\hline
-1 & Irregular 1999 &  0.52 &  0.03 &  0.2 & 0    & 0.06 & 0.02 & 0.17 & 65 \\
-1 & Irregular 2002 &  0.54 &  0.01 & 0.01 & 0.01 & 0.01 &    0 & 0.43 & 115 \\
-1 & Drop outs 2002 &  0.62 &     0 & 0.02 & 0.02 &    0 &    0 & 0.34 &  58 \\
-\hline
-2 & Irregular 1999 &  0.48 &    0 &    0.23 &     0 &   0.14 &    0  &    0.14 &   56 \\
-2 & Irregular 2002 &  0.37 &    0 &    0.06 &  0.01 &   0.02 &  0.01 &    0.52 &   81 \\
-2 & Drop outs 2002 &  0.41 &    0 &    0.08 &     0 &   0.03 &     0 &    0.49 &   37 \\
-\hline
-3 & Irregular 1999 &   0.44 &      0 &    0.26 &     0 &     0.18 &    0.09 &    0.03 &   34 \\
-3 & Irregular 2002 &   0.28 &      0 &       0 &  0.05 &     0.03 &    0.03 &    0.61 &   64 \\
-3 & Drop outs 2002 &   0.26 &      0 &       0 &  0.05 &     0.03 &    0.03 &    0.63 &   38 \\
-\hline
-4 & Irregular 1999 &   0.45 &   0.05 &   0.18 &      0 &    0.05 &    0.05 &    0.23 &    22 \\
-4 & Irregular 2002 &    0.1 &   0.01 &   0.03 &   0.03 &    0.01 &    0.03 &    0.79 &    73 \\
-4 & Drop outs 2002 &   0.11 &   0.02 &   0.02 &   0.04 &       0 &    0.04 &    0.78 &    54 \\
-\hline\\
-\hline
-\multicolumn{10}{p{21cm}}{{\footnotesize Notes: Numbers are all ratios except totals. ``Agri HH'' indicates agricultural households. See main text for definition of agricultural households. Irregulars are individuals who were not enrolled in the respective period. Dropouts are individuals who were enrolled in 1999 but not in 2002..}}
-\end{tabular}}}
 
-\hspace{-1.0cm}\input{Tables/reasons.tex}
+\hfil\input{Tables/reasons.tex}
 
-\end{center}
+\vspace{2ex}
+\hfil\begin{minipage}{16cm}\footnotesize Notes: Numbers are ratios of rowsums except totals. \Sexpr{ReasonsMemo} Consumption quartiles are based on household totals.\end{minipage}
+
 \end{table}
 
 
 
-\begin{table}[bp]
-\caption{Reasons for Not Going to School, Agricultural vs. Non-Agriculture household}
+\begin{table}
+\caption{Reasons for not going to school, agricultural vs. non-agriculture household}
 \label{reasons2}
-\begin{center}
-{
-\resizebox{14.5cm}{!}{
-\begin{tabular}{cccccccccc}
-\hline
-{\bf HH Type} & {\bf Group} & {\bf Financial} & {\bf Not accepted} & {\bf School Environment} & {\bf Marriage} & {\bf Distance} & {\bf Sickness} &   {\bf NA} & {\bf Total} \\
-\hline
-Ag      & Irregular 1999 &  0.55 &  0.03 &  0.21 &    0 &  0.06 &   0.05 &   0.11 &   66 \\
-Ag      & Irregular 2002 &  0.38 &     0 &  0.01 & 0.01 &  0.01 &   0.02 &   0.57 &  120 \\
-Ag      & drop outs 2002 &  0.46 &     0 &  0.01 &    0 &  0.01 &   0.01 &    0.5 &   70 \\
-\hline
-Non-ag  & Irregular 1999 &  0.46 &  0.01 &  0.22 &    0 &  0.13 &   0.02 &   0.16 &  112 \\
-Non-ag  & Irregular 2002 &  0.33 &  0.01 &  0.03 & 0.03 &  0.02 &   0.01 &   0.56 &  214 \\
-Non-ag  & drop outs 2002 &   0.3 &  0.01 &  0.03 & 0.04 &  0.01 &   0.02 &   0.59 &  117 \\
-\hline
-\hline
-\multicolumn{10}{p{22cm}}{{\footnotesize Notes: Numbers are all ratios except totals. ``Agri HH'' indicates agricultural households. See the main text for the definition of agricultural households. Irregulars are individuals who were not enrolled in the respective period. Dropouts are individuals who were enrolled in 1999 but not in 2002..}}
-\end{tabular}}}
 
-\hspace{-1.0cm}\input{Tables/reasons_ag.tex}
+\hfil\input{Tables/reasons_ag.tex}
 
-\end{center}
+\vspace{2ex}
+\hfil\begin{minipage}{16cm}\footnotesize Notes: Numbers are all ratios of rowsums except totals. \Sexpr{ReasonsMemo} \end{minipage}
 \end{table}
 
 

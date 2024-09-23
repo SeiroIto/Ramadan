@@ -536,7 +536,183 @@ qsave(RosRd1, "../save/OriginalRd1RosterFileWithUniquid.qs")
 
 # Understanding characteristics of sample used in main results
 
-## Summary statitistics and simple DID
+## Descriptive statistics of main and placebo samples
+
+
+<details><summary>Click here to see the code of sample descriptive statistics.</summary>
+```{r sample destat, echo = F, warning = F}
+yzw <- readRDS("../save/DataForJHR.rds")
+zEm.1999 <- qread("../save/zEm1999.qs")
+zE = copy(yzw[grepl("111|110", exist), ])
+samples <- c("main", "placebo")
+z23 <- c("z2", "z3")
+zsobj <- c("zmobj", "zpobj")
+zsobj2 <- c("zmobj2", "zpobj2")
+zpobj <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[c(1, 3)]
+zmobj <- c("zEm.1999", "zSm.1999")[1]
+zmobj2 <- c("zEm", "zSm")
+zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")[c(1, 3)]
+yrXs <- list(c("yr2", "yr2"), c("yr3", "yr3", "yr3", "yr3"))
+#### regressors.list <- list(
+####   main = regressorsM,
+####   placebo = regressorsM2002
+#### )
+####  (note the chapitalised names in some) created in the below loop
+####  binary
+varcompare01 <- c("Enrolled", "AgHH", "HdagHH", "IsagHH", "OcagHH", 
+  "StipendProgram", "NonStipendProgram",
+  # hdsex uses Rd1RelToHead while hd.sex = 1 if reltohead=1 in any round (vulnerable to entry errors)
+  # Need to use .yr2 variables: By substituting with yrXs, we can specify 
+  # yr2 (baseline value) in main estimation, yr3 (2002 value) in placebo estimation.
+  "Sex", "UDhdsex", "UDnonmuslim", "UDflooded",
+  "kutchalatrine.yr2", "ownwater.yr2", 
+  "Hd.edulevel.primary", "Hd.edulevel.secondary", 
+  "Sp.edulevel.primary", "Sp.edulevel.secondary")
+#### continuous
+varcompare2 <- c("age", "yield", "UDOldSibF", "UDOldSibM") #"OldAgSibF", "OldAgSibM")
+#### scaled continuous
+varcompare3 <- c("pclandDec", "pcnlasset1000")
+boxsize <- .75
+library(qs)
+zi00N <- qread("../save/DID2024_N_MainResults.qs")
+for (ii in 1:length(samples)) {
+  zSobj <- get(zsobj[ii]) # zmobj or zpobj
+  yrxs <- yrXs[[ii]]
+  dst0 <- vector("list", length = length(10:12)) # s
+  dst <- vector("list", length = length(zSobj)) # jj
+  # jj
+  #  zmobj: zEm.1999, zSm.1999
+  #  zpobj: zEp.2002, zSp.2002, zEp.1999, zSp.1999
+  for (jj in 1:length(zSobj)) {
+    dst[[jj]] <- dst0
+    # choose yrX
+    yrx <- yrxs[jj]
+    varcompare1 <- gsub("yr2", yrx, varcompare01)
+    # drop nonmuslims if zXp
+    if (any(grepl("p", zSobj))) 
+      varcompare1 <- varcompare1[!grepl("nonmu", varcompare1)]
+    for (s in 1) {
+      s0 <- (10:12)[s]
+      i <- paste0("older", s0)
+     # ii: estimation objective (main/placebo), m or p
+     # jj: jj, zE/zS sample selection, E or S or Y
+     # dd: demeaned if 1
+     # s: agelb 10
+     # j: direct offspring
+     # ge: boys+girls
+     dd <- s <- 1
+     j <- 2
+     ge <- 3
+     zi <- zi00N[[ii]][[jj]][[s]][[j]][[ge]][[1]] # resultsN0[[ii]][[jj]][[dd]][[s]][[j]][[ge]][[m]]
+     # age s=10/nuclear j/agHHdef m/cl=satterthwaite
+      # [[ii]][[jj]][[s]][[j]][[m]][[k]]
+     zid <- lapply(zi, "[[", "level.data")
+     zid <- zid[[length(zid)]]
+     zidd <- lapply(zi, "[[", "diff.data")
+     zidd <- zidd[[length(zidd)]]
+     z1 <- zid[uniquid %in% zidd[, uniquid], ]
+     z1[, age := age2^(.5)]
+     if (any(grepl("LHS", colnames(z1)))) setnames(z1, c("LHS"), c("Enrolled"))
+     z1[, tee := 1:.N, by = uniquid]
+     # Binary: copy all 0/1 values at tee == 1 to other rds
+     # Change back from demeaned to undemeaned values
+     yrXvars <- grepout(paste0(yrx, "$"), colnames(z1))
+     yrXvars <- yrXvars[!grepl("^pc|Sib|hdsex|agH", yrXvars)]
+     yrXvars0 <- gsub(paste0("\\.", yrx), "", yrXvars)
+     yrXvars1 <- yrXvars[!grepl("Sib", yrXvars)]
+     yrXvars10 <- gsub(paste0("\\.", yrx), "", yrXvars1)
+     # Add agHH defs from original data
+     yrXvars10 <- gsub("^agHH$", aghh.defs[1], yrXvars10)
+     # pcland, pcnlasset is not in z1 (zid). Need to get from yzw
+     yrXvars10 <- c("hdagHH", "isagHH", "ocagHH", "hdsex", "pcland", "pcnlasset", yrXvars10)
+     if (ii == 1) 
+       yzw.vars1 <- yzw[survey == 1999, c("uniquid", yrXvars10), with = F] else
+       yzw.vars1 <- yzw[survey == 2002, c("uniquid", yrXvars10), with = F]
+     setkey(yzw.vars1, uniquid); setkey(z1, uniquid)
+     z12 <- yzw.vars1[z1]
+     #z1[, (yrXvars0) := 0L]
+     ## i needs to be set at tee == 2, because sex.yr2 > 0 for sex = 1 in yr2, but sex.yr2 > 0 for sex = 0 in yr1
+     #for (yy in 1:length(yrXvars))
+     #  set(z1, i = which(z1[["tee"]] == 2 & z1[[yrXvars[yy]]] > 0), 
+     #    j = grep(paste0("^", yrXvars0[[yy]], "$"), colnames(z1)), value = 1L)
+     #z1[, (yrXvars0) := .SD[tee == 2], by = uniquid, .SDcols = yrXvars0]
+     for (v2 in c("sex", "agHH", "hdagHH", "isagHH", "ocagHH",
+       #"OldSibF", "OldSibM", #"OldAgSibF", "OldAgSibM", 
+       "hd.edulevel.primary", "hd.edulevel.secondary", 
+       "sp.edulevel.primary", "sp.edulevel.secondary")) {
+       V2 <- paste0(toupper(substr(v2, 1, 1)), substr(v2, 2, nchar(v2)))
+       z12[, (V2) := eval(parse(text = v2))]
+     }
+     # HdagHH changes. tee == 2 has more HadgHH == 1. Use tee == 2 values.
+     z12[, HdagHH := HdagHH[tee==2], by = uniquid]
+     z12[, AgHH := as.integer(agHH>0)]
+     # UD covariates: Created in SampleSelectionDemeaning.rnw. Need to get from zEm.1999
+     zud <- zEm.1999[, .(uniquid, tee, UDhdsex, UDnonmuslim, UDflooded, UDOldSibF, UDOldSibM)]
+     setkey(zud, uniquid, tee); setkey(z12, uniquid, tee); 
+     z12 <- zud[z12]
+     # 4002.04: totalland = 5 decimal, 5 members => pcland = 1 decimal
+     z12[, pclandDec := pcland]
+     #"per member nonland asset (1000 tk)",
+     # totalvalue is deflated with 1million (1000000). Multiply with 1000 to get 1000 Tk units.
+     z12[, pcnlasset1000 := pcnlasset*1000]
+     # Keep only rd 1 values. (Rd 1 values are copied already, do it again to make sure.)
+     z12[, pclandDec := pclandDec[1], by = uniquid]
+     z12[, pcnlasset1000 := pcnlasset1000[1], by = uniquid]
+     # all variables to numeric
+     d1 <- sapply(z12[tee == 1, gsub("\\.yr.$", "", 
+       c(varcompare1, varcompare2, varcompare3)), with = F], as.numeric)
+     d1 <- destat(d1, signif = 3)
+     dst[[jj]][[s]] <- d1
+     dst.print <- as.matrix(d1)
+     d2 <- data.table(d1)
+     thesecols <- c("mean", "std")
+     d2[, (thesecols) := lapply(.SD, formatC, digits = 3, format = "f"), .SDcols = thesecols]
+     d2 <- d2[, thesecols, with = F]
+     dst.print <- a2b(dst.print, "NA", "")
+     dst.print[, thesecols] <- as.matrix(d2)
+     source("../program/substitution_table.R")
+     rn <- rownames(dst.print)
+     # substitute variable names with short labels
+     for (mm in 1:nrow(sbt))
+       if (length(iir <- grep(sbt[mm, 1], rn)) > 0) 
+         rn[iir] <- sbt[mm, 2]
+     dst.print <- cbind(covariates = rn, dst.print)
+     #### LaTeX table
+     ltb <- latextab(dst.print, delimiterline = NULL, 
+        hcenter = c(5, rep(boxsize, 5), 1.0, rep(boxsize, ncol(dst.print)-7)),
+        hleft = c("\\scriptsize", rep("\\hfill\\scriptsize$", ncol(dst.print)-1)), 
+        hright = c("\\hfill", rep("$", ncol(dst.print)-1)),
+        headercolor = NULL, alternatecolor = NULL)
+     ltb <- gsub("agr", "Agr", ltb)
+     write.tablev(ltb, 
+        paste0("../draft/Tables/SampleDescriptiveStat_", i, "_", zSobj[jj], ".tex")
+        , colnamestrue = F)
+     #### HTML table
+     library(kableExtra)
+     ktb <- data.table(dst.print)
+     kt <- kable(ktb, align = 
+       paste0("r", paste0(rep("c", ncol(ktb)-1), collapse = "")), 
+       caption = paste("Descriptive statistics:", zSobj[jj]))
+     kt <- column_spec(kt, 1, width = "9cm; min-width:9cm;")
+     kt <- column_spec(kt, 2:6, width = "2.0cm; min-width:2.0cm;")
+     kt <- kableExtra::footnote(kt, general = "Sample of direct offspring of household heads.")
+     assign(paste0("kt", zSobj[jj]), kt)
+    }  # s
+    qsave(dst, paste0("../save/SampleDestat_", zSobj[jj], ".qs"))
+  }  # jj
+}  # ii
+```
+</details>
+
+```{r sample destat in html, echo = F}
+ktzEm.1999
+```
+```{r sample destat zep2002 in html, echo = F}
+ktzEp.2002
+```
+
+
+## Simple DID, regression sample descriptive statistics, ag-nonag contrasts
 
 <details><summary>Click here to see the code of simple DID.</summary>
 ```{r plain DID}
@@ -5749,15 +5925,15 @@ reatab[-seq(1, nrow(reatab), 4), "Group"] <- ""
 #### LaTeX table
 ltb <- latextab(as.matrix(reatab),
   hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
-  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
+  hcenter = c(2.5, 1, rep(1, ncol(reatab)-2)), 
   hright = c("", rep("$", ncol(reatab)-1)), 
   headercolor = NULL, delimiterline = NULL)
 ltb <- gsub("Group|Quartile|Total", "", ltb)
 ltb <- c(
     ltb[1],
-    "\\\\makebox[2cm]{Group} & \\\\makebox[2.5cm]{Quartile} & \\\\multicolumn{c}{9}{Reasons} & \\\\makebox[1cm]{Total}\\\\\\\\", 
+    "\\makebox[2.5cm]{Group} & \\makebox[1cm]{Quartile} & \\multicolumn{7}{c}{\\scriptsize Reasons} & \\makebox[1cm]{Total}\\\\", 
     ltb[2], 
-    "\\\\hline",
+    "\\hline",
     ltb[-c(1:2)]
   )
 write.tablev(ltb, "../save/reasons.tex", colnamestrue = F)
@@ -5774,10 +5950,9 @@ kt <- kable(reatab, align = paste0("r", paste0(rep("c", ncol(reatab)-1), collaps
   caption =   "Reasons of not going to school by consumption quartile")
 kt <- row_spec(kt, 0, align = paste0(rep("c", ncol(reatab)), collapse = ""), background = "#ffcc99")
 kt <- column_spec(kt, 1, width = "4.0cm; min-width:4.0cm;")
-kt <- column_spec(kt, 2, width = "3.75cm; min-width:3.75cm;")
-kt <- column_spec(kt, 3:10, width = "2.25cm; min-width:2.25cm;")
+kt <- column_spec(kt, 2:10, width = "2.25cm; min-width:2.25cm;")
 ktReaPC4 <- footnote(kt, 
-           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years."
+           general = ReasonsMemo
            )
 
 ####  ag vs non-ag
@@ -5822,10 +5997,10 @@ reatab <- data.frame(cbind(
   formatC(reatab[, -ncol(reatab)], digits = 2, format = "f"), total = reatab[, ncol(reatab)]))
 colnames(reatab)[-c(1, ncol(reatab))] <- cn1
 reatab <- cbind("HH type" = repseq(c("Agricultural", "Non-agricultural"), 3), reatab)
-#### reorder rows: pack rows by group, Irregulars 1999 q1, q2, q3, q4, 
-####  Irregulars2002 q1, q2, q3, q4, etc.
+#### reorder rows: pack rows by group, Nonattendees 1999 ag, nonag, 
+####  Nonattendees 2002 ag, nonag, etc.
 rseq <- seq(1, nrow(reatab), 3)
-rseq <- c(rseq, rseq+1)
+rseq <- c(rseq, rseq+1, rseq+2)
 reatab <- reatab[rseq, ]
 cn00 <- colnames(reatab)
 cn <- paste0(toupper(substr(cn00, 1, 1)), substr(cn00, 2, 20))
@@ -5834,20 +6009,20 @@ cn <- gsub("School.environ", "\\\\begin{minipage}{1cm}\\\\hfil School\\\\\\\\\\\
 cn <- gsub("NA.", "NA", cn)
 colnames(reatab) <- cn
 reatab <- reatab[, c(2, 1, 3:ncol(reatab))]
-reatab[c(2, 4), 1] <- ""
+reatab[c(2, 4, 6), 1] <- ""
 
 #### LaTeX table
 ltb <- latextab(as.matrix(reatab),
-  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(reatab)-1)),
-  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
-  hright = c("", rep("$", ncol(reatab)-1)), 
+  hleft = c("\\scriptsize\\hfill", "\\scriptsize\\hfil", rep("\\scriptsize\\hfil$", ncol(reatab)-2)),
+  hcenter = c(2.5, 2.5, rep(1, ncol(reatab)-2)), 
+  hright = c("", "", rep("$", ncol(reatab)-2)), 
   headercolor = NULL, delimiterline = NULL)
 ltb <- gsub("Group|HH type|Total", "", ltb)
 ltb <- c(
     ltb[1],
-    "\\\\makebox[2cm]{Group} & \\\\makebox[2.5cm]{HH type} & \\\\multicolumn{c}{9}{Reasons} & \\\\makebox[1cm]{Total}\\\\\\\\", 
+    "\\makebox[2.5cm]{Group} & \\makebox[2.5cm]{HH type} & \\multicolumn{7}{c}{\\scriptsize Reasons} & \\makebox[1cm]{Total}\\\\", 
     ltb[2], 
-    "\\\\hline",
+    "\\hline",
     ltb[-c(1:2)]
   )
 write.tablev(ltb, "../save/reasons_ag.tex", colnamestrue = F)
@@ -5867,7 +6042,7 @@ kt <- column_spec(kt, 1, width = "3.75cm; min-width:3.75cm;")
 kt <- column_spec(kt, 2, width = "4.0cm; min-width:4.0cm;")
 kt <- column_spec(kt, 3:10, width = "2.25cm; min-width:2.25cm;")
 kt <- footnote(kt, 
-           general = "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years."
+           general = ReasonsMemo
            )
 ```
 </details>
@@ -5909,18 +6084,21 @@ for (i in 1:2) for (j in 1:5)
   set(agp, i, j, value = formatC((as.numeric(agp[[j]][[i]])/agp[[6]][[i]])*100, digits = 2, format = "f"))
 agp <- cbind(Quartile = c("Non agricultural households", "Agricultural households", "Total"), agp)
 #### LaTeX table
-write.tablev(latextab(as.matrix(agp), 
+ltb <- latextab(as.matrix(agp), 
   hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(agp)-1)), 
   hcenter = c(3.5, rep(1.5, ncol(agp)-1)), 
   hright = c("", rep("$", ncol(agp)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  "../save/tab_agpc4.tex", colnamestrue = F)
-write.tablev(latextab(as.matrix(agp), 
-  hleft = c("\\scriptsize\\hfill", rep("\\scriptsize\\hfil$", ncol(agp)-1)), 
-  hcenter = c(3.5, rep(1.5, ncol(agp)-1)), 
-  hright = c("", rep("$", ncol(agp)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  "../draft/Tables/tab_agpc4.tex", colnamestrue = F)
+  headercolor = NULL, delimiterline = NULL)
+ltb <- gsub("Quartiles|Total", "", ltb)
+ltb <- c(
+    ltb[1],
+    "\\makebox[2cm]{HH type} &\\multicolumn{5}{c}{\\scriptsize Quartile} & \\makebox[1cm]{Total}\\\\", 
+    ltb[2], 
+    "\\hline",
+    ltb[-c(1:2)]
+  )
+write.tablev(ltb, "../save/tab_agpc4.tex", colnamestrue = F)
+write.tablev(ltb, "../draft/Tables/tab_agpc4.tex", colnamestrue = F)
 #### HTML table
 kt <- kable(agp, align = paste0("r", paste0(rep("c", ncol(agp)-1), collapse = "")), 
   caption = "Consumption quartiles")

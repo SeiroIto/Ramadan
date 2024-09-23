@@ -352,7 +352,7 @@ margin-left: 2em;
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年09月23日 07:09</h4>
+<h4 class="date">2024年09月23日 13:12</h4>
 
 
 <div id="TOC">
@@ -364,7 +364,8 @@ margin-left: 2em;
 </ul></li>
 <li><a href="#understanding-characteristics-of-sample-used-in-main-results" id="toc-understanding-characteristics-of-sample-used-in-main-results">Understanding characteristics of sample used in main results</a>
 <ul>
-<li><a href="#summary-statitistics-and-simple-did" id="toc-summary-statitistics-and-simple-did">Summary statitistics and simple DID</a></li>
+<li><a href="#descriptive-statistics-of-main-and-placebo-samples" id="toc-descriptive-statistics-of-main-and-placebo-samples">Descriptive statistics of main and placebo samples</a></li>
+<li><a href="#simple-did-regression-sample-descriptive-statistics-ag-nonag-contrasts" id="toc-simple-did-regression-sample-descriptive-statistics-ag-nonag-contrasts">Simple DID, regression sample descriptive statistics, ag-nonag contrasts</a></li>
 </ul></li>
 <li><a href="#preparing-regressors" id="toc-preparing-regressors">Preparing regressors</a></li>
 <li><a href="#estimation" id="toc-estimation">Estimation</a>
@@ -770,8 +771,1703 @@ qsave(RosRd1, &quot;../save/OriginalRd1RosterFileWithUniquid.qs&quot;)</code></p
 </div>
 <div id="understanding-characteristics-of-sample-used-in-main-results" class="section level1">
 <h1>Understanding characteristics of sample used in main results</h1>
-<div id="summary-statitistics-and-simple-did" class="section level2">
-<h2>Summary statitistics and simple DID</h2>
+<div id="descriptive-statistics-of-main-and-placebo-samples" class="section level2">
+<h2>Descriptive statistics of main and placebo samples</h2>
+<details>
+<summary>
+Click here to see the code of sample descriptive statistics.
+</summary>
+</details>
+<table style="NAborder-bottom: 0;">
+<caption>Descriptive statistics: zEm.1999</caption>
+
+
+<thead>
+<tr>
+<th style="text-align:right;">
+covariates
+</th>
+<th style="text-align:center;">
+min
+</th>
+<th style="text-align:center;">
+25%
+</th>
+<th style="text-align:center;">
+median
+</th>
+<th style="text-align:center;">
+75%
+</th>
+<th style="text-align:center;">
+max
+</th>
+<th style="text-align:center;">
+mean
+</th>
+<th style="text-align:center;">
+std
+</th>
+<th style="text-align:center;">
+0s
+</th>
+<th style="text-align:center;">
+NAs
+</th>
+<th style="text-align:center;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Enrolled
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.738
+</td>
+<td style="text-align:center;">
+0.440
+</td>
+<td style="text-align:center;">
+164
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (combined)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.613
+</td>
+<td style="text-align:center;">
+0.487
+</td>
+<td style="text-align:center;">
+242
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (head definition)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.553
+</td>
+<td style="text-align:center;">
+0.498
+</td>
+<td style="text-align:center;">
+280
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (income definition)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.575
+</td>
+<td style="text-align:center;">
+0.495
+</td>
+<td style="text-align:center;">
+266
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (occupation definition)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.543
+</td>
+<td style="text-align:center;">
+0.499
+</td>
+<td style="text-align:center;">
+286
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Membership to stipend program
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.315
+</td>
+<td style="text-align:center;">
+0.465
+</td>
+<td style="text-align:center;">
+429
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Membership to non-stipend program
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.425
+</td>
+<td style="text-align:center;">
+0.495
+</td>
+<td style="text-align:center;">
+360
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Sex
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.511
+</td>
+<td style="text-align:center;">
+0.500
+</td>
+<td style="text-align:center;">
+306
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Head sex (female = 1)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.128
+</td>
+<td style="text-align:center;">
+0.334
+</td>
+<td style="text-align:center;">
+546
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Non-Muslim
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.123
+</td>
+<td style="text-align:center;">
+0.329
+</td>
+<td style="text-align:center;">
+549
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Flooded
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.623
+</td>
+<td style="text-align:center;">
+0.485
+</td>
+<td style="text-align:center;">
+236
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Structured toilet
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.294
+</td>
+<td style="text-align:center;">
+0.456
+</td>
+<td style="text-align:center;">
+442
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Own piped water
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.380
+</td>
+<td style="text-align:center;">
+0.486
+</td>
+<td style="text-align:center;">
+388
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head primary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.155
+</td>
+<td style="text-align:center;">
+0.362
+</td>
+<td style="text-align:center;">
+529
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head secondary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.284
+</td>
+<td style="text-align:center;">
+0.451
+</td>
+<td style="text-align:center;">
+448
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head spouse primary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.171
+</td>
+<td style="text-align:center;">
+0.377
+</td>
+<td style="text-align:center;">
+519
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head spouse secondary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.166
+</td>
+<td style="text-align:center;">
+0.372
+</td>
+<td style="text-align:center;">
+522
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+age
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+10
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+11
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+13
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+15
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+18
+</td>
+<td style="text-align:center;">
+12.986
+</td>
+<td style="text-align:center;">
+2.351
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+yield (thana)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.607
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.647
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.823
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.906
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.928
+</td>
+<td style="text-align:center;">
+0.786
+</td>
+<td style="text-align:center;">
+0.110
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Number of older female siblings
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+4
+</td>
+<td style="text-align:center;">
+0.390
+</td>
+<td style="text-align:center;">
+0.670
+</td>
+<td style="text-align:center;">
+434
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Number of older male siblings
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+5
+</td>
+<td style="text-align:center;">
+0.577
+</td>
+<td style="text-align:center;">
+0.844
+</td>
+<td style="text-align:center;">
+376
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+per member land holding (decimal, in 1999)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.019
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.069
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.196
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+3.215
+</td>
+<td style="text-align:center;">
+0.167
+</td>
+<td style="text-align:center;">
+0.287
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+per member nonland asset (1000 Tk, in 1999)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.373
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+3.918
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+7.062
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+13.623
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+205
+</td>
+<td style="text-align:center;">
+11.209
+</td>
+<td style="text-align:center;">
+14.515
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+626
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Sample of direct offspring of household heads.
+</td>
+</tr>
+</tfoot>
+</table>
+<table style="NAborder-bottom: 0;">
+<caption>Descriptive statistics: zEp.2002</caption>
+
+
+<thead>
+<tr>
+<th style="text-align:right;">
+covariates
+</th>
+<th style="text-align:center;">
+min
+</th>
+<th style="text-align:center;">
+25%
+</th>
+<th style="text-align:center;">
+median
+</th>
+<th style="text-align:center;">
+75%
+</th>
+<th style="text-align:center;">
+max
+</th>
+<th style="text-align:center;">
+mean
+</th>
+<th style="text-align:center;">
+std
+</th>
+<th style="text-align:center;">
+0s
+</th>
+<th style="text-align:center;">
+NAs
+</th>
+<th style="text-align:center;">
+n
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Enrolled
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.631
+</td>
+<td style="text-align:center;">
+0.483
+</td>
+<td style="text-align:center;">
+300
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (combined)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.606
+</td>
+<td style="text-align:center;">
+0.489
+</td>
+<td style="text-align:center;">
+320
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (head definition)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.542
+</td>
+<td style="text-align:center;">
+0.499
+</td>
+<td style="text-align:center;">
+372
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (income definition)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.562
+</td>
+<td style="text-align:center;">
+0.496
+</td>
+<td style="text-align:center;">
+356
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Agricultural household (occupation definition)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.537
+</td>
+<td style="text-align:center;">
+0.499
+</td>
+<td style="text-align:center;">
+376
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Membership to stipend program
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.273
+</td>
+<td style="text-align:center;">
+0.446
+</td>
+<td style="text-align:center;">
+590
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Membership to non-stipend program
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.002
+</td>
+<td style="text-align:center;">
+0.050
+</td>
+<td style="text-align:center;">
+810
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Sex
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.525
+</td>
+<td style="text-align:center;">
+0.500
+</td>
+<td style="text-align:center;">
+386
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Head sex (female = 1)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.116
+</td>
+<td style="text-align:center;">
+0.320
+</td>
+<td style="text-align:center;">
+718
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Flooded
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.626
+</td>
+<td style="text-align:center;">
+0.484
+</td>
+<td style="text-align:center;">
+304
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Structured toilet
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.282
+</td>
+<td style="text-align:center;">
+0.450
+</td>
+<td style="text-align:center;">
+583
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Own piped water
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.376
+</td>
+<td style="text-align:center;">
+0.485
+</td>
+<td style="text-align:center;">
+507
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head primary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.159
+</td>
+<td style="text-align:center;">
+0.366
+</td>
+<td style="text-align:center;">
+683
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head secondary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.281
+</td>
+<td style="text-align:center;">
+0.450
+</td>
+<td style="text-align:center;">
+584
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head spouse primary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.177
+</td>
+<td style="text-align:center;">
+0.382
+</td>
+<td style="text-align:center;">
+668
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+head spouse secondary
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;">
+0.166
+</td>
+<td style="text-align:center;">
+0.373
+</td>
+<td style="text-align:center;">
+677
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+age
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+10
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+12
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+13
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+16
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+18
+</td>
+<td style="text-align:center;">
+13.631
+</td>
+<td style="text-align:center;">
+2.470
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+yield (thana)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.69
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.743
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.838
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.984
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1.036
+</td>
+<td style="text-align:center;">
+0.848
+</td>
+<td style="text-align:center;">
+0.117
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Number of older female siblings
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+4
+</td>
+<td style="text-align:center;">
+0.560
+</td>
+<td style="text-align:center;">
+0.793
+</td>
+<td style="text-align:center;">
+477
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+Number of older male siblings
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+1
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+5
+</td>
+<td style="text-align:center;">
+0.659
+</td>
+<td style="text-align:center;">
+0.882
+</td>
+<td style="text-align:center;">
+447
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+per member land holding (decimal, in 1999)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.017
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.063
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.179
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+3.215
+</td>
+<td style="text-align:center;">
+0.160
+</td>
+<td style="text-align:center;">
+0.289
+</td>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 9cm; min-width:9cm;; ">
+per member nonland asset (1000 Tk, in 1999)
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+0.369
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+3.537
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+6.963
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+13.143
+</td>
+<td style="text-align:center;width: 2.0cm; min-width:2.0cm;; ">
+205
+</td>
+<td style="text-align:center;">
+10.994
+</td>
+<td style="text-align:center;">
+14.995
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+812
+</td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<span style="font-style: italic;">Note: </span>
+</td>
+</tr>
+<tr>
+<td style="padding: 0; " colspan="100%">
+<sup></sup> Sample of direct offspring of household heads.
+</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div id="simple-did-regression-sample-descriptive-statistics-ag-nonag-contrasts" class="section level2">
+<h2>Simple DID, regression sample descriptive statistics, ag-nonag contrasts</h2>
 <details>
 <summary>
 Click here to see the code of simple DID.
@@ -17018,7 +18714,7 @@ Mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 6cm; min-width:6cm;; padding-left: 2em;" indentlevel="1">
-Agricultural HH
+Agricultural HH (combined)
 </td>
 <td style="text-align:center;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 2.25cm; min-width:2.25cm;; ">
 </td>
@@ -17211,7 +18907,7 @@ Mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 6cm; min-width:6cm;; padding-left: 2em;" indentlevel="1">
-Agricultural HH
+Agricultural HH (combined)
 </td>
 <td style="text-align:center;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 2.25cm; min-width:2.25cm;; ">
 </td>
@@ -38407,7 +40103,7 @@ Mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 6cm; min-width:6cm;; padding-left: 4em;" indentlevel="2">
-Agricultural HH
+Agricultural HH (combined)
 </td>
 <td style="text-align:center;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 2.25cm; min-width:2.25cm;; ">
 2.759
@@ -38817,7 +40513,7 @@ Mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 6cm; min-width:6cm;; padding-left: 4em;" indentlevel="2">
-Agricultural HH
+Agricultural HH (combined)
 </td>
 <td style="text-align:center;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 2.25cm; min-width:2.25cm;; ">
 0.616
@@ -39227,7 +40923,7 @@ Mean of treated in 2002
 </tr>
 <tr>
 <td style="text-align:right;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 6cm; min-width:6cm;; padding-left: 4em;" indentlevel="2">
-Agricultural HH
+Agricultural HH (combined)
 </td>
 <td style="text-align:center;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 2.25cm; min-width:2.25cm;; ">
 -0.059
@@ -39637,7 +41333,7 @@ Mean of treated in 1999
 </tr>
 <tr>
 <td style="text-align:right;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 6cm; min-width:6cm;; padding-left: 2em;" indentlevel="1">
-Agricultural HH
+Agricultural HH (combined)
 </td>
 <td style="text-align:center;color: black !important;background-color: rgba(135, 206, 250, 255) !important;width: 2.25cm; min-width:2.25cm;; ">
 0.503
@@ -46008,25 +47704,25 @@ sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735  0.1120669   -0.50     1.00
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.748
+Quantile = 2.756
 95% family-wise confidence level
  
 
 Linear Hypotheses:
                                 Estimate   lwr        upr       
-TotalValue == 0                  0.0006280 -0.0018147  0.0030707
-TotalDecimal == 0                0.0000805 -0.0007655  0.0009265
-hd.primaryTRUE == 0             -0.0965806 -0.2936891  0.1005279
-hd.secondaryTRUE == 0           -0.1217729 -0.4113027  0.1677568
-sp.primaryTRUE == 0             -0.0805788 -0.3137450  0.1525875
-sp.secondaryTRUE == 0           -0.1283986 -0.4129132  0.1561159
-agHH0TRUE == 0                  -0.0349765 -0.1912413  0.1212883
-TotalValue:agHH0TRUE == 0        0.0004918 -0.0009880  0.0019716
-TotalDecimal:agHH0TRUE == 0     -0.0003191 -0.0007522  0.0001140
-hd.primaryTRUE:agHH0TRUE == 0    0.0749344 -0.1651912  0.3150601
-hd.secondaryTRUE:agHH0TRUE == 0  0.1793737 -0.2245276  0.5832750
-sp.primaryTRUE:agHH0TRUE == 0   -0.1350227 -0.4554152  0.1853697
-sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735 -0.3640492  0.2519021
+TotalValue == 0                  0.0006280 -0.0018216  0.0030775
+TotalDecimal == 0                0.0000805 -0.0007679  0.0009289
+hd.primaryTRUE == 0             -0.0965806 -0.2942420  0.1010809
+hd.secondaryTRUE == 0           -0.1217729 -0.4121149  0.1685691
+sp.primaryTRUE == 0             -0.0805788 -0.3143991  0.1532416
+sp.secondaryTRUE == 0           -0.1283986 -0.4137113  0.1569141
+agHH0TRUE == 0                  -0.0349765 -0.1916796  0.1217266
+TotalValue:agHH0TRUE == 0        0.0004918 -0.0009921  0.0019757
+TotalDecimal:agHH0TRUE == 0     -0.0003191 -0.0007534  0.0001153
+hd.primaryTRUE:agHH0TRUE == 0    0.0749344 -0.1658648  0.3157337
+hd.secondaryTRUE:agHH0TRUE == 0  0.1793737 -0.2256607  0.5844080
+sp.primaryTRUE:agHH0TRUE == 0   -0.1350227 -0.4563140  0.1862685
+sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735 -0.3649132  0.2527661
 
     Fstat dof     pval
 1 1.03558   7 0.404842
@@ -46041,7 +47737,7 @@ Linear Hypotheses:
                                  Estimate Std. Error t value Pr(&gt;|t|)
 agHH0TRUE == 0                  -0.034977   0.056862   -0.62     0.98
 TotalValue:agHH0TRUE == 0        0.000492   0.000538    0.91     0.89
-TotalDecimal:agHH0TRUE == 0     -0.000319   0.000158   -2.02     0.20
+TotalDecimal:agHH0TRUE == 0     -0.000319   0.000158   -2.02     0.21
 hd.primaryTRUE:agHH0TRUE == 0    0.074934   0.087377    0.86     0.91
 hd.secondaryTRUE:agHH0TRUE == 0  0.179374   0.146972    1.22     0.71
 sp.primaryTRUE:agHH0TRUE == 0   -0.135023   0.116585   -1.16     0.75
@@ -46054,19 +47750,19 @@ sp.secondaryTRUE:agHH0TRUE == 0 -0.056074   0.112067   -0.50     0.99
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.616
+Quantile = 2.614
 95% family-wise confidence level
  
 
 Linear Hypotheses:
                                 Estimate   lwr        upr       
-agHH0TRUE == 0                  -0.0349765 -0.1837135  0.1137605
-TotalValue:agHH0TRUE == 0        0.0004918 -0.0009167  0.0019003
-TotalDecimal:agHH0TRUE == 0     -0.0003191 -0.0007313  0.0000932
-hd.primaryTRUE:agHH0TRUE == 0    0.0749344 -0.1536235  0.3034924
-hd.secondaryTRUE:agHH0TRUE == 0  0.1793737 -0.2050704  0.5638177
-sp.primaryTRUE:agHH0TRUE == 0   -0.1350227 -0.4399808  0.1699354
-sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735 -0.3492130  0.2370659
+agHH0TRUE == 0                  -0.0349765 -0.1835864  0.1136334
+TotalValue:agHH0TRUE == 0        0.0004918 -0.0009155  0.0018991
+TotalDecimal:agHH0TRUE == 0     -0.0003191 -0.0007310  0.0000928
+hd.primaryTRUE:agHH0TRUE == 0    0.0749344 -0.1534283  0.3032971
+hd.secondaryTRUE:agHH0TRUE == 0  0.1793737 -0.2047419  0.5634892
+sp.primaryTRUE:agHH0TRUE == 0   -0.1350227 -0.4397203  0.1696748
+sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735 -0.3489626  0.2368155
 
 
 t test of coefficients:
@@ -46118,7 +47814,7 @@ Linear Hypotheses:
 TotalValue == 0              0.0007864  0.0010206    0.77     0.96
 TotalDecimal == 0            0.0001490  0.0002706    0.55     0.99
 hd.primaryTRUE == 0         -0.1158381  0.0761224   -1.52     0.57
-hd.secondaryTRUE == 0       -0.1082501  0.0840169   -1.29     0.73
+hd.secondaryTRUE == 0       -0.1082501  0.0840169   -1.29     0.72
 sp.primaryTRUE == 0         -0.0897976  0.1181646   -0.76     0.97
 sp.secondaryTRUE == 0       -0.1997050  0.1444665   -1.38     0.66
 agHH0 == 0                  -0.0940207  0.0735961   -1.28     0.73
@@ -46136,25 +47832,25 @@ sp.secondaryTRUE:agHH0 == 0  0.0748473  0.1767188    0.42     1.00
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.742
+Quantile = 2.728
 95% family-wise confidence level
  
 
 Linear Hypotheses:
                             Estimate   lwr        upr       
-TotalValue == 0              0.0007864 -0.0020118  0.0035845
-TotalDecimal == 0            0.0001490 -0.0005929  0.0008910
-hd.primaryTRUE == 0         -0.1158381 -0.3245459  0.0928697
-hd.secondaryTRUE == 0       -0.1082501 -0.3386026  0.1221025
-sp.primaryTRUE == 0         -0.0897976 -0.4137740  0.2341789
-sp.secondaryTRUE == 0       -0.1997050 -0.5957944  0.1963844
-agHH0 == 0                  -0.0940207 -0.2958020  0.1077606
-TotalValue:agHH0 == 0        0.0000731 -0.0011036  0.0012497
-TotalDecimal:agHH0 == 0     -0.0003538 -0.0008527  0.0001451
-hd.primaryTRUE:agHH0 == 0    0.1098737 -0.1471978  0.3669452
-hd.secondaryTRUE:agHH0 == 0  0.1235836 -0.1587325  0.4058996
-sp.primaryTRUE:agHH0 == 0   -0.1349163 -0.6407997  0.3709671
-sp.secondaryTRUE:agHH0 == 0  0.0748473 -0.4096696  0.5593642
+TotalValue == 0              0.0007864 -0.0019976  0.0035704
+TotalDecimal == 0            0.0001490 -0.0005892  0.0008872
+hd.primaryTRUE == 0         -0.1158381 -0.3234891  0.0918130
+hd.secondaryTRUE == 0       -0.1082501 -0.3374363  0.1209361
+sp.primaryTRUE == 0         -0.0897976 -0.4121336  0.2325385
+sp.secondaryTRUE == 0       -0.1997050 -0.5937889  0.1943789
+agHH0 == 0                  -0.0940207 -0.2947803  0.1067390
+TotalValue:agHH0 == 0        0.0000731 -0.0010977  0.0012438
+TotalDecimal:agHH0 == 0     -0.0003538 -0.0008502  0.0001426
+hd.primaryTRUE:agHH0 == 0    0.1098737 -0.1458961  0.3656436
+hd.secondaryTRUE:agHH0 == 0  0.1235836 -0.1573031  0.4044702
+sp.primaryTRUE:agHH0 == 0   -0.1349163 -0.6382383  0.3684057
+sp.secondaryTRUE:agHH0 == 0  0.0748473 -0.4072164  0.5569110
 
     Fstat dof    pval
 1 1.66819   7 0.11414
@@ -46182,19 +47878,19 @@ sp.secondaryTRUE:agHH0 == 0  0.0748473  0.1767188    0.42     0.99
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.585
+Quantile = 2.576
 95% family-wise confidence level
  
 
 Linear Hypotheses:
                             Estimate   lwr        upr       
-agHH0 == 0                  -0.0940207 -0.2842744  0.0962331
-TotalValue:agHH0 == 0        0.0000731 -0.0010364  0.0011825
-TotalDecimal:agHH0 == 0     -0.0003538 -0.0008242  0.0001166
-hd.primaryTRUE:agHH0 == 0    0.1098737 -0.1325116  0.3522590
-hd.secondaryTRUE:agHH0 == 0  0.1235836 -0.1426041  0.3897712
-sp.primaryTRUE:agHH0 == 0   -0.1349163 -0.6118992  0.3420666
-sp.secondaryTRUE:agHH0 == 0  0.0748473 -0.3819897  0.5316843</code></pre>
+agHH0 == 0                  -0.0940207 -0.2835913  0.0955500
+TotalValue:agHH0 == 0        0.0000731 -0.0010324  0.0011785
+TotalDecimal:agHH0 == 0     -0.0003538 -0.0008226  0.0001149
+hd.primaryTRUE:agHH0 == 0    0.1098737 -0.1316412  0.3513887
+hd.secondaryTRUE:agHH0 == 0  0.1235836 -0.1416483  0.3888154
+sp.primaryTRUE:agHH0 == 0   -0.1349163 -0.6101865  0.3403539
+sp.secondaryTRUE:agHH0 == 0  0.0748473 -0.3803494  0.5300440</code></pre>
 </details>
 <details>
 <summary>
@@ -46758,15 +48454,15 @@ reatab[-seq(1, nrow(reatab), 4), &quot;Group&quot;] &lt;- &quot;&quot;
 #### LaTeX table
 ltb &lt;- latextab(as.matrix(reatab),
   hleft = c(&quot;\\scriptsize\\hfill&quot;, rep(&quot;\\scriptsize\\hfil$&quot;, ncol(reatab)-1)),
-  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
+  hcenter = c(2.5, 1, rep(1, ncol(reatab)-2)), 
   hright = c(&quot;&quot;, rep(&quot;$&quot;, ncol(reatab)-1)), 
   headercolor = NULL, delimiterline = NULL)
 ltb &lt;- gsub(&quot;Group|Quartile|Total&quot;, &quot;&quot;, ltb)
 ltb &lt;- c(
     ltb[1],
-    &quot;\\\\makebox[2cm]{Group} &amp; \\\\makebox[2.5cm]{Quartile} &amp; \\\\multicolumn{c}{9}{Reasons} &amp; \\\\makebox[1cm]{Total}\\\\\\\\&quot;, 
+    &quot;\\makebox[2.5cm]{Group} &amp; \\makebox[1cm]{Quartile} &amp; \\multicolumn{7}{c}{\\scriptsize Reasons} &amp; \\makebox[1cm]{Total}\\\\&quot;, 
     ltb[2], 
-    &quot;\\\\hline&quot;,
+    &quot;\\hline&quot;,
     ltb[-c(1:2)]
   )
 write.tablev(ltb, &quot;../save/reasons.tex&quot;, colnamestrue = F)
@@ -46783,10 +48479,9 @@ kt &lt;- kable(reatab, align = paste0(&quot;r&quot;, paste0(rep(&quot;c&quot;, n
   caption =   &quot;Reasons of not going to school by consumption quartile&quot;)
 kt &lt;- row_spec(kt, 0, align = paste0(rep(&quot;c&quot;, ncol(reatab)), collapse = &quot;&quot;), background = &quot;#ffcc99&quot;)
 kt &lt;- column_spec(kt, 1, width = &quot;4.0cm; min-width:4.0cm;&quot;)
-kt &lt;- column_spec(kt, 2, width = &quot;3.75cm; min-width:3.75cm;&quot;)
-kt &lt;- column_spec(kt, 3:10, width = &quot;2.25cm; min-width:2.25cm;&quot;)
+kt &lt;- column_spec(kt, 2:10, width = &quot;2.25cm; min-width:2.25cm;&quot;)
 ktReaPC4 &lt;- footnote(kt, 
-           general = &quot;Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years.&quot;
+           general = ReasonsMemo
            )
 
 ####  ag vs non-ag
@@ -46839,10 +48534,10 @@ reatab &lt;- data.frame(cbind(
   formatC(reatab[, -ncol(reatab)], digits = 2, format = &quot;f&quot;), total = reatab[, ncol(reatab)]))
 colnames(reatab)[-c(1, ncol(reatab))] &lt;- cn1
 reatab &lt;- cbind(&quot;HH type&quot; = repseq(c(&quot;Agricultural&quot;, &quot;Non-agricultural&quot;), 3), reatab)
-#### reorder rows: pack rows by group, Irregulars 1999 q1, q2, q3, q4, 
-####  Irregulars2002 q1, q2, q3, q4, etc.
+#### reorder rows: pack rows by group, Nonattendees 1999 ag, nonag, 
+####  Nonattendees 2002 ag, nonag, etc.
 rseq &lt;- seq(1, nrow(reatab), 3)
-rseq &lt;- c(rseq, rseq+1)
+rseq &lt;- c(rseq, rseq+1, rseq+2)
 reatab &lt;- reatab[rseq, ]
 cn00 &lt;- colnames(reatab)
 cn &lt;- paste0(toupper(substr(cn00, 1, 1)), substr(cn00, 2, 20))
@@ -46851,20 +48546,20 @@ cn &lt;- gsub(&quot;School.environ&quot;, &quot;\\\\begin{minipage}{1cm}\\\\hfil
 cn &lt;- gsub(&quot;NA.&quot;, &quot;NA&quot;, cn)
 colnames(reatab) &lt;- cn
 reatab &lt;- reatab[, c(2, 1, 3:ncol(reatab))]
-reatab[c(2, 4), 1] &lt;- &quot;&quot;
+reatab[c(2, 4, 6), 1] &lt;- &quot;&quot;
 
 #### LaTeX table
 ltb &lt;- latextab(as.matrix(reatab),
-  hleft = c(&quot;\\scriptsize\\hfill&quot;, rep(&quot;\\scriptsize\\hfil$&quot;, ncol(reatab)-1)),
-  hcenter = c(2, 2.5, rep(1, ncol(reatab)-2)), 
-  hright = c(&quot;&quot;, rep(&quot;$&quot;, ncol(reatab)-1)), 
+  hleft = c(&quot;\\scriptsize\\hfill&quot;, &quot;\\scriptsize\\hfil&quot;, rep(&quot;\\scriptsize\\hfil$&quot;, ncol(reatab)-2)),
+  hcenter = c(2.5, 2.5, rep(1, ncol(reatab)-2)), 
+  hright = c(&quot;&quot;, &quot;&quot;, rep(&quot;$&quot;, ncol(reatab)-2)), 
   headercolor = NULL, delimiterline = NULL)
 ltb &lt;- gsub(&quot;Group|HH type|Total&quot;, &quot;&quot;, ltb)
 ltb &lt;- c(
     ltb[1],
-    &quot;\\\\makebox[2cm]{Group} &amp; \\\\makebox[2.5cm]{HH type} &amp; \\\\multicolumn{c}{9}{Reasons} &amp; \\\\makebox[1cm]{Total}\\\\\\\\&quot;, 
+    &quot;\\makebox[2.5cm]{Group} &amp; \\makebox[2.5cm]{HH type} &amp; \\multicolumn{7}{c}{\\scriptsize Reasons} &amp; \\makebox[1cm]{Total}\\\\&quot;, 
     ltb[2], 
-    &quot;\\\\hline&quot;,
+    &quot;\\hline&quot;,
     ltb[-c(1:2)]
   )
 write.tablev(ltb, &quot;../save/reasons_ag.tex&quot;, colnamestrue = F)
@@ -46884,7 +48579,7 @@ kt &lt;- column_spec(kt, 1, width = &quot;3.75cm; min-width:3.75cm;&quot;)
 kt &lt;- column_spec(kt, 2, width = &quot;4.0cm; min-width:4.0cm;&quot;)
 kt &lt;- column_spec(kt, 3:10, width = &quot;2.25cm; min-width:2.25cm;&quot;)
 kt &lt;- footnote(kt, 
-           general = &quot;Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years.&quot;
+           general = ReasonsMemo
            )</code></pre>
 </details>
 <table style="NAborder-bottom: 0;">
@@ -46930,7 +48625,7 @@ Total
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 Non-attendees 1999
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 1
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -46961,7 +48656,7 @@ Non-attendees 1999
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 2
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -46992,7 +48687,7 @@ Non-attendees 1999
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 3
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47023,7 +48718,7 @@ Non-attendees 1999
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 4
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47055,7 +48750,7 @@ Non-attendees 1999
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 Non-attendees 2002
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 1
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47086,7 +48781,7 @@ Non-attendees 2002
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 2
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47117,7 +48812,7 @@ Non-attendees 2002
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 3
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47148,7 +48843,7 @@ Non-attendees 2002
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 4
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47180,7 +48875,7 @@ Non-attendees 2002
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 Dropouts 2002
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 1
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47211,7 +48906,7 @@ Dropouts 2002
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 2
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47242,7 +48937,7 @@ Dropouts 2002
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 3
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47273,7 +48968,7 @@ Dropouts 2002
 <tr>
 <td style="text-align:right;width: 4.0cm; min-width:4.0cm;; ">
 </td>
-<td style="text-align:center;width: 3.75cm; min-width:3.75cm;; ">
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
 4
 </td>
 <td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
@@ -47487,6 +49182,69 @@ Non-agricultural
 178
 </td>
 </tr>
+<tr>
+<td style="text-align:right;width: 3.75cm; min-width:3.75cm;; ">
+Dropouts 2002
+</td>
+<td style="text-align:center;width: 4.0cm; min-width:4.0cm;; ">
+Agricultural
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.49
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.00
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.03
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.00
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.01
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.01
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.46
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+68
+</td>
+</tr>
+<tr>
+<td style="text-align:right;width: 3.75cm; min-width:3.75cm;; ">
+</td>
+<td style="text-align:center;width: 4.0cm; min-width:4.0cm;; ">
+Non-agricultural
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.30
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.01
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.03
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.05
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.01
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.02
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+0.58
+</td>
+<td style="text-align:center;width: 2.25cm; min-width:2.25cm;; ">
+101
+</td>
+</tr>
 </tbody>
 <tfoot>
 <tr>
@@ -47535,18 +49293,21 @@ for (i in 1:2) for (j in 1:5)
   set(agp, i, j, value = formatC((as.numeric(agp[[j]][[i]])/agp[[6]][[i]])*100, digits = 2, format = &quot;f&quot;))
 agp &lt;- cbind(Quartile = c(&quot;Non agricultural households&quot;, &quot;Agricultural households&quot;, &quot;Total&quot;), agp)
 #### LaTeX table
-write.tablev(latextab(as.matrix(agp), 
+ltb &lt;- latextab(as.matrix(agp), 
   hleft = c(&quot;\\scriptsize\\hfill&quot;, rep(&quot;\\scriptsize\\hfil$&quot;, ncol(agp)-1)), 
   hcenter = c(3.5, rep(1.5, ncol(agp)-1)), 
   hright = c(&quot;&quot;, rep(&quot;$&quot;, ncol(agp)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  &quot;../save/tab_agpc4.tex&quot;, colnamestrue = F)
-write.tablev(latextab(as.matrix(agp), 
-  hleft = c(&quot;\\scriptsize\\hfill&quot;, rep(&quot;\\scriptsize\\hfil$&quot;, ncol(agp)-1)), 
-  hcenter = c(3.5, rep(1.5, ncol(agp)-1)), 
-  hright = c(&quot;&quot;, rep(&quot;$&quot;, ncol(agp)-1)), 
-  headercolor = NULL, delimiterline = NULL), 
-  &quot;../draft/Tables/tab_agpc4.tex&quot;, colnamestrue = F)
+  headercolor = NULL, delimiterline = NULL)
+ltb &lt;- gsub(&quot;Quartiles|Total&quot;, &quot;&quot;, ltb)
+ltb &lt;- c(
+    ltb[1],
+    &quot;\\makebox[2cm]{HH type} &amp;\\multicolumn{5}{c}{\\scriptsize Quartile} &amp; \\makebox[1cm]{Total}\\\\&quot;, 
+    ltb[2], 
+    &quot;\\hline&quot;,
+    ltb[-c(1:2)]
+  )
+write.tablev(ltb, &quot;../save/tab_agpc4.tex&quot;, colnamestrue = F)
+write.tablev(ltb, &quot;../draft/Tables/tab_agpc4.tex&quot;, colnamestrue = F)
 #### HTML table
 kt &lt;- kable(agp, align = paste0(&quot;r&quot;, paste0(rep(&quot;c&quot;, ncol(agp)-1), collapse = &quot;&quot;)), 
   caption = &quot;Consumption quartiles&quot;)

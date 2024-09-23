@@ -35,6 +35,7 @@ SEMemoForSelectedResultsNoStar <-
   " Standard errors in the parentheses are clusterd at thana level with a correction for small number of clusters using bias reduced linearization (Satterthwaite correction). $P$ values in percentages are shown in braces. 95\\% confidence intervals are shown in square brackets. "
 SEMemoForSelectedResults <- 
   paste(SEMemoForSelectedResultsNoStar, " $*$, $**$, $***$ indicate significance levels at 10\\%, 5\\%, 1\\% under BRL cluster robust standard errors, respectively.")
+ReasonsMemo <- "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years."
 SpecMemo1Placebo <- gsub("2002", "2006", SpecMemo1)
 SpecMemo1Placebohtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemo1Placebo)
 SpecMemo1Placebohtml <- paste(
