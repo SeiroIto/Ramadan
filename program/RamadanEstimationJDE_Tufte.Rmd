@@ -540,7 +540,7 @@ qsave(RosRd1, "../save/OriginalRd1RosterFileWithUniquid.qs")
 
 
 <details><summary>Click here to see the code of sample descriptive statistics.</summary>
-```{r sample destat, echo = F, warning = F}
+```{r sample destat, echo = T, warning = F}
 yzw <- readRDS("../save/DataForJHR.rds")
 zEm.1999 <- qread("../save/zEm1999.qs")
 zE = copy(yzw[grepl("111|110", exist), ])
@@ -548,8 +548,11 @@ samples <- c("main", "placebo")
 z23 <- c("z2", "z3")
 zsobj <- c("zmobj", "zpobj")
 zsobj2 <- c("zmobj2", "zpobj2")
+empeeobj <- c("Mobj", "Pobj")
 zpobj <- c("zEp.2002", "zSp.2002", "zEp.1999", "zSp.1999")[c(1, 3)]
 zmobj <- c("zEm.1999", "zSm.1999")[1]
+Mobj <- "Main sample, 1999 cohort"
+Pobj <- c("Placebo sample, 2002 cohort", "Placebo sample, 1999 cohort")
 zmobj2 <- c("zEm", "zSm")
 zpobj2 <- c("zEp2", "zSp2", "zEp9", "zSp9")[c(1, 3)]
 yrXs <- list(c("yr2", "yr2"), c("yr3", "yr3", "yr3", "yr3"))
@@ -577,6 +580,7 @@ library(qs)
 zi00N <- qread("../save/DID2024_N_MainResults.qs")
 for (ii in 1:length(samples)) {
   zSobj <- get(zsobj[ii]) # zmobj or zpobj
+  mpobj <- get(empeeobj[ii])
   yrxs <- yrXs[[ii]]
   dst0 <- vector("list", length = length(10:12)) # s
   dst <- vector("list", length = length(zSobj)) # jj
@@ -697,7 +701,7 @@ for (ii in 1:length(samples)) {
      ktb <- data.table(dst.print)
      kt <- kable(ktb, align = 
        paste0("r", paste0(rep("c", ncol(ktb)-1), collapse = "")), 
-       caption = paste("Descriptive statistics:", zSobj[jj]))
+       caption = paste("Descriptive statistics:", mpobj[jj]))
      kt <- column_spec(kt, 1, width = "9cm; min-width:9cm;")
      kt <- column_spec(kt, 2:6, width = "2.0cm; min-width:2.0cm;")
      kt <- kableExtra::footnote(kt, general = "Sample of direct offspring of household heads.")
@@ -752,7 +756,7 @@ lapply(1:length(lmlist), function(i) dideasy(lmlist[[i]], regnum = i-1))
 ```
 </details>
 
-Given that the data is collected with program impacts in mind, we expect the program indicator to be correlated with school enrollment and will need to add the estimating equation as a covariate. Then, we need to know if `program` is distributed as good as random between ag and nonag. `program` is defined in `Construct3RoundPanelAndClean.rnw` with grepl("FF|stipe|RRMP|VGD", anyprog). The table (ref:SDiffTable) shows <Blue>`programs` are, indeed, as good as randomly distributed between ag and non-ag HHs</Blue> with the large $p$ values. 
+Given that the data is collected with program impacts in mind, we expect the program indicator to be correlated with school enrollment and will need to add to the estimating equation as a covariate. Then, we need to know if `program` is distributed as good as random between ag and nonag. `program` is defined in `Construct3RoundPanelAndClean.rnw` with grepl("FF|stipe|RRMP|VGD", anyprog). The table (ref:SDiffTable) shows <Blue>`programs` are, indeed, as good as randomly distributed between ag and non-ag HHs</Blue> with the large $p$ values. 
 
 <details><summary>Click here to see the code of ag vs. nonag differences.</summary>
 
@@ -1286,7 +1290,7 @@ Flood affected thanas are \gobblepars
 unique(zEm.1999[flooded>0,.(thana)])
 ```
 
-If we use `"flooded thana name".yr2` as a covariate, flood affected thana (`r unique(zEm.1999[flooded>0, thana])`) observations will be dropped, because they are perfectly collinear with `flooded.yr2`. So we will not be able to use `"thana names".yr2` in flood regressions. This also means that flood regression results are different from main results on the fact that they control for `flooded.agHH.yr2` while the main results do not, and thana fixed trends are grouped as flooded.yr2 for flooded thanas (and unflooed thana's thana fixed trends are subsumed in the intercept). This is a limitation but the specification is sufficient to verify if flood is correlated with main impact estimates. \gobblepars
+If we use `"flooded thana name".yr2` as a covariate for thana fixed effects, flood affected thana (`r unique(zEm.1999[flooded>0, thana])`) observations will be dropped, because they are perfectly collinear with `flooded.yr2`. So we will not be able to use `"thana names".yr2` thana fixed effects in flood regressions. This also means that flood regression results are different from main results on the fact that they control for `flooded.agHH.yr2` while the main results do not, and thana fixed trends are grouped as flooded.yr2 for flooded thanas (and unflooed thana's thana fixed trends are subsumed in the intercept). This is a limitation but the specification is sufficient to verify if flood is correlated with main impact estimates. \gobblepars
 
 <details><summary>Click here to see the R script for flood regressor preparation.</summary>
 
@@ -2403,9 +2407,7 @@ qsave(Enr, "../save/GenderGradeDaysAbsentTabulatedEnr2024.qs")
 
 ## Main estimation results
 
-Main results in text. For full results, see <a name = "ResultsTableMain">[the full table in appendix.](#FullResultsMain)</a>
-
-Agricultural household definition is based on `r Aghh.defs[3]`(`r aghh.defs[3]`)  
+Main results in text. For full results, see <a name = "ResultsTableMain">[the full table in appendix.](#FullResultsMain)</a> Agricultural household definition is based on `r Aghh.defs[3]`(`r aghh.defs[3]`)  
 
 <details><summary>Click here to see the code of showing main results.</summary>
 ```{r show main table, echo = T, eval = T, warning = F}
@@ -2629,14 +2631,12 @@ kt <- footnote(kt,
 kt
 ```
 
-See [Appendix full table](#FullResultsMain) for the full results.   
-
 * We use head's reply for the agricultural household definition.  
-   * This follows from the questionnaire of original IFPRI data set.  
+   * This follows the questionnaire of original IFPRI data set.  
    * The questionnaire asks the household head on the income generating activities and specifies the contents of agricultural activies.  
 * In appendix, we show that impacts under other agHH definitions. The impact estimates based on head's reply tend to have smaller SEs. This is due to possible measurement errors in the occupation based definition or in the income based definition.  
    * Head's reply based and income based definitions have a high correlation. Occupation based definition have lower correlations with the other two.  
-* Impacts are strongest among the boys.  
+* <Blue>Impacts are strongest among the boys.</Blues>  
 * Impacts on girls are negative, but the size is small and estimates are noisy.  
 * Note: Corr(lowMeanY, highMeanY)=.193 using regression data for boys, nuclear, 10 - 18. So the estimates on these covariates are not suffering from biases arising from multicollinearity.  
 
@@ -2861,15 +2861,16 @@ kt <- footnote(kt,
 kt
 ```
 
-* Results show that main effects are found among secondary school goers, mostly boys.  
+* Results show that <Blue>the effects are mainly found among secondary school goers, mostly boys.</Blue>  
 * Primary school aged children may be too young to get affected.  
 * Looking from a different subsample, results by different age lowerbound in the appendix show impacts to be larger among the sample with older boys.  
 
 ## Placebo estimation results
 
-* Placebo test estimates non-existing impacts between 2002-2006.  
-   * 1999 cohort: 10-18 in 1999. 13-21 in 2002.  
-   * 2002 cohort: 10-18 in 2002.  
+Placebo test estimates non-existing impacts between 2002-2006.  
+
+ * 1999 cohort: 10-18 in 1999. 13-21 in 2002.  
+ * 2002 cohort: 10-18 in 2002.  
 
 <details><summary>Click here to see the code of showing placebo results.</summary>
 ```{r show placebo table, eval = T, warning = F}
@@ -3179,7 +3180,7 @@ whatever <- dev.off()
 g
 ```
 
-* Verdict: No impacts found in placebo samples.  
+* Verdict: <Blue>No impacts found in placebo samples.</Blue>  
 * Placebo estimation shows that, although $p$ values are around 7-10%, boys from the agricultural households have higher dropout rates when there are elder sisters.  
 * This is only true for cohorts of 2002 but not of 1999. It suggests that this effect may be at work only for the ages between 10-18.  
 * To better satisfy the common trend assumption, one should use the interaction terms between agHH and number of elder sisters.  
@@ -3553,10 +3554,10 @@ kt
 
 * Verdict: Main estimates do not change when we control for Non-Muslims or flooded areas.  
 * Neither non-Muslim interaction terms nor flood interaction terms have small $p$ values. 
-* There is no evidence that the main estimates are due to fasting or festivities related to Ramadan.  
-* There is no evidence that the main estimates are due to damages related to flood.  
+* There is <Blue>no evidence that the main estimates are due to fasting or festivities related to Ramadan.</Blue>  
+* There is <Blue>no evidence that the main estimates are due to damages related to flood.</Blue>  
 * Non-Muslim boys seem to reduce enrollment rates after the Ramadan-harvest overlap ends (small net negative estimates on non-Muslim * 2002 and non-Muslim * agHH * 2002) when they are not affected by festivity or fasting related confounders. Whatever the negative confounder is at work, it affects less on Muslims and more on non-Muslims. But the estimates are imprecise and nothing conclusive can be drawn.  
-* Girls in flooded areas decrease enrollment rates in non-agricultural househlds (they increase in agricultural households although the $p$ values are not small).  
+* Girls of non-agricultural households in flooded areas decrease enrollment rates (they increase in agricultural households although the $p$ values are not small).  
 
 ## Other schooling outcomes: Grade progression and days absent per month
 
@@ -3998,16 +3999,13 @@ kt
 ```
 
 * Grade progreesion and days absent impacts are consistent with main results.  
-* Grade progression impact estimates are negative. Exam-harvest overlap delays progression by .46 years (`r round((c(.46))*12, 2)` months).   
+* <Blue>Grade progression impact estimates are negative.</Blue> Exam-harvest overlap delays progression by .46 years (`r round((c(.46))*12, 2)` months).   
 * One year impact: As the calendar was favorable in 1999-2001, we consider these estimates as a one year impact because the negative effects were realised only in the academic year of 2002 which were captured in the survey in 2003.   
-* What this means: Even when the children of agricultural households are not dropping out of school, at least a quarter of them lag behind in one grade progression relative to the children of non-agricultural households.  
+* What this means: <Blue>Even when the children of agricultural households are not dropping out of school, at least a quarter of them lag behind in grade progression</Blue> relative to the children of non-agricultural households.  
 * Point estimates are larger in magnitude for boys (see [Appendix table](#NumGradeDaysAbsentResults)).  
-* Absence increases for about .68-.98 day per month.  
-* A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors.  
-* Cross sectional estimates in 2003 (using enrollers of 1999 and 2002) show a monthly .70 - .83 day increase for children of agricultural households. This reflects that the survey asks days absent of June - August of 2003, which coincide with July-August planting period.  
-* In contrast to this, cross sectional estimates in 2000 (using enrollers of 1999 and 2002) show a zero increase for children of agricultural households. In 1999, children from agricultural households benefited from the exam preponement.  
-* While we do not have information to support the claim, it is possible that these children of agricultural households who progressed to the next grade may have opted not to work in the field during the planting period of 2000.   
-
+* <Blue>Absence impact estimates are noisy</Blue> at best. 
+* They increase about .56-.82 day per month by panel estimates. A monthly 1.5 - 2.9 day increase in cross sectional estimates in 2000 (using enrollers of 1999 and 2002), .54 - .62 day increase in cross sectional estimates in 2003 (using enrollers of 1999 and 2002).  
+* A possible reason for the small magnitude on days absent is attenuation. This variable reports a three month recall, so the interview dates for some households may be off harvesting periods, therefore it may contain measurement errors. The survey asks about the days absent of June - August of respective years, which coincide with July-August planting period.  
 
 
 
