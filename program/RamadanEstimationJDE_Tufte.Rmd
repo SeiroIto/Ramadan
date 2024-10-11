@@ -74,8 +74,11 @@ link-citations: yes
 ---
 
 ```{css, echo=F}
-Blue {
+DBlue {
   color: dodgerblue;
+}
+Blue {
+  color: blue;
 }
 .SeiroBenign {
   background-color: #FFEBCD;
@@ -221,6 +224,21 @@ table(zY[, .(survey, agHH = agHH0>0)])
 </details>
 
 In the original sample, `exist`^[Availability of each observations across survey rounds. A value of 110 indicates that this individual is observed in rd 1 and 2 but attrited in 3.] is either 001, 110, 111. We drop the observations of 001 as they do not form a panel. 
+
+Definition of `agHH' is created in `Create2RoundPanel.rnw`. `e00` is individual level data with member occupation and income source. 
+
+```
+# ocagHH: Any member of HH reports agri as one's occupation
+z <- cbind(z, ocagHH = z[, "hh"] %in% unique(e00[grepl("Ag|arm|enan", occup), hh]))
+sum(ii1 <- whichgrep("Agri|Tena", z[, "isource"]) & y2k )
+sum(ii2 <- whichgrep("Agri|enan|farm", z[, "occup"]) & y2k) # tenant and own farmers as occupation
+sum(ii3 <- whichgrep("OwnL|Tena", z[, "isource"]) & y2k) # a subset of ii1, owners and cultivators
+sum(iiL <- whichgrep("Agri.*day", z[, "occup"]) & y2k)
+z <- cbind(z, hdagHH = z[, "hh"] %in% z[(ii1|ii2|ii3) & y2k & hd, "hh"])
+z <- cbind(z, isagHH = z[, "hh"] %in% z[ii1 & y2k, "hh"])
+```
+
+
 
 ## Create demeaned dummies and their interaction terms
 
@@ -577,7 +595,7 @@ varcompare2 <- c("age", "yield", "UDOldSibF", "UDOldSibM") #"OldAgSibF", "OldAgS
 varcompare3 <- c("pclandDec", "pcnlasset1000")
 boxsize <- .85
 library(qs)
-zi00N <- qread("../save/DID2024_N_MainResults.qs")
+zi00N <- qread("../save/DID2024_N_MainResults_old.qs")
 for (ii in 1:length(samples)) {
   zSobj <- get(zsobj[ii]) # zmobj or zpobj
   mpobj <- get(empeeobj[ii])
@@ -724,26 +742,29 @@ ktzEp.2002
 ## Simple DID, regression sample descriptive statistics, ag-nonag contrasts
 
 <details><summary>Click here to see the code of simple DID.</summary>
-```{r plain DID}
+```{r simple DID}
 library(clubSandwich)
 Zm <- qread("../save/zEm1999.qs")
-zm <- Zm[, .(survey, thana, hh, uniquid, agHH0, isagHH, 
+zm <- Zm[, .(survey, thana, hh, uniquid, hdagHH, isagHH, 
   sd, AgeIn1999, AgeIn2006, schoolp, program, anyprog)]
-zm[, aghh := as.integer(agHH0>0)]
+zm[, aghh := as.integer(hdagHH>0)]
 zm[, y1999 := as.integer(survey==1999)]
-zm[, FFWProgram := as.integer(grepl("FFW", anyprog))]
-zm[, NonFFWProgram := as.integer(!is.na(anyprog) & !grepl("FFW|non-m", anyprog))]
+zm[, StipendProgram := as.integer(grepl("stip", anyprog))]
+#### In 2002, progam = StipendProgram except for 6 cases, 
+#### so they are synonymous in 2002 but not in 1999. Need to use "program".
+#### Changes in program: Even among 9-12 years (most likely enrollers), 
+#### 1/2 change their recepient status between 1999 and 2002
+cat("Stipend program recepients amonng 9-12 in 1999:\n")
+addmargins(table(zm[uniquid %in% 
+  uniquid[AgeIn1999 >= 9 & AgeIn1999 <= 12], 
+  .(aghh, st = paste0(StipendProgram, collapse = "")), by = uniquid][, .(aghh, st)]))
 lm0 <- lm(schoolp ~ aghh*y1999, 
   data = zm[survey < 2006 & 10 <= AgeIn1999 & AgeIn1999 <= maxAge, ])
 lm1 <- lm(schoolp ~ aghh*y1999+program, 
   data = zm[survey < 2006 & 10 <= AgeIn1999 & AgeIn1999 <= maxAge, ])
-lm2 <- lm(schoolp ~ aghh*y1999+anyprog, 
-  data = zm[survey < 2006 & 10 <= AgeIn1999 & AgeIn1999 <= maxAge, ])
-lm3 <- lm(schoolp ~ aghh*y1999+FFWProgram+program, 
-  data = zm[survey < 2006 & 10 <= AgeIn1999 & AgeIn1999 <= maxAge, ])
 clusterNum0 <- zm[survey < 2006 & 10 <= AgeIn1999 & AgeIn1999 <= maxAge, thana]
 clusterNum0 <- as.numeric(factor(asc(clusterNum0)))
-clusterNum3 <- clusterNum2 <- clusterNum1 <- clusterNum0
+clusterNum2 <- clusterNum1 <- clusterNum0
 dideasy <- function(x, regnum) {
   # Get CIs of lm obj using the cluster variable in global environment
   clnum <- get(paste0("clusterNum", regnum), envir = globalenv())
@@ -751,7 +772,7 @@ dideasy <- function(x, regnum) {
   return(clubSandwich::conf_int(x, vcov = "CR2", level = 0.95, 
     test = "Satterthwaite", cluster = clnum, coefs = "All", p_values = T))
 }
-lmlist <- list(lm0, lm1, lm2, lm3)
+lmlist <- list(lm0, lm1)
 lapply(1:length(lmlist), function(i) dideasy(lmlist[[i]], regnum = i-1)) 
 ```
 </details>
@@ -1184,12 +1205,18 @@ zEm.1999[, NonFFWProgram := as.integer(!is.na(anyprog) & !grepl("FFW|non-m", any
 Regressors for main 2024 (fewer number of specifications). 
 ```{r Regressors for main 2024, echo = T, results = 'hide'}
 source("../program/RegressorPieces.R")
+#### Why we use regressorsM2024Sep24 instead of regressorsM2024Feb23
+#### program should use "prog" piece (program) because non-stipend programs 
+#### mostly disappear after 1999, and stipend program recepients vary 
+#### a lot between years. program variable captures changes in stipend 
+#### program recipients and disappearance of non-stipend programs. 
+#### By using program and not its components, we stay agnostic about 
+#### selecting into/out of programs.
 regressorsM2024Feb29 <- 
   c("^\\(Interce", 
     paste(indivonlyage, yield, weather.variables1, StipendProg, area2, sep = "|"),
     paste(indivNoAgeNoAgHHsib2, hdedunoagHH2, spedunoagHH2, hygieneyr2, sep = "|"),
     paste(indivnoagesib2, hdeduonly2, speduonly2, hygiene2, sep = "|"))
-regressorsM2024 <- 
 regressorsM2024Feb28 <- 
   c("^\\(Interce", 
     paste(indivonlyage, yield, weather.variables1, StipendProg, area2, sep = "|"),
@@ -1209,6 +1236,11 @@ regressorsM2024Apr10 <-
   c("^\\(Interce", 
     paste(indivonlyage, yield, weather.variables1, OnlyStipendProg, area2, sep = "|"),
     paste(indivnoagesib2, hdedunoagHH2, spedunoagHH2, hygiene2, sep = "|"))
+regressorsM2024 <- 
+  regressorsM2024Sep24 <- 
+  c("^\\(Interce", 
+    paste(indivonlyage, yield, weather.variables1, prog, area2, sep = "|"),
+    paste(indivnoagesib2, hdedunoagHH2, spedunoagHH2, hygiene2, sep = "|"))
 regressorsP2024Feb23 <- 
   c("^\\(Interce", 
     paste(indivonlyage, yield, weather.variables1, StipendProg, sep = "|"),
@@ -1222,6 +1254,11 @@ regressorsP2024Feb24 <-
 regressorsP2024Apr10 <- 
   c("^\\(Interce", 
     paste(indivonlyage, yield, weather.variables1, OnlyStipendProg, area3, sep = "|"),
+    paste(indivnoagesib3, hdedunoagHH3, spedunoagHH3, hygiene3, sep = "|"))
+regressorsP2024 <- 
+regressorsP2024Sep24 <- 
+  c("^\\(Interce", 
+    paste(indivonlyage, yield, weather.variables1, prog, area3, sep = "|"),
     paste(indivnoagesib3, hdedunoagHH3, spedunoagHH3, hygiene3, sep = "|"))
 ```
 
@@ -1387,6 +1424,13 @@ We take a first-difference $t-(t-1)$ to get^[A programming note. If taking a fir
 \Delta y_{it}=a_{2}+bD_{i}+\bfbeta'\Delta\bfx_{it}+\Delta e_{it}.
 \end{equation*}
 
+## Standard errors
+
+We need to cluster the standard errors to account for unobservable correlations within a cluster.  Following the conventional wisdom, we cluster at the highest level of cluster sampling [@AbadieAtheyImbensWooldridge2022], which is Thana in our data.  
+
+For inference of linear hypotheses, we use <span style='color:blue; font-size:100%; font-weight:600'> [glht](https://search.r-project.org/CRAN/refmans/multcomp/html/glht.html)  </span> of <Blue><a href='https://cran.r-project.org/web/packages/multcomp/index.html'>multcomp package</a></Blue>.  
+
+
 ## Main and placebo estimation
 
 Results are stored in a list of following layers: [[ii]][[jj]][[dd]][[j]][[ge]][[m]][[s]][[k]]  
@@ -1407,12 +1451,12 @@ Estimation steps:
 
 Placebo estimation tests a non-existing 2002-2006 shock on the outcomes. To align with the main estimation, we primarily rely on 2002 cohort of 10-18 years old in 2002. In addition, we also use 1999 cohort of 13-21 years old in 2002. Both cohorts show similar results, as there is a significant sample overlap between them.  
 
-## Standard errors
 
-We need to cluster the standard errors to account for unobservable correlations within a cluster.  Following the conventional wisdom, we cluster at the highest level of cluster sampling [@AbadieAtheyImbensWooldridge2022], which is Thana in our data.  
 
-For inference of linear hypotheses, we use <span style='color:blue; font-size:100%; font-weight:600'> [glht](https://search.r-project.org/CRAN/refmans/multcomp/html/glht.html)  </span> of <Blue><a href='https://cran.r-project.org/web/packages/multcomp/index.html'>multcomp package</a></Blue>.  
-
+<details><summary>Click here to see the R script of main and placebo estimation.</summary>
+```{r main and placebo gender BRL 2024, file = "../program/Estimation_MainPlacebo.R", eval = T, echo = T, results = 'hide', warning = F, cache = F}
+```
+</details>
 
 <details><summary>Click here to see the R script of main and placebo estimation.</summary>
 ```{r read 2024 main and JHR main results, eval = T, warning = F}
@@ -1455,12 +1499,7 @@ CovariatesCommon <- intersect(prevcovariates, currcovariates)
 CovariatesOnlyInPrev <- prevcovariates[!prevcovariates %in% currcovariates]
 CovariatesOnlyInCurr <- currcovariates[!currcovariates %in% prevcovariates]
 ```
-</details>
 
-<details><summary>Click here to see the R script of main and placebo estimation.</summary>
-```{r main and placebo gender BRL 2024, file = "../program/Estimation_MainPlacebo.R", eval = F, echo = T, results = 'hide', warning = F, cache = F}
-```
-</details>
 
 <!-- Results of 10 - 18, nuclear, boys and girls. Compare with previous results. Previous results also include sex&#42;agHH&#42;yr in specifications 2 to 7. So specification 1 for both estimation and new, spec 4 and previous spec 7 are comparable. -->
 
@@ -1686,6 +1725,7 @@ for (rrr in c("", "j")) {
 ####    ,  colnamestrue = F)
 }
 ```
+</details>
 
 ## Age group wise
 
@@ -5148,7 +5188,7 @@ kt <- footnote(kt,
 kt
 ```
 
-```{r show days absent results, eval = F}
+```{r show days absent results, echo = F, eval = F}
 ####resultsG[[ii]][[jj]][[en]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 ####resultsD[[ii]][[jj]][[s]][[j]][[ge]][[m]][[clnum]][[k]]
 ii <- jj <- en <- s <- 1
@@ -5786,7 +5826,7 @@ TabAttrit <- latextab(as.matrix(matthd),
   separatingcoltitle = c("\\textsf{Descriptive statistics}", "\\textsf{OLS estimates}"),
   addsubcoltitlehere = T)
 write.tablev(TabAttrit,  
-  "../save/AttritionEstimation.tex"
+  "../save/App_AttritionEstimation.tex"
   , colnamestrue = F)
 #### HTML table
 for (m in c(1, 3)) {
@@ -5851,7 +5891,7 @@ Overall, <Blue>agricultural households are poorer, and nonattending children cla
 ```{r reasons, warning = F}
 z <- readRDS("../save/zFm1999.rds")
 z <- qread("../save/zEm1999.qs")
- zi00N <- qread("../save/DID2024_N_MainResults.qs")
+ zi00N <- qread("../save/DID2024_N_MainResults_old.qs")
  ii <- jj <- s <- 1
  j <- clnum <- 2
  m <- ge <- 3
@@ -6132,8 +6172,8 @@ zE = copy(yzw[grepl("111|110", exist), ])
 iiid <- unique(zE[AgeIn1999 <= 18, uniquid])
 z1 <- zE[uniquid %in% iiid & survey != 2006 & sd == 1, ]
 #### enrollment rates of cohort 1999, exist sample for main estimation
-z1[, .(Enroll = mean(schoolp, na.rm = T), N = .N), by = .(AgeIn1999, agHH0>0)][order(AgeIn1999, agHH0), ]
-er1 <- addmargins(addmargins(table(z1[agHH0>0,.(survey, schoolp)]), 1, sum), 2, sum)
+z1[, .(Enroll = mean(schoolp, na.rm = T), N = .N), 
+  by = .(AgeIn1999, agHH0>0)][order(AgeIn1999, agHH0), ]
 pathsource00 <- paste0(pathsource, "/ffe/2000/Data/HouseholdData/STATA/")
 fn <- list.files(pathsource00)
 fn0 <- list.files(pathsource00, full.names = T)
