@@ -36,11 +36,13 @@ SEMemoForSelectedResultsNoStar <-
 SEMemoForSelectedResults <- 
   paste(SEMemoForSelectedResultsNoStar, " $*$, $**$, $***$ indicate significance levels at 10\\%, 5\\%, 1\\% under BRL cluster robust standard errors, respectively.")
 ReasonsMemo <- "Sample of direct offspring of household heads. Observations are children who are not attending school in each year. Dropouts are children who was attending school in 1999 and have disconitnued by 2002. Nonattendees are all children who are not attending school in respective years."
+MainSampleMemo <- "Main data are complete panel of 10-18 years old in 1999."
+PlaceboSampleMemo <- "Placebo 1999 data are complete panel of 13-21 years old in 2002. Placebo 2002 data are complete panel of 10-18 years old in 2002. Panels under 2002 cohort estimate placebo impacts on the cohort of 10-18 years old in 2002. Panels under 1999 cohort estimate placebo impacts on the cohort of 10-18 years old in 1999 (13-21 in 2002)."
+MainPlaceboSampleMemo <- paste(MainSampleMemo, PlaceboSampleMemo, 
+"The coefficients are for agricultural HH $\times$ year 2002 for main data and agricultural HH $\times$ year 2006 for placebo 2002 and placebo 1999 data.")
 SpecMemo1Placebo <- gsub("2002", "2006", SpecMemo1)
 SpecMemo1Placebohtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemo1Placebo)
-SpecMemo1Placebohtml <- paste(
-  "Panels under 2002 cohort estimate placebo impacts on the cohort of 10-18 years old in 2002. Panels under 1999 cohort estimate placebo impacts on the cohort of 10-18 years old in 1999 (13-21 in 2002).", SpecMemo1Placebohtml
-  )
+SpecMemo1Placebohtml <- paste(PlaceboSampleMemo, SpecMemo1Placebohtml)
 SpecMemo1html <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemo1)
 SpecMemoAgewisehtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemoAgewise)
 SpecMemoAgeGroupwisehtml <- gsub("\\\\textsf\\{(.*?)\\}", "\\1", SpecMemoAgeGroupwise)

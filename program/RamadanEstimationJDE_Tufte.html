@@ -285,6 +285,8 @@ MathJax.Hub.Config({
       bfalpha: "{\\boldsymbol{\\alpha}}",
       bfbeta: "{\\boldsymbol{\\beta}}",
       bfgamma: "{\\boldsymbol{\\gamma}}",
+      cov: "{\\mbox{cov}}",
+      corr: "{\\mbox{corr}}",
       st: "{\\mbox{s.t.}}"
     }
   }
@@ -352,7 +354,7 @@ margin-left: 2em;
 
 <h1 class="title toc-ignore">Ramadan estimation</h1>
 <h4 class="author">Seiro Ito</h4>
-<h4 class="date">2024年09月24日 14:02</h4>
+<h4 class="date">2024年10月23日 02:43</h4>
 
 
 <div id="TOC">
@@ -523,6 +525,15 @@ survey FALSE TRUE
   2006   166  251</code></pre>
 </details>
 <p>In the original sample, <code>exist</code><label for="tufte-sn-1" class="margin-toggle sidenote-number">1</label><input type="checkbox" id="tufte-sn-1" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">1</span> Availability of each observations across survey rounds. A value of 110 indicates that this individual is observed in rd 1 and 2 but attrited in 3.</span> is either 001, 110, 111. We drop the observations of 001 as they do not form a panel.</p>
+<p>Definition of <code>agHH&#39; is created in</code>Create2RoundPanel.rnw<code>.</code>e00` is individual level data with member occupation and income source.</p>
+<pre><code>#### ocagHH: Any member of HH reports agri as one&#39;s occupation
+z &lt;- cbind(z, ocagHH = z[, &quot;hh&quot;] %in% unique(e00[grepl(&quot;Ag|arm|enan&quot;, occup), hh]))
+sum(ii1 &lt;- whichgrep(&quot;Agri|Tena&quot;, z[, &quot;isource&quot;]) &amp; y2k )
+sum(ii2 &lt;- whichgrep(&quot;Agri|enan|farm&quot;, z[, &quot;occup&quot;]) &amp; y2k) # tenant and own farmers as occupation
+sum(ii3 &lt;- whichgrep(&quot;OwnL|Tena&quot;, z[, &quot;isource&quot;]) &amp; y2k) # a subset of ii1, owners and cultivators
+sum(iiL &lt;- whichgrep(&quot;Agri.*day&quot;, z[, &quot;occup&quot;]) &amp; y2k)
+z &lt;- cbind(z, hdagHH = z[, &quot;hh&quot;] %in% z[(ii1|ii2|ii3) &amp; y2k &amp; hd, &quot;hh&quot;])
+z &lt;- cbind(z, isagHH = z[, &quot;hh&quot;] %in% z[ii1 &amp; y2k, &quot;hh&quot;])</code></pre>
 </div>
 <div id="create-demeaned-dummies-and-their-interaction-terms" class="section level2">
 <h2>Create demeaned dummies and their interaction terms</h2>
@@ -532,7 +543,7 @@ survey FALSE TRUE
 Click here to see the code of demeaning dummy variable interactions.
 </summary>
 <pre class="r SeiroBenign"><code>thesevar.strings &lt;- &quot;edulevel\\.|^dummy\\d|kut|nwater|flood&quot;
-#thesevar.strings &lt;- &quot;^dummy\\d&quot;
+####thesevar.strings &lt;- &quot;^dummy\\d&quot;
 thesevar &lt;- gsub(&quot;\\_&quot;, &quot;\\\\_&quot;, grepout(thesevar.strings, colnames(yzw)))
 thesevar &lt;- unique(gsub(&quot;.yr.&quot;, &quot;&quot;, thesevar))
 #### demographic
@@ -561,7 +572,7 @@ agHH0, dummyAailjhar, DummyAgeGroup1999.1113, DummyAgegroup1999.1117, DummyAgeGr
 where <span class="math inline">\(\tilde{x}_{it}=x_{it}-\bar{x}_{i}\)</span>.</p>
 <p>Alternatively, one can also use FD to drop individual FEs, which is what is done in the below when we choose demeaning level at individuals.</p>
 <pre class="r SeiroBenign"><code>#### This chunk is copied from SampleSelectionDemeaning.rnw
-####for (ss in c(&quot;E&quot;, &quot;S&quot;, &quot;Y&quot;)) {
+#### for (ss in c(&quot;E&quot;, &quot;S&quot;, &quot;Y&quot;)) {
 for (ss in c(&quot;E&quot;, &quot;S&quot;)) {
   zXobjs &lt;- gsub(&quot;X&quot;, ss, c(&quot;zXp.1999&quot;, &quot;zXp.2002&quot;, &quot;zXm.1999&quot;, &quot;zXm.2002&quot;))
   zX &lt;- get(paste0(&quot;z&quot;, ss))
@@ -11384,10 +11395,22 @@ ltb &lt;- gsub(&quot;Y&quot;, &quot;\\\\mbox{Y}&quot;, ltb)
 ltb &lt;- gsub(&quot;R2&quot;, &quot;$\\\\bar{R}^{2}$&quot;, ltb)
 ltb &lt;- gsub(&quot;household&quot;, &quot;HH&quot;, ltb)
 ltb &lt;- ltb[!grepl(&quot;Raw&quot;, ltb)]
-for (iii in 1:18) {
-  ltb &lt;- gsub(paste(&quot;\\&amp;&quot;, iii, &quot;\\&amp;&quot;), paste0(&quot;&amp; (&quot;, iii, &quot;) &amp;&quot;), ltb)
-  ltb &lt;- gsub(paste0(&quot;\\&amp; &quot;, iii, &quot;\\\\\\\\&quot;), paste0(&quot;&amp; (&quot;, iii, &quot;) \\\\\\\\&quot;), ltb)
-}
+####for (iii in 1:18) {
+####  ltb &lt;- gsub(paste(&quot;\\&amp;&quot;, iii, &quot;\\&amp;&quot;), paste0(&quot;&amp; (&quot;, iii, &quot;) &amp;&quot;), ltb)
+####  ltb &lt;- gsub(paste0(&quot;\\&amp; &quot;, iii, &quot;\\\\\\\\&quot;), paste0(&quot;&amp; (&quot;, iii, &quot;) \\\\\\\\&quot;), ltb)
+####}
+ltb &lt;- gsub(&quot;.*10.*13.*15.*&quot;, &quot;&amp;(10)&amp;(11)&amp;(12)&amp;&amp;(13)&amp;(14)&amp;(15)&amp;&amp;(16)&amp;(17)&amp;(18)\\\\\\\\&quot;, ltb)
+ltb &lt;- c(
+  ltb[1:5],
+  paste0(&quot;\\makebox[3.25cm]{Covariates}&quot;,
+    paste0(&quot;&amp;\\makebox[1.3cm]{(&quot;, 1:3, &quot;)}&quot;, collapse = &quot;&quot;),
+    &quot;&amp;&quot;,
+    paste0(&quot;&amp;\\makebox[1.3cm]{(&quot;, 3+1:3, &quot;)}&quot;, collapse = &quot;&quot;),
+    &quot;&amp;&quot;,
+    paste0(&quot;&amp;\\makebox[1.3cm]{(&quot;, 6+1:3, &quot;)}&quot;, collapse = &quot;&quot;),
+    &quot;\\\\&quot;),
+  ltb[7:length(ltb)]
+  )
 write.tablev(ltb
   ,  paste0(&quot;../save/&quot;, c(&quot;Main&quot;, &quot;Placebo&quot;)[ii], &quot;Older&quot;, (10:12)[s], 
        &quot;ByGenderResults.tex&quot;)
@@ -16473,8 +16496,8 @@ write.tablev(ltb2
 aghhrows &lt;- grep(&quot;Agricultural&quot;, ltb)
 r2rows &lt;- grep(&quot;bar.R&quot;, ltb)
 ltb4 &lt;- ltb[
-    c(1:(aghhrows[1]+8), r2rows[1]+c(0, 2, 3:6),
-       aghhrows[2]+(-2:8), r2rows[2]+c(0, 2, 3:6), length(ltb)-4:0)
+    c(1:(aghhrows[1]+8), r2rows[1]+c(0, 2:7),
+       aghhrows[2]+(-2:8), r2rows[2]+c(0, 2:7), length(ltb)-4:0)
     ]
 write.tablev(ltb4
   ,  paste0(&quot;../save/&quot;, c(&quot;Main&quot;, &quot;Placebo&quot;)[ii], &quot;Older&quot;, (10:12)[s], 
@@ -42239,29 +42262,29 @@ resultsC &lt;- qread(&quot;../save/DID2024_DaysAbsentCrossSectionResults.qs&quot
 </li>
 <li>Placebo sample was not used because the 2006 data do not have the days absent information.</li>
 </ul>
-<pre class="seirolightgreen"><code>       Coef      beta   spec     gender       filesShort outcome               type
-     &lt;char&gt;     &lt;num&gt; &lt;fctr&gt;     &lt;fctr&gt;           &lt;fctr&gt;  &lt;char&gt;             &lt;fctr&gt;
-1: agHH.yr2 -0.463855      2 boys+girls   1999 enrollers  Grades baseline enrollers
-2: agHH.yr2 -0.471001      3 boys+girls   1999 enrollers  Grades baseline enrollers
-3: agHH.yr2 -0.230553      2 boys+girls always enrollers  Grades   always enrollers
-4: agHH.yr2 -0.268588      3 boys+girls always enrollers  Grades   always enrollers</code></pre>
-<pre class="seirolightgreen"><code>        Coef       beta   spec gender                         year       filesShort outcome               type
-      &lt;char&gt;      &lt;num&gt; &lt;fctr&gt; &lt;fctr&gt;                       &lt;fctr&gt;           &lt;fctr&gt;  &lt;char&gt;             &lt;fctr&gt;
- 1: agHH.yr2  0.1175214      1  girls Days absent\npanel 1999-2002 always enrollers    Days   always enrollers
- 2: agHH.yr2  0.4742414      2  girls Days absent\npanel 1999-2002 always enrollers    Days   always enrollers
- 3: agHH.yr2  0.2822199      3  girls Days absent\npanel 1999-2002 always enrollers    Days   always enrollers
- 4:     agHH  0.0986065      1  girls        Days absent\nOLS 1999   curr enrollers    Days baseline enrollers
- 5:     agHH -0.1639705      2  girls        Days absent\nOLS 1999   curr enrollers    Days baseline enrollers
- 6:     agHH -0.2416232      3  girls        Days absent\nOLS 1999   curr enrollers    Days baseline enrollers
- 7:     agHH  0.3431327      1  girls        Days absent\nOLS 2002   curr enrollers    Days baseline enrollers
- 8:     agHH  0.1829199      2  girls        Days absent\nOLS 2002   curr enrollers    Days baseline enrollers
- 9:     agHH -0.1543954      3  girls        Days absent\nOLS 2002   curr enrollers    Days baseline enrollers
-10:     agHH -0.0470085      1  girls        Days absent\nOLS 1999 always enrollers    Days   always enrollers
-11:     agHH -0.4164484      2  girls        Days absent\nOLS 1999 always enrollers    Days   always enrollers
-12:     agHH -0.7521748      3  girls        Days absent\nOLS 1999 always enrollers    Days   always enrollers
-13:     agHH  0.0705128      1  girls        Days absent\nOLS 2002 always enrollers    Days   always enrollers
-14:     agHH  0.1309578      2  girls        Days absent\nOLS 2002 always enrollers    Days   always enrollers
-15:     agHH -0.2008133      3  girls        Days absent\nOLS 2002 always enrollers    Days   always enrollers</code></pre>
+<pre class="seirolightgreen"><code>       Coef       beta   spec     gender       filesShort outcome               type
+     &lt;char&gt;      &lt;num&gt; &lt;fctr&gt;     &lt;fctr&gt;           &lt;fctr&gt;  &lt;char&gt;             &lt;fctr&gt;
+1: agHH.yr2 -0.4638553      2 boys+girls   1999 enrollers  Grades baseline enrollers
+2: agHH.yr2 -0.4710013      3 boys+girls   1999 enrollers  Grades baseline enrollers
+3: agHH.yr2 -0.2305532      2 boys+girls always enrollers  Grades   always enrollers
+4: agHH.yr2 -0.2685877      3 boys+girls always enrollers  Grades   always enrollers</code></pre>
+<pre class="seirolightgreen"><code>        Coef        beta   spec gender                         year       filesShort outcome               type
+      &lt;char&gt;       &lt;num&gt; &lt;fctr&gt; &lt;fctr&gt;                       &lt;fctr&gt;           &lt;fctr&gt;  &lt;char&gt;             &lt;fctr&gt;
+ 1: agHH.yr2  0.11752137      1  girls Days absent\npanel 1999-2002 always enrollers    Days   always enrollers
+ 2: agHH.yr2  0.47424141      2  girls Days absent\npanel 1999-2002 always enrollers    Days   always enrollers
+ 3: agHH.yr2  0.28221994      3  girls Days absent\npanel 1999-2002 always enrollers    Days   always enrollers
+ 4:     agHH  0.09860652      1  girls        Days absent\nOLS 1999   curr enrollers    Days baseline enrollers
+ 5:     agHH -0.16397046      2  girls        Days absent\nOLS 1999   curr enrollers    Days baseline enrollers
+ 6:     agHH -0.24162316      3  girls        Days absent\nOLS 1999   curr enrollers    Days baseline enrollers
+ 7:     agHH  0.34313272      1  girls        Days absent\nOLS 2002   curr enrollers    Days baseline enrollers
+ 8:     agHH  0.18291994      2  girls        Days absent\nOLS 2002   curr enrollers    Days baseline enrollers
+ 9:     agHH -0.15439543      3  girls        Days absent\nOLS 2002   curr enrollers    Days baseline enrollers
+10:     agHH -0.04700855      1  girls        Days absent\nOLS 1999 always enrollers    Days   always enrollers
+11:     agHH -0.41644836      2  girls        Days absent\nOLS 1999 always enrollers    Days   always enrollers
+12:     agHH -0.75217481      3  girls        Days absent\nOLS 1999 always enrollers    Days   always enrollers
+13:     agHH  0.07051282      1  girls        Days absent\nOLS 2002 always enrollers    Days   always enrollers
+14:     agHH  0.13095782      2  girls        Days absent\nOLS 2002 always enrollers    Days   always enrollers
+15:     agHH -0.20081326      3  girls        Days absent\nOLS 2002 always enrollers    Days   always enrollers</code></pre>
 <img role="img" src="data:image/png;base64,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" width="672" />
 </details>
 <div class="figure">
@@ -47241,21 +47264,21 @@ for (m in c(1, 3)) {
 <pre class="seirolightgreen"><code>
 t test of coefficients:
 
-                              Estimate  Std. Error t value Pr(&gt;|t|)  
-(Intercept)                 0.24184652  0.14344165   1.686   0.0923 .
-TotalValue                  0.00062796  0.00073589   0.853   0.3938  
-TotalDecimal                0.00008053  0.00027437   0.294   0.7692  
-hd.primaryTRUE             -0.09658057  0.07045095  -1.371   0.1709  
-hd.secondaryTRUE           -0.12177294  0.09688025  -1.257   0.2093  
-sp.primaryTRUE             -0.08057876  0.08292281  -0.972   0.3316  
-sp.secondaryTRUE           -0.12839862  0.09987395  -1.286   0.1991  
-agHH0TRUE                  -0.03497650  0.05511844  -0.635   0.5260  
-TotalValue:agHH0TRUE        0.00049181  0.00049728   0.989   0.3231  
-TotalDecimal:agHH0TRUE     -0.00031908  0.00014435  -2.211   0.0275 *
-hd.primaryTRUE:agHH0TRUE    0.07493445  0.08576928   0.874   0.3827  
-hd.secondaryTRUE:agHH0TRUE  0.17937367  0.13574119   1.321   0.1869  
-sp.primaryTRUE:agHH0TRUE   -0.13502272  0.10401369  -1.298   0.1948  
-sp.secondaryTRUE:agHH0TRUE -0.05607355  0.10643750  -0.527   0.5985  
+                               Estimate   Std. Error t value Pr(&gt;|t|)  
+(Intercept)                 0.241846519  0.143441646  1.6860  0.09234 .
+TotalValue                  0.000627961  0.000735887  0.8533  0.39383  
+TotalDecimal                0.000080534  0.000274369  0.2935  0.76923  
+hd.primaryTRUE             -0.096580571  0.070450947 -1.3709  0.17095  
+hd.secondaryTRUE           -0.121772939  0.096880246 -1.2569  0.20929  
+sp.primaryTRUE             -0.080578759  0.082922814 -0.9717  0.33160  
+sp.secondaryTRUE           -0.128398622  0.099873946 -1.2856  0.19910  
+agHH0TRUE                  -0.034976500  0.055118440 -0.6346  0.52596  
+TotalValue:agHH0TRUE        0.000491806  0.000497281  0.9890  0.32309  
+TotalDecimal:agHH0TRUE     -0.000319083  0.000144346 -2.2105  0.02746 *
+hd.primaryTRUE:agHH0TRUE    0.074934446  0.085769276  0.8737  0.38266  
+hd.secondaryTRUE:agHH0TRUE  0.179373671  0.135741187  1.3214  0.18689  
+sp.primaryTRUE:agHH0TRUE   -0.135022724  0.104013691 -1.2981  0.19477  
+sp.secondaryTRUE:agHH0TRUE -0.056073550  0.106437497 -0.5268  0.59852  
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -47274,9 +47297,9 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
  hd.secondaryTRUE:agHH0TRUE  0.1793737 0.146972  1.220        8.18       0.2563     
    sp.primaryTRUE:agHH0TRUE -0.1350227 0.116585 -1.158        7.19       0.2838     
  sp.secondaryTRUE:agHH0TRUE -0.0560735 0.112067 -0.500        7.01       0.6321     
-     Fstat dof     pval
-1 0.465999  10 0.911893
-2 0.465999 570 0.911893
+      Fstat dof      pval
+1 0.4659986  10 0.9118932
+2 0.4659986 570 0.9118932
 
      Simultaneous Tests for General Linear Hypotheses
 
@@ -47284,20 +47307,20 @@ Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary +
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
 Linear Hypotheses:
-                                  Estimate Std. Error t value Pr(&gt;|t|)
-TotalValue == 0                  0.0006280  0.0008889    0.71     0.98
-TotalDecimal == 0                0.0000805  0.0003079    0.26     1.00
-hd.primaryTRUE == 0             -0.0965806  0.0717243   -1.35     0.71
-hd.secondaryTRUE == 0           -0.1217729  0.1053547   -1.16     0.83
-sp.primaryTRUE == 0             -0.0805788  0.0848450   -0.95     0.92
-sp.secondaryTRUE == 0           -0.1283986  0.1035298   -1.24     0.78
-agHH0TRUE == 0                  -0.0349765  0.0568620   -0.62     0.99
-TotalValue:agHH0TRUE == 0        0.0004918  0.0005385    0.91     0.93
-TotalDecimal:agHH0TRUE == 0     -0.0003191  0.0001576   -2.02     0.27
-hd.primaryTRUE:agHH0TRUE == 0    0.0749344  0.0873774    0.86     0.95
-hd.secondaryTRUE:agHH0TRUE == 0  0.1793737  0.1469725    1.22     0.79
-sp.primaryTRUE:agHH0TRUE == 0   -0.1350227  0.1165851   -1.16     0.83
-sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735  0.1120669   -0.50     1.00
+                                   Estimate  Std. Error t value Pr(&gt;|t|)
+TotalValue == 0                  0.00062796  0.00088885   0.706    0.982
+TotalDecimal == 0                0.00008053  0.00030785   0.262    1.000
+hd.primaryTRUE == 0             -0.09658057  0.07172427  -1.347    0.710
+hd.secondaryTRUE == 0           -0.12177294  0.10535472  -1.156    0.828
+sp.primaryTRUE == 0             -0.08057876  0.08484503  -0.950    0.922
+sp.secondaryTRUE == 0           -0.12839862  0.10352976  -1.240    0.779
+agHH0TRUE == 0                  -0.03497650  0.05686196  -0.615    0.991
+TotalValue:agHH0TRUE == 0        0.00049181  0.00053847   0.913    0.934
+TotalDecimal:agHH0TRUE == 0     -0.00031908  0.00015760  -2.025    0.271
+hd.primaryTRUE:agHH0TRUE == 0    0.07493445  0.08737743   0.858    0.951
+hd.secondaryTRUE:agHH0TRUE == 0  0.17937367  0.14697247   1.220    0.791
+sp.primaryTRUE:agHH0TRUE == 0   -0.13502272  0.11658510  -1.158    0.826
+sp.secondaryTRUE:agHH0TRUE == 0 -0.05607355  0.11206685  -0.500    0.997
 (Adjusted p values reported -- single-step method)
 
 
@@ -47306,25 +47329,25 @@ sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735  0.1120669   -0.50     1.00
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.75
+Quantile = 2.7468
 95% family-wise confidence level
  
 
 Linear Hypotheses:
-                                Estimate   lwr        upr       
-TotalValue == 0                  0.0006280 -0.0018162  0.0030721
-TotalDecimal == 0                0.0000805 -0.0007660  0.0009270
-hd.primaryTRUE == 0             -0.0965806 -0.2938050  0.1006438
-hd.secondaryTRUE == 0           -0.1217729 -0.4114729  0.1679270
-sp.primaryTRUE == 0             -0.0805788 -0.3138820  0.1527245
-sp.secondaryTRUE == 0           -0.1283986 -0.4130804  0.1562832
-agHH0TRUE == 0                  -0.0349765 -0.1913331  0.1213801
-TotalValue:agHH0TRUE == 0        0.0004918 -0.0009889  0.0019725
-TotalDecimal:agHH0TRUE == 0     -0.0003191 -0.0007525  0.0001143
-hd.primaryTRUE:agHH0TRUE == 0    0.0749344 -0.1653323  0.3152012
-hd.secondaryTRUE:agHH0TRUE == 0  0.1793737 -0.2247651  0.5835124
-sp.primaryTRUE:agHH0TRUE == 0   -0.1350227 -0.4556035  0.1855581
-sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735 -0.3642303  0.2520832
+                                Estimate    lwr         upr        
+TotalValue == 0                  0.00062796 -0.00181352  0.00306944
+TotalDecimal == 0                0.00008053 -0.00076506  0.00092613
+hd.primaryTRUE == 0             -0.09658057 -0.29359094  0.10042979
+hd.secondaryTRUE == 0           -0.12177294 -0.41115854  0.16761267
+sp.primaryTRUE == 0             -0.08057876 -0.31362887  0.15247135
+sp.secondaryTRUE == 0           -0.12839862 -0.41277149  0.15597424
+agHH0TRUE == 0                  -0.03497650 -0.19116345  0.12121045
+TotalValue:agHH0TRUE == 0        0.00049181 -0.00098725  0.00197086
+TotalDecimal:agHH0TRUE == 0     -0.00031908 -0.00075199  0.00011382
+hd.primaryTRUE:agHH0TRUE == 0    0.07493445 -0.16507161  0.31494050
+hd.secondaryTRUE:agHH0TRUE == 0  0.17937367 -0.22432650  0.58307384
+sp.primaryTRUE:agHH0TRUE == 0   -0.13502272 -0.45525565  0.18521020
+sp.secondaryTRUE:agHH0TRUE == 0 -0.05607355 -0.36389587  0.25174877
 
     Fstat dof     pval
 1 1.03558   7 0.404842
@@ -47336,14 +47359,14 @@ Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary +
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
 Linear Hypotheses:
-                                 Estimate Std. Error t value Pr(&gt;|t|)
-agHH0TRUE == 0                  -0.034977   0.056862   -0.62     0.98
-TotalValue:agHH0TRUE == 0        0.000492   0.000538    0.91     0.89
-TotalDecimal:agHH0TRUE == 0     -0.000319   0.000158   -2.02     0.20
-hd.primaryTRUE:agHH0TRUE == 0    0.074934   0.087377    0.86     0.91
-hd.secondaryTRUE:agHH0TRUE == 0  0.179374   0.146972    1.22     0.71
-sp.primaryTRUE:agHH0TRUE == 0   -0.135023   0.116585   -1.16     0.75
-sp.secondaryTRUE:agHH0TRUE == 0 -0.056074   0.112067   -0.50     0.99
+                                  Estimate Std. Error t value Pr(&gt;|t|)
+agHH0TRUE == 0                  -0.0349765  0.0568620  -0.615    0.979
+TotalValue:agHH0TRUE == 0        0.0004918  0.0005385   0.913    0.887
+TotalDecimal:agHH0TRUE == 0     -0.0003191  0.0001576  -2.025    0.205
+hd.primaryTRUE:agHH0TRUE == 0    0.0749344  0.0873774   0.858    0.911
+hd.secondaryTRUE:agHH0TRUE == 0  0.1793737  0.1469725   1.220    0.705
+sp.primaryTRUE:agHH0TRUE == 0   -0.1350227  0.1165851  -1.158    0.748
+sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735  0.1120669  -0.500    0.992
 (Adjusted p values reported -- single-step method)
 
 
@@ -47352,38 +47375,38 @@ sp.secondaryTRUE:agHH0TRUE == 0 -0.056074   0.112067   -0.50     0.99
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.618
+Quantile = 2.6161
 95% family-wise confidence level
  
 
 Linear Hypotheses:
-                                Estimate   lwr        upr       
-agHH0TRUE == 0                  -0.0349765 -0.1838469  0.1138939
-TotalValue:agHH0TRUE == 0        0.0004918 -0.0009180  0.0019016
-TotalDecimal:agHH0TRUE == 0     -0.0003191 -0.0007317  0.0000935
-hd.primaryTRUE:agHH0TRUE == 0    0.0749344 -0.1538286  0.3036975
-hd.secondaryTRUE:agHH0TRUE == 0  0.1793737 -0.2054152  0.5641626
-sp.primaryTRUE:agHH0TRUE == 0   -0.1350227 -0.4402544  0.1702089
-sp.secondaryTRUE:agHH0TRUE == 0 -0.0560735 -0.3494760  0.2373289
+                                Estimate    lwr         upr        
+agHH0TRUE == 0                  -0.03497650 -0.18373557  0.11378257
+TotalValue:agHH0TRUE == 0        0.00049181 -0.00091691  0.00190052
+TotalDecimal:agHH0TRUE == 0     -0.00031908 -0.00073140  0.00009323
+hd.primaryTRUE:agHH0TRUE == 0    0.07493445 -0.15365748  0.30352638
+hd.secondaryTRUE:agHH0TRUE == 0  0.17937367 -0.20512747  0.56387481
+sp.primaryTRUE:agHH0TRUE == 0   -0.13502272 -0.44002612  0.16998067
+sp.secondaryTRUE:agHH0TRUE == 0 -0.05607355 -0.34925657  0.23710947
 
 
 t test of coefficients:
 
-                          Estimate  Std. Error t value Pr(&gt;|t|)  
-(Intercept)             0.27557499  0.16450081   1.675   0.0944 .
-TotalValue              0.00078639  0.00084989   0.925   0.3552  
-TotalDecimal            0.00014903  0.00023280   0.640   0.5223  
-hd.primaryTRUE         -0.11583807  0.07143337  -1.622   0.1054  
-hd.secondaryTRUE       -0.10825006  0.07644559  -1.416   0.1573  
-sp.primaryTRUE         -0.08979757  0.11250350  -0.798   0.4251  
-sp.secondaryTRUE       -0.19970502  0.13917203  -1.435   0.1518  
-agHH0                  -0.09402068  0.06778351  -1.387   0.1660  
-TotalValue:agHH0        0.00007305  0.00042430   0.172   0.8634  
-TotalDecimal:agHH0     -0.00035382  0.00017518  -2.020   0.0439 *
-hd.primaryTRUE:agHH0    0.10987373  0.08914417   1.233   0.2183  
-hd.secondaryTRUE:agHH0  0.12358355  0.09190427   1.345   0.1793  
-sp.primaryTRUE:agHH0   -0.13491631  0.17226429  -0.783   0.4338  
-sp.secondaryTRUE:agHH0  0.07484727  0.16911922   0.443   0.6582  
+                           Estimate   Std. Error t value Pr(&gt;|t|)  
+(Intercept)             0.275574989  0.164500807  1.6752  0.09444 .
+TotalValue              0.000786392  0.000849887  0.9253  0.35521  
+TotalDecimal            0.000149029  0.000232802  0.6402  0.52233  
+hd.primaryTRUE         -0.115838072  0.071433366 -1.6216  0.10544  
+hd.secondaryTRUE       -0.108250061  0.076445592 -1.4160  0.15731  
+sp.primaryTRUE         -0.089797565  0.112503496 -0.7982  0.42510  
+sp.secondaryTRUE       -0.199705015  0.139172028 -1.4350  0.15185  
+agHH0                  -0.094020675  0.067783509 -1.3871  0.16596  
+TotalValue:agHH0        0.000073053  0.000424301  0.1722  0.86336  
+TotalDecimal:agHH0     -0.000353817  0.000175179 -2.0198  0.04388 *
+hd.primaryTRUE:agHH0    0.109873726  0.089144175  1.2325  0.21826  
+hd.secondaryTRUE:agHH0  0.123583554  0.091904274  1.3447  0.17926  
+sp.primaryTRUE:agHH0   -0.134916306  0.172264292 -0.7832  0.43384  
+sp.secondaryTRUE:agHH0  0.074847273  0.169119221  0.4426  0.65824  
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
@@ -47402,9 +47425,9 @@ Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&
  hd.secondaryTRUE:agHH0  0.1235836 0.102970  1.200        8.18        0.264     
    sp.primaryTRUE:agHH0 -0.1349163 0.184512 -0.731        7.25        0.488     
  sp.secondaryTRUE:agHH0  0.0748473 0.176719  0.424        7.20        0.684     
-    Fstat dof        pval
-1 5.03017  10 4.94501e-07
-2 5.03017 570 4.94501e-07
+     Fstat dof         pval
+1 5.030172  10 4.945007e-07
+2 5.030172 570 4.945007e-07
 
      Simultaneous Tests for General Linear Hypotheses
 
@@ -47412,20 +47435,20 @@ Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary +
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
 Linear Hypotheses:
-                              Estimate Std. Error t value Pr(&gt;|t|)
-TotalValue == 0              0.0007864  0.0010206    0.77     0.96
-TotalDecimal == 0            0.0001490  0.0002706    0.55     0.99
-hd.primaryTRUE == 0         -0.1158381  0.0761224   -1.52     0.57
-hd.secondaryTRUE == 0       -0.1082501  0.0840169   -1.29     0.73
-sp.primaryTRUE == 0         -0.0897976  0.1181646   -0.76     0.97
-sp.secondaryTRUE == 0       -0.1997050  0.1444665   -1.38     0.66
-agHH0 == 0                  -0.0940207  0.0735961   -1.28     0.73
-TotalValue:agHH0 == 0        0.0000731  0.0004292    0.17     1.00
-TotalDecimal:agHH0 == 0     -0.0003538  0.0001820   -1.94     0.30
-hd.primaryTRUE:agHH0 == 0    0.1098737  0.0937622    1.17     0.80
-hd.secondaryTRUE:agHH0 == 0  0.1235836  0.1029697    1.20     0.78
-sp.primaryTRUE:agHH0 == 0   -0.1349163  0.1845119   -0.73     0.97
-sp.secondaryTRUE:agHH0 == 0  0.0748473  0.1767188    0.42     1.00
+                               Estimate  Std. Error t value Pr(&gt;|t|)
+TotalValue == 0              0.00078639  0.00102057   0.771    0.963
+TotalDecimal == 0            0.00014903  0.00027061   0.551    0.994
+hd.primaryTRUE == 0         -0.11583807  0.07612241  -1.522    0.566
+hd.secondaryTRUE == 0       -0.10825006  0.08401693  -1.288    0.724
+sp.primaryTRUE == 0         -0.08979757  0.11816455  -0.760    0.965
+sp.secondaryTRUE == 0       -0.19970502  0.14446645  -1.382    0.661
+agHH0 == 0                  -0.09402068  0.07359609  -1.278    0.730
+TotalValue:agHH0 == 0        0.00007305  0.00042917   0.170    1.000
+TotalDecimal:agHH0 == 0     -0.00035382  0.00018197  -1.944    0.297
+hd.primaryTRUE:agHH0 == 0    0.10987373  0.09376219   1.172    0.797
+hd.secondaryTRUE:agHH0 == 0  0.12358355  0.10296969   1.200    0.779
+sp.primaryTRUE:agHH0 == 0   -0.13491631  0.18451185  -0.731    0.971
+sp.secondaryTRUE:agHH0 == 0  0.07484727  0.17671880   0.424    0.999
 (Adjusted p values reported -- single-step method)
 
 
@@ -47434,29 +47457,29 @@ sp.secondaryTRUE:agHH0 == 0  0.0748473  0.1767188    0.42     1.00
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.737
+Quantile = 2.7359
 95% family-wise confidence level
  
 
 Linear Hypotheses:
-                            Estimate   lwr        upr       
-TotalValue == 0              0.0007864 -0.0020072  0.0035800
-TotalDecimal == 0            0.0001490 -0.0005917  0.0008898
-hd.primaryTRUE == 0         -0.1158381 -0.3242079  0.0925317
-hd.secondaryTRUE == 0       -0.1082501 -0.3382295  0.1217294
-sp.primaryTRUE == 0         -0.0897976 -0.4132493  0.2336542
-sp.secondaryTRUE == 0       -0.1997050 -0.5951529  0.1957429
-agHH0 == 0                  -0.0940207 -0.2954752  0.1074338
-TotalValue:agHH0 == 0        0.0000731 -0.0011017  0.0012478
-TotalDecimal:agHH0 == 0     -0.0003538 -0.0008519  0.0001443
-hd.primaryTRUE:agHH0 == 0    0.1098737 -0.1467814  0.3665289
-hd.secondaryTRUE:agHH0 == 0  0.1235836 -0.1582753  0.4054424
-sp.primaryTRUE:agHH0 == 0   -0.1349163 -0.6399804  0.3701478
-sp.secondaryTRUE:agHH0 == 0  0.0748473 -0.4088850  0.5585795
+                            Estimate    lwr         upr        
+TotalValue == 0              0.00078639 -0.00200576  0.00357855
+TotalDecimal == 0            0.00014903 -0.00059132  0.00088938
+hd.primaryTRUE == 0         -0.11583807 -0.32409901  0.09242286
+hd.secondaryTRUE == 0       -0.10825006 -0.33810936  0.12160924
+sp.primaryTRUE == 0         -0.08979757 -0.41308030  0.23348517
+sp.secondaryTRUE == 0       -0.19970502 -0.59494630  0.19553627
+agHH0 == 0                  -0.09402068 -0.29536993  0.10732858
+TotalValue:agHH0 == 0        0.00007305 -0.00110111  0.00124722
+TotalDecimal:agHH0 == 0     -0.00035382 -0.00085168  0.00014404
+hd.primaryTRUE:agHH0 == 0    0.10987373 -0.14664733  0.36639478
+hd.secondaryTRUE:agHH0 == 0  0.12358355 -0.15812803  0.40529513
+sp.primaryTRUE:agHH0 == 0   -0.13491631 -0.63971655  0.36988394
+sp.secondaryTRUE:agHH0 == 0  0.07484727 -0.40863221  0.55832676
 
-    Fstat dof    pval
-1 1.66819   7 0.11414
-2 1.66819 570 0.11414
+     Fstat dof      pval
+1 1.668192   7 0.1141402
+2 1.668192 570 0.1141402
 
      Simultaneous Tests for General Linear Hypotheses
 
@@ -47464,14 +47487,14 @@ Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary +
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
 Linear Hypotheses:
-                              Estimate Std. Error t value Pr(&gt;|t|)
-agHH0 == 0                  -0.0940207  0.0735961   -1.28     0.60
-TotalValue:agHH0 == 0        0.0000731  0.0004292    0.17     1.00
-TotalDecimal:agHH0 == 0     -0.0003538  0.0001820   -1.94     0.21
-hd.primaryTRUE:agHH0 == 0    0.1098737  0.0937622    1.17     0.68
-hd.secondaryTRUE:agHH0 == 0  0.1235836  0.1029697    1.20     0.66
-sp.primaryTRUE:agHH0 == 0   -0.1349163  0.1845119   -0.73     0.93
-sp.secondaryTRUE:agHH0 == 0  0.0748473  0.1767188    0.42     0.99
+                               Estimate  Std. Error t value Pr(&gt;|t|)
+agHH0 == 0                  -0.09402068  0.07359609  -1.278    0.605
+TotalValue:agHH0 == 0        0.00007305  0.00042917   0.170    1.000
+TotalDecimal:agHH0 == 0     -0.00035382  0.00018197  -1.944    0.214
+hd.primaryTRUE:agHH0 == 0    0.10987373  0.09376219   1.172    0.678
+hd.secondaryTRUE:agHH0 == 0  0.12358355  0.10296969   1.200    0.658
+sp.primaryTRUE:agHH0 == 0   -0.13491631  0.18451185  -0.731    0.926
+sp.secondaryTRUE:agHH0 == 0  0.07484727  0.17671880   0.424    0.993
 (Adjusted p values reported -- single-step method)
 
 
@@ -47480,19 +47503,19 @@ sp.secondaryTRUE:agHH0 == 0  0.0748473  0.1767188    0.42     0.99
 Fit: lm(formula = attrit ~ (TotalValue + TotalDecimal + hd.primary + 
     hd.secondary + sp.primary + sp.secondary) * agHH0, data = asrH)
 
-Quantile = 2.575
+Quantile = 2.574
 95% family-wise confidence level
  
 
 Linear Hypotheses:
-                            Estimate   lwr        upr       
-agHH0 == 0                  -0.0940207 -0.2835667  0.0955253
-TotalValue:agHH0 == 0        0.0000731 -0.0010323  0.0011784
-TotalDecimal:agHH0 == 0     -0.0003538 -0.0008225  0.0001149
-hd.primaryTRUE:agHH0 == 0    0.1098737 -0.1316098  0.3513573
-hd.secondaryTRUE:agHH0 == 0  0.1235836 -0.1416138  0.3887810
-sp.primaryTRUE:agHH0 == 0   -0.1349163 -0.6101247  0.3402921
-sp.secondaryTRUE:agHH0 == 0  0.0748473 -0.3802902  0.5299848</code></pre>
+                            Estimate    lwr         upr        
+agHH0 == 0                  -0.09402068 -0.28345895  0.09541760
+TotalValue:agHH0 == 0        0.00007305 -0.00103165  0.00117776
+TotalDecimal:agHH0 == 0     -0.00035382 -0.00082222  0.00011459
+hd.primaryTRUE:agHH0 == 0    0.10987373 -0.13147261  0.35122006
+hd.secondaryTRUE:agHH0 == 0  0.12358355 -0.14146315  0.38863025
+sp.primaryTRUE:agHH0 == 0   -0.13491631 -0.60985468  0.34002207
+sp.secondaryTRUE:agHH0 == 0  0.07484727 -0.38003159  0.52972613</code></pre>
 </details>
 <details>
 <summary>
@@ -47506,13 +47529,16 @@ write.tablev(mattagHH0, &quot;../save/JHRAgHHDefBasedAttritionComparison.tex&quo
 TabAttrit &lt;- latextab(as.matrix(matthd),
   hleft = &quot;\\footnotesize\\hfil$&quot;, hcenter = c(3.5, rep(1.95, ncol(matthd)-1)), 
   hright = &quot;$&quot;, 
-  headercolor = &quot;gray80&quot;, adjustlineskip = &quot;-.8ex&quot;, delimiterline= NULL,
-  alternatecolor2 = &quot;gray90&quot;,
+####  headercolor = &quot;gray80&quot;, adjustlineskip = &quot;-.8ex&quot;, delimiterline= NULL,
+####  alternatecolor2 = &quot;gray90&quot;,
   addseparatingcols = 3, separatingcolwidth = .2,
   separatingcoltitle = c(&quot;\\textsf{Descriptive statistics}&quot;, &quot;\\textsf{OLS estimates}&quot;),
   addsubcoltitlehere = T)
 write.tablev(TabAttrit,  
-  &quot;../save/AttritionEstimation.tex&quot;
+  &quot;../save/App_AttritionEstimation.tex&quot;
+  , colnamestrue = F)
+write.tablev(TabAttrit,  
+  &quot;../draft/Tables/App_AttritionEstimation.tex&quot;
   , colnamestrue = F)
 #### HTML table
 for (m in c(1, 3)) {
@@ -49049,47 +49075,47 @@ z1 &lt;- zE[uniquid %in% iiid &amp; survey != 2006 &amp; sd == 1, ]
 #### enrollment rates of cohort 1999, exist sample for main estimation
 z1[, .(Enroll = mean(schoolp, na.rm = T), N = .N), 
   by = .(AgeIn1999, agHH0&gt;0)][order(AgeIn1999, agHH0), ]</code></pre>
-<pre class="seirolightgreen"><code>    AgeIn1999  agHH0    Enroll     N
-        &lt;num&gt; &lt;lgcl&gt;     &lt;num&gt; &lt;int&gt;
- 1:         0  FALSE 0.0000000    28
- 2:         0   TRUE 0.0000000    40
- 3:         1  FALSE 0.0178571    56
- 4:         1   TRUE 0.0000000    58
- 5:         2  FALSE 0.0652174    46
- 6:         2   TRUE 0.0833333    48
- 7:         3  FALSE 0.2142857    42
- 8:         3   TRUE 0.2162162    74
- 9:         4  FALSE 0.3750000    72
-10:         4   TRUE 0.3333333    78
-11:         5  FALSE 0.5714286    42
-12:         5   TRUE 0.4594595    74
-13:         6  FALSE 0.7435897    78
-14:         6   TRUE 0.7395833    96
-15:         7  FALSE 0.8823529   102
-16:         7   TRUE 0.8545455   110
-17:         8  FALSE 0.8611111    72
-18:         8   TRUE 0.8153846   130
-19:         9  FALSE 0.8255814    86
-20:         9   TRUE 0.7786885   122
-21:        10  FALSE 0.8260870    92
-22:        10   TRUE 0.7985075   134
-23:        11  FALSE 0.8857143    70
-24:        11   TRUE 0.7589286   112
-25:        12  FALSE 0.7500000    92
-26:        12   TRUE 0.6538462   104
-27:        13  FALSE 0.6166667    60
-28:        13   TRUE 0.4920635   126
-29:        14  FALSE 0.5166667    60
-30:        14   TRUE 0.4750000    80
-31:        15  FALSE 0.4117647    34
-32:        15   TRUE 0.3720930    86
-33:        16  FALSE 0.4473684    38
-34:        16   TRUE 0.3571429    42
-35:        17  FALSE 0.0769231    26
-36:        17   TRUE 0.2500000    56
-37:        18  FALSE 0.3636364    22
-38:        18   TRUE 0.1875000    32
-    AgeIn1999  agHH0    Enroll     N</code></pre>
+<pre class="seirolightgreen"><code>    AgeIn1999  agHH0     Enroll     N
+        &lt;num&gt; &lt;lgcl&gt;      &lt;num&gt; &lt;int&gt;
+ 1:         0  FALSE 0.00000000    28
+ 2:         0   TRUE 0.00000000    40
+ 3:         1  FALSE 0.01785714    56
+ 4:         1   TRUE 0.00000000    58
+ 5:         2  FALSE 0.06521739    46
+ 6:         2   TRUE 0.08333333    48
+ 7:         3  FALSE 0.21428571    42
+ 8:         3   TRUE 0.21621622    74
+ 9:         4  FALSE 0.37500000    72
+10:         4   TRUE 0.33333333    78
+11:         5  FALSE 0.57142857    42
+12:         5   TRUE 0.45945946    74
+13:         6  FALSE 0.74358974    78
+14:         6   TRUE 0.73958333    96
+15:         7  FALSE 0.88235294   102
+16:         7   TRUE 0.85454545   110
+17:         8  FALSE 0.86111111    72
+18:         8   TRUE 0.81538462   130
+19:         9  FALSE 0.82558140    86
+20:         9   TRUE 0.77868852   122
+21:        10  FALSE 0.82608696    92
+22:        10   TRUE 0.79850746   134
+23:        11  FALSE 0.88571429    70
+24:        11   TRUE 0.75892857   112
+25:        12  FALSE 0.75000000    92
+26:        12   TRUE 0.65384615   104
+27:        13  FALSE 0.61666667    60
+28:        13   TRUE 0.49206349   126
+29:        14  FALSE 0.51666667    60
+30:        14   TRUE 0.47500000    80
+31:        15  FALSE 0.41176471    34
+32:        15   TRUE 0.37209302    86
+33:        16  FALSE 0.44736842    38
+34:        16   TRUE 0.35714286    42
+35:        17  FALSE 0.07692308    26
+36:        17   TRUE 0.25000000    56
+37:        18  FALSE 0.36363636    22
+38:        18   TRUE 0.18750000    32
+    AgeIn1999  agHH0     Enroll     N</code></pre>
 <pre class="r SeiroBenign"><code>pathsource00 &lt;- paste0(pathsource, &quot;/ffe/2000/Data/HouseholdData/STATA/&quot;)
 fn &lt;- list.files(pathsource00)
 fn0 &lt;- list.files(pathsource00, full.names = T)

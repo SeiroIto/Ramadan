@@ -228,7 +228,7 @@ In the original sample, `exist`^[Availability of each observations across survey
 Definition of `agHH' is created in `Create2RoundPanel.rnw`. `e00` is individual level data with member occupation and income source. 
 
 ```
-# ocagHH: Any member of HH reports agri as one's occupation
+#### ocagHH: Any member of HH reports agri as one's occupation
 z <- cbind(z, ocagHH = z[, "hh"] %in% unique(e00[grepl("Ag|arm|enan", occup), hh]))
 sum(ii1 <- whichgrep("Agri|Tena", z[, "isource"]) & y2k )
 sum(ii2 <- whichgrep("Agri|enan|farm", z[, "occup"]) & y2k) # tenant and own farmers as occupation
@@ -247,7 +247,7 @@ We demean the dummy interaction terms.
 <details><summary>Click here to see the code of demeaning dummy variable interactions.</summary>
 ```{r variables to interact with yrX 2}
 thesevar.strings <- "edulevel\\.|^dummy\\d|kut|nwater|flood"
-#thesevar.strings <- "^dummy\\d"
+####thesevar.strings <- "^dummy\\d"
 thesevar <- gsub("\\_", "\\\\_", grepout(thesevar.strings, colnames(yzw)))
 thesevar <- unique(gsub(".yr.", "", thesevar))
 #### demographic
@@ -282,7 +282,7 @@ Alternatively, one can also use FD to drop individual FEs, which is what is done
 
 ```{r save zEm.1999 etc and create dummy agHH yrX interactions }
 #### This chunk is copied from SampleSelectionDemeaning.rnw
-####for (ss in c("E", "S", "Y")) {
+#### for (ss in c("E", "S", "Y")) {
 for (ss in c("E", "S")) {
   zXobjs <- gsub("X", ss, c("zXp.1999", "zXp.2002", "zXm.1999", "zXm.2002"))
   zX <- get(paste0("z", ss))
@@ -1454,7 +1454,7 @@ Placebo estimation tests a non-existing 2002-2006 shock on the outcomes. To alig
 
 
 <details><summary>Click here to see the R script of main and placebo estimation.</summary>
-```{r main and placebo gender BRL 2024, file = "../program/Estimation_MainPlacebo.R", eval = T, echo = T, results = 'hide', warning = F, cache = F}
+```{r main and placebo gender BRL 2024, file = "../program/Estimation_MainPlacebo.R", eval = F, echo = T, results = 'hide', warning = F, cache = F}
 ```
 </details>
 
@@ -3046,10 +3046,22 @@ ltb <- gsub("Y", "\\\\mbox{Y}", ltb)
 ltb <- gsub("R2", "$\\\\bar{R}^{2}$", ltb)
 ltb <- gsub("household", "HH", ltb)
 ltb <- ltb[!grepl("Raw", ltb)]
-for (iii in 1:18) {
-  ltb <- gsub(paste("\\&", iii, "\\&"), paste0("& (", iii, ") &"), ltb)
-  ltb <- gsub(paste0("\\& ", iii, "\\\\\\\\"), paste0("& (", iii, ") \\\\\\\\"), ltb)
-}
+####for (iii in 1:18) {
+####  ltb <- gsub(paste("\\&", iii, "\\&"), paste0("& (", iii, ") &"), ltb)
+####  ltb <- gsub(paste0("\\& ", iii, "\\\\\\\\"), paste0("& (", iii, ") \\\\\\\\"), ltb)
+####}
+ltb <- gsub(".*10.*13.*15.*", "&(10)&(11)&(12)&&(13)&(14)&(15)&&(16)&(17)&(18)\\\\\\\\", ltb)
+ltb <- c(
+  ltb[1:5],
+  paste0("\\makebox[3.25cm]{Covariates}",
+    paste0("&\\makebox[1.3cm]{(", 1:3, ")}", collapse = ""),
+    "&",
+    paste0("&\\makebox[1.3cm]{(", 3+1:3, ")}", collapse = ""),
+    "&",
+    paste0("&\\makebox[1.3cm]{(", 6+1:3, ")}", collapse = ""),
+    "\\\\"),
+  ltb[7:length(ltb)]
+  )
 write.tablev(ltb
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
        "ByGenderResults.tex")
@@ -3528,8 +3540,8 @@ write.tablev(ltb2
 aghhrows <- grep("Agricultural", ltb)
 r2rows <- grep("bar.R", ltb)
 ltb4 <- ltb[
-    c(1:(aghhrows[1]+8), r2rows[1]+c(0, 2, 3:6),
-       aghhrows[2]+(-2:8), r2rows[2]+c(0, 2, 3:6), length(ltb)-4:0)
+    c(1:(aghhrows[1]+8), r2rows[1]+c(0, 2:7),
+       aghhrows[2]+(-2:8), r2rows[2]+c(0, 2:7), length(ltb)-4:0)
     ]
 write.tablev(ltb4
   ,  paste0("../save/", c("Main", "Placebo")[ii], "Older", (10:12)[s], 
@@ -5820,13 +5832,16 @@ write.tablev(mattagHH0, "../save/JHRAgHHDefBasedAttritionComparison.tex")
 TabAttrit <- latextab(as.matrix(matthd),
   hleft = "\\footnotesize\\hfil$", hcenter = c(3.5, rep(1.95, ncol(matthd)-1)), 
   hright = "$", 
-  headercolor = "gray80", adjustlineskip = "-.8ex", delimiterline= NULL,
-  alternatecolor2 = "gray90",
+####  headercolor = "gray80", adjustlineskip = "-.8ex", delimiterline= NULL,
+####  alternatecolor2 = "gray90",
   addseparatingcols = 3, separatingcolwidth = .2,
   separatingcoltitle = c("\\textsf{Descriptive statistics}", "\\textsf{OLS estimates}"),
   addsubcoltitlehere = T)
 write.tablev(TabAttrit,  
   "../save/App_AttritionEstimation.tex"
+  , colnamestrue = F)
+write.tablev(TabAttrit,  
+  "../draft/Tables/App_AttritionEstimation.tex"
   , colnamestrue = F)
 #### HTML table
 for (m in c(1, 3)) {
